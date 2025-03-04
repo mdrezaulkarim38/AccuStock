@@ -6,15 +6,15 @@ namespace AccuStock.Controllers;
 
 public class SettingController : Controller
 {
-    private readonly ICompanyService _companyService;
-    public SettingController(ICompanyService companyService)
+    private readonly ISettingService _SettingService;
+    public SettingController(ISettingService SettingService)
     {
-        _companyService = companyService;
+        _SettingService = SettingService;
     }
     [HttpGet]
     public async Task<IActionResult> Company()
     {
-        var company = await _companyService.GetCompanyBySubscriptionId();
+        var company = await _SettingService.GetCompanyBySubscriptionId();
         if (company == null)
         {
             return View(new Company());
@@ -35,7 +35,7 @@ public class SettingController : Controller
         {
             if (company.Id == 0)
             {
-                bool isCreated = await _companyService.CreateCompanyAsync(company);
+                bool isCreated = await _SettingService.CreateCompanyAsync(company);
                 if (!isCreated)
                 {
                     TempData["ErrorMessage"] = "A company already exists for this SubscriptionId.";
@@ -44,7 +44,7 @@ public class SettingController : Controller
             }
             else
             {
-                bool isUpdated = await _companyService.UpdateCompanyAsync(company);
+                bool isUpdated = await _SettingService.UpdateCompanyAsync(company);
                 if (!isUpdated)
                 {
                     TempData["ErrorMessage"] = "Company name already exists or update failed";
@@ -64,7 +64,8 @@ public class SettingController : Controller
     [HttpGet]
     public ActionResult Branch()
     {
-        return View();
+        var branches = _SettingService.GetAllBranch();
+        return View(branches);
     }
 
     [HttpPost]

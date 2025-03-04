@@ -1,17 +1,70 @@
-﻿@{
+﻿@model AccuStock.Models.Branch;
+@{
     ViewData["Title"] = "Branch";
 }
 
-<div class="row">
-    <div class="col-md-12">
-        <div class="card shadow">
-            <div class="card-header">
-                <h5 class="card-title">Add Branch</h5>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Branch List</h5>
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addBranchModal">
+                        <i class="bi bi-plus-lg"></i> Add New
+                    </button>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Branch Type</th>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>Contact</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @* Loop through branches and display *@
+                            @* @foreach (var branch in Model)
+                            {
+                                <tr>
+                                    <td>@branch.Id</td>
+                                    <td>@(branch.BranchType == 1 ? "Warehouse" : "Sales Point")</td>
+                                    <td>@branch.Name</td>
+                                    <td>@branch.Address</td>
+                                    <td>@branch.Contact</td>
+                                    <td>
+                                        <button class="btn btn-warning btn-sm">
+                                            <i class="bi bi-pencil-square"></i> Edit
+                                        </button>
+                                        <button class="btn btn-danger btn-sm">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            } *@
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="card-body">
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5 Modal for Adding Branch -->
+<div class="modal fade" id="addBranchModal" tabindex="-1" aria-labelledby="addBranchModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addBranchModalLabel">Add Branch</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
                 <form asp-action="Branch" method="post">
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-6 mb-3">
                             <label for="BranchType" class="form-label">Branch Type</label>
                             <select class="form-select" id="BranchType" name="BranchType" required>
                                 <option value="0">Select Branch Type</option>
@@ -20,32 +73,33 @@
                             </select>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-6 mb-3">
                             <label for="Name" class="form-label">Branch Name</label>
                             <input type="text" class="form-control" id="Name" name="Name" required>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-6 mb-3">
                             <label for="Address" class="form-label">Address</label>
                             <input type="text" class="form-control" id="Address" name="Address">
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-6 mb-3">
                             <label for="Contact" class="form-label">Contact No</label>
                             <input type="text" class="form-control" id="Contact" name="Contact">
                         </div>
+                    </div>
 
-                        <div class="d-flex justify-content-center mt-4">
-                            <button type="submit" class="btn btn-success btn-sm me-3">
-                                <i class="bi bi-check-circle"></i> Submit
-                            </button>
-                            <button type="reset" class="btn btn-secondary btn-sm">
-                                <i class="bi bi-arrow-clockwise"></i> Refresh
-                            </button>
-                        </div>
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Submit
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="bi bi-arrow-clockwise"></i> Refresh
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+

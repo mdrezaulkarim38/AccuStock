@@ -20,6 +20,5 @@ public class Company
     public IFormFile? LogoImage { get; set; }
     public int SubscriptionId { get; set; }
     public Subscription? Subscription { get; set; }
-    public ICollection<Branch> Branches { get; set; } = new List<Branch>();
 
 }

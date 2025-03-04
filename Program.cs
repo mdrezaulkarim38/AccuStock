@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using AccuStock.Data;
 using AccuStock.Interface;
@@ -19,7 +18,7 @@ builder.Services.AddLogging(logging =>
 
 // Register services
 builder.Services.AddScoped<HashedPassword>();
-builder.Services.AddScoped<ICompanyService, CompanyService>();
+builder.Services.AddScoped<ISettingService, SettingService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddHttpContextAccessor();
 

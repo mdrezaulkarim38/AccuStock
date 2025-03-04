@@ -25,6 +25,14 @@ namespace AccuStock.Data
                 new Role { Id = 2, Name = "Admin" },
                 new Role { Id = 3, Name = "Operator" }
             );
+
+            // Prevent multiple cascade paths
+            modelBuilder.Entity<Branch>()
+                .HasOne(b => b.Subscription)
+                .WithMany()
+                .HasForeignKey(b => b.SubscriptionId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
+
     }
 }

@@ -33,8 +33,14 @@ namespace AccuStock.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("BranchType")
+                        .HasColumnType("int");
+
                     b.Property<int>("CompanyId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Contact")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -235,7 +241,7 @@ namespace AccuStock.Migrations
             modelBuilder.Entity("AccuStock.Models.Branch", b =>
                 {
                     b.HasOne("AccuStock.Models.Company", "Company")
-                        .WithMany("Branches")
+                        .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -243,7 +249,7 @@ namespace AccuStock.Migrations
                     b.HasOne("AccuStock.Models.Subscription", "Subscription")
                         .WithMany()
                         .HasForeignKey("SubscriptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Company");
@@ -276,7 +282,7 @@ namespace AccuStock.Migrations
             modelBuilder.Entity("AccuStock.Models.User", b =>
                 {
                     b.HasOne("AccuStock.Models.Branch", "Branch")
-                        .WithMany("Users")
+                        .WithMany()
                         .HasForeignKey("BranchId");
 
                     b.HasOne("AccuStock.Models.Role", "Role")
@@ -294,16 +300,6 @@ namespace AccuStock.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("Subscription");
-                });
-
-            modelBuilder.Entity("AccuStock.Models.Branch", b =>
-                {
-                    b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("AccuStock.Models.Company", b =>
-                {
-                    b.Navigation("Branches");
                 });
 #pragma warning restore 612, 618
         }
