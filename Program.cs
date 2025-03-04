@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using SynergyAccounts.Data;
-using SynergyAccounts.Interface;
-using SynergyAccounts.Services;
+using AccuStock.Data;
+using AccuStock.Interface;
+using AccuStock.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,11 +45,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         config.SlidingExpiration = true;
     });
 
-// Add Authorization
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("SuperAdminOnly", policy => policy.RequireRole("SuperAdmin"));
-});
+// // Add Authorization
+// builder.Services.AddAuthorization(options =>
+// {
+//     options.AddPolicy("SuperAdminOnly", policy => policy.RequireRole("SuperAdmin"));
+// });
 
 var app = builder.Build();
 
@@ -70,11 +70,8 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapStaticAssets();
-
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Dashboard}/{id?}")
-    .WithStaticAssets();
-
+    pattern: "{controller=Home}/{action=Dashboard}/{id?}");
+    
 app.Run();

@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<div class="d-flex align-items-center justify-content-center vh-100">
+    <div class="text-center">
+        <h1 class="display-4 text-danger">403 - Access Denied</h1>
+        <p class="lead">Oops! You don't have permission to access this page.</p>
+        <a class="btn btn-primary mt-3" href="@Url.Action("Dashboard", "Home")">
+            <i class="bi bi-house-door-fill"></i> Back to Home
+        </a>
+    </div>
+</div>

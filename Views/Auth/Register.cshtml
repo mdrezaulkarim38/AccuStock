@@ -1,0 +1,41 @@
+﻿@model AccuStock.DTOS.AuthDto.RegisterDto
+
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_LayoutWithoutNav.cshtml";
+}
+<div class="card shadow-lg p-4 w-100" style="max-width: 400px;">
+    <h3 class="text-center mb-4 text-primary">SynergyAccount</h3>
+    <p> Already have an account ? <a asp-controller="Auth" asp-action="Login" style="text-decoration: underline;">Login
+            here</a></p>
+    <form method="post">
+        <div class="mb-3">
+            <label for="FullName" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="FullName" name="FullName" required />
+        </div>
+        <div class="mb-3">
+            <label asp-for="ContactNumber" class="form-label">Mobile Phone Number</label>
+            <div class="input-group">
+                <span class="input-group-text">+88</span>
+                <input asp-for="ContactNumber" type="tel" class="form-control" placeholder="Mobile Phone Number" />
+                <span asp-validation-for="ContactNumber" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="Email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="Email" name="Email" required />
+        </div>
+        <div class="mb-3">
+            <label for="Password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="Password" name="Password" required />
+        </div>
+        <button type="submit" class="btn btn-primary w-100">REGISTER</button>
+    </form>
+
+    @if (ViewData.ModelState.ErrorCount > 0)
+    {
+        <div class="alert alert-danger mt-3">
+            Invalid Register attempt. Please check your email and password.
+        </div>
+    }
+</div>

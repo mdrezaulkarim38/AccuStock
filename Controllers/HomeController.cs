@@ -1,9 +1,11 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AccuStock.Models;
 
 namespace AccuStock.Controllers;
 
+[Authorize]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
@@ -13,11 +15,16 @@ public class HomeController : Controller
         _logger = logger;
     }
 
-    public IActionResult Index()
+    public IActionResult Dashboard()
     {
         return View();
     }
 
+    public IActionResult Index()
+    {
+        return View();
+    }
+   
     public IActionResult Privacy()
     {
         return View();
