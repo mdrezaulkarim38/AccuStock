@@ -44,6 +44,24 @@ namespace AccuStock.Services
             return await _context.Companies.AnyAsync(c => c.Name == name);
         }
 
+        public async Task<bool> CreateBranch(Branch branch)
+        {
+            try
+            {
+                var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
+                branch.SubscriptionId = int.Parse(subscriptionIdClaim!);
+                var company = await _context.Companies.FirstOrDefaultAsync(c => c.SubscriptionId == int.Parse(subscriptionIdClaim!));
+                branch.CompanyId = company!.Id; 
+
+                await _context.Branches.AddAsync(branch);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public async Task<bool> CreateCompanyAsync(Company company)
         {
             try
@@ -179,6 +197,7 @@ namespace AccuStock.Services
                 .Where(b => b.SubscriptionId == subscriptionId)
                 .ToListAsync();
         }
+
 
 
 

@@ -11,6 +11,7 @@ namespace AccuStock.Interface
         Task<bool> IsCompanyNameExistsAsync(string name);
         Task<Company?> GetCompanyBySubscriptionId();
         Task<List<Branch>> GetAllBranches();
+        Task<bool> CreateBranch(Branch branch);
 
     }
 }

@@ -71,6 +71,13 @@ public class SettingController : Controller
     [HttpPost]
     public async Task<IActionResult> Branch(Branch branch)
     {
-        return View(branch);
+        bool isCreated = await _SettingService.CreateBranch(branch);
+        if (!isCreated)
+        {
+            TempData["ErrorMessage"] = "A company already exists for this SubscriptionId.";
+            return View(branch);
+        }
+        TempData["SuccessMessage"] = "Company Created Successfully";
+        return RedirectToAction("Branch");
     }
 }
