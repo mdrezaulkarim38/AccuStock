@@ -12,8 +12,8 @@ namespace AccuStock.Services
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public SettingService(AppDbContext context, 
-                            IWebHostEnvironment webHostEnvironment, 
+        public SettingService(AppDbContext context,
+                            IWebHostEnvironment webHostEnvironment,
                             IHttpContextAccessor httpContextAccessor)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
@@ -40,7 +40,7 @@ namespace AccuStock.Services
         {
             if (string.IsNullOrWhiteSpace(name))
                 return false;
-            
+
             return await _context.Companies.AnyAsync(c => c.Name == name);
         }
 
@@ -161,10 +161,26 @@ namespace AccuStock.Services
             return await _context.Companies.FirstOrDefaultAsync(c => c.SubscriptionId == int.Parse(subscriptionId!));
         }
 
-        public async Task<Branch> GetAllBranch() {
-            var subscriptionId = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")!.Value;
-            return await _context.Branches.FirstOrDefaultAsync(b => b.SubscriptionId == int.Parse(subscriptionId!));
+        public async Task<List<Branch>> GetAllBranches()
+        {
+            var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId");
+
+            if (subscriptionIdClaim == null || string.IsNullOrEmpty(subscriptionIdClaim.Value))
+            {
+                return new List<Branch>();
+            }
+
+            if (!int.TryParse(subscriptionIdClaim.Value, out int subscriptionId))
+            {
+                return new List<Branch>();
+            }
+
+            return await _context.Branches
+                .Where(b => b.SubscriptionId == subscriptionId)
+                .ToListAsync();
         }
+
+
 
     }
 }

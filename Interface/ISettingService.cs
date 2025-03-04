@@ -10,6 +10,7 @@ namespace AccuStock.Interface
         Task<bool> UpdateCompanyAsync(Company company);
         Task<bool> IsCompanyNameExistsAsync(string name);
         Task<Company?> GetCompanyBySubscriptionId();
-        Task<Branch> GetAllBranch();
+        Task<List<Branch>> GetAllBranches();
+
     }
 }

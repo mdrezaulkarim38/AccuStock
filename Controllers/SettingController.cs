@@ -62,14 +62,15 @@ public class SettingController : Controller
     }
 
     [HttpGet]
-    public ActionResult Branch()
+    public async Task<IActionResult> Branch()
     {
-        var branches = _SettingService.GetAllBranch();
+        var branches = await _SettingService.GetAllBranches();
         return View(branches);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Branch(Branch branch) {
+    public async Task<IActionResult> Branch(Branch branch)
+    {
         return View(branch);
     }
 }

@@ -1,4 +1,4 @@
-﻿@model AccuStock.Models.Branch;
+﻿@model IEnumerable<AccuStock.Models.Branch>;
 @{
     ViewData["Title"] = "Branch";
 }
@@ -26,8 +26,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @* Loop through branches and display *@
-                            @* @foreach (var branch in Model)
+                            @foreach (var branch in Model)
                             {
                                 <tr>
                                     <td>@branch.Id</td>
@@ -44,7 +43,7 @@
                                         </button>
                                     </td>
                                 </tr>
-                            } *@
+                            }
                         </tbody>
                     </table>
                 </div>
