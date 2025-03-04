@@ -66,4 +66,9 @@ public class SettingController : Controller
     {
         return View();
     }
+
+    [HttpPost]
+    public async Task<IActionResult> Branch(Branch branch) {
+        return View(branch);
+    }
 }

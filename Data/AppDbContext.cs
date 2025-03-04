@@ -8,9 +8,9 @@ namespace AccuStock.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<Role> Roles { get; set; }       
+        public DbSet<Role> Roles { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
-        public DbSet<Module> Modules { get; set; }         
+        public DbSet<Module> Modules { get; set; }
         public DbSet<Branch> Branches { get; set; }
         public DbSet<Company> Companies { get; set; }
 
@@ -26,5 +26,5 @@ namespace AccuStock.Data
                 new Role { Id = 3, Name = "Operator" }
             );
         }
-        }
+    }
 }

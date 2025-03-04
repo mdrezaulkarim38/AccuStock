@@ -13,7 +13,7 @@ public class User
     public int? BranchId { get; set; }
     public Branch? Branch { get; set; }
     public int SubscriptionId { get; set; }
-    public Subscription? Subscription {get; set;}
+    public Subscription? Subscription { get; set; }
     public bool Status { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; } = DateTime.Now;

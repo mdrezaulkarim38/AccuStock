@@ -48,14 +48,14 @@ namespace AccuStock.Controllers
             }
             catch (Exception ex)
             {
-                
-                TempData["ErrorMessage"] = "Registration Unsuccessful!"+ex.Message;
+
+                TempData["ErrorMessage"] = "Registration Unsuccessful!" + ex.Message;
                 return View(registerDto);
             }
         }
 
         [HttpGet]
-        public async Task <IActionResult> Login()
+        public async Task<IActionResult> Login()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return View(new LoginDto());
@@ -80,7 +80,7 @@ namespace AccuStock.Controllers
                     new Claim(ClaimTypes.Email, user.Email!),
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, user.RoleId == 1 ? "SuperAdmin" : user.RoleId == 2 ? "Admin" : "Operator"),
-                    new Claim("SubscriptionId", user.SubscriptionId.ToString()) 
+                    new Claim("SubscriptionId", user.SubscriptionId.ToString())
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -92,8 +92,8 @@ namespace AccuStock.Controllers
                     new AuthenticationProperties
                     {
                         IsPersistent = true,
-                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30), 
-                        AllowRefresh = true 
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30),
+                        AllowRefresh = true
                     });
 
                 TempData["SuccessMessage"] = $"Welcome back, {user.FullName}!";
@@ -101,7 +101,7 @@ namespace AccuStock.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "Login Unsuccessful!"+ex.Message;
+                TempData["ErrorMessage"] = "Login Unsuccessful!" + ex.Message;
                 return View(loginDto);
             }
         }
