@@ -261,6 +261,8 @@
     <script src="~/js/toastr.min.js"></script>
     <script>
         $(document).ready(function () {
+            $("#basic-datatables").DataTable({});
+            
             @if (TempData["SuccessMessage"] != null)
             {
                 <text>
