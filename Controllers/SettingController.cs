@@ -69,15 +69,30 @@ public class SettingController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Branch(Branch branch)
+    public async Task<IActionResult> CreateOrUpdateBranch(Branch branch)
     {
-        bool isCreated = await _SettingService.CreateBranch(branch);
-        if (!isCreated)
+        if (branch.Id == 0)
         {
-            TempData["ErrorMessage"] = "A company already exists for this SubscriptionId.";
-            return View(branch);
+            bool isCreated = await _SettingService.CreateBranch(branch);
+            if (!isCreated)
+            {
+                TempData["ErrorMessage"] = "A Branch already exists for this SubscriptionId.";
+                return RedirectToAction("Branch");
+            }
+            TempData["SuccessMessage"] = "Branch Created Successfully";
         }
-        TempData["SuccessMessage"] = "Company Created Successfully";
+        else
+        {
+            bool isUpdated = await _SettingService.UpdateBranch(branch);
+            if (!isUpdated)
+            {
+                TempData["ErrorMessage"] = "Branch name already exists or update failed";
+                return RedirectToAction("Branch");
+            }
+            TempData["SuccessMessage"] = "Branch Updated Successfully";
+        }
+
         return RedirectToAction("Branch");
     }
+
 }

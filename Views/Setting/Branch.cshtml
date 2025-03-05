@@ -35,9 +35,12 @@
                                     <td>@branch.Address</td>
                                     <td>@branch.Contact</td>
                                     <td>
-                                        <button class="btn btn-warning btn-sm">
+                                        <button class="btn btn-warning btn-sm"
+                                            onclick="editBranch('@branch.Id', '@branch.BranchType', '@branch.Name', '@branch.Address', '@branch.Contact')"
+                                            data-bs-toggle="modal" data-bs-target="#addBranchModal">
                                             <i class="bi bi-pencil-square"></i> Edit
                                         </button>
+
                                         <button class="btn btn-danger btn-sm">
                                             <i class="bi bi-trash"></i> Delete
                                         </button>
@@ -61,7 +64,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form asp-action="Branch" method="post">
+                <form asp-action="CreateOrUpdateBranch" method="post">
+                    <input type="hidden" id="BranchId" name="Id">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="BranchType" class="form-label">Branch Type</label>
@@ -90,7 +94,7 @@
 
                     <div class="d-flex justify-content-between">
                         <button type="submit" class="btn btn-success">
-                            <i class="bi bi-check-circle"></i> Submit
+                            <i class="bi bi-check-circle"></i> <span id="modalSubmitText">Submit</span>
                         </button>
                         <button type="reset" class="btn btn-secondary">
                             <i class="bi bi-arrow-clockwise"></i> Refresh
@@ -101,3 +105,18 @@
         </div>
     </div>
 </div>
+
+
+@section Scripts {
+    <script>
+        function editBranch(id, branchType, name, address, contact) {
+            document.getElementById("BranchId").value = id;
+            document.getElementById("BranchType").value = branchType;
+            document.getElementById("Name").value = name;
+            document.getElementById("Address").value = address;
+            document.getElementById("Contact").value = contact;
+            document.getElementById("modalSubmitText").textContent = "Update";
+        }
+    </script>
+
+}
