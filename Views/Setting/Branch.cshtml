@@ -3,59 +3,62 @@
     ViewData["Title"] = "Branch";
 }
 
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card shadow">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Branch List</h5>
-                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addBranchModal">
-                        <i class="bi bi-plus-lg"></i> Add New
-                    </button>
-                </div>
-                <div class="card-body">
-                    <table id="basic-datatables" class="table table-bordered table-striped">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>ID</th>
-                                <th>Branch Type</th>
-                                <th>Name</th>
-                                <th>Address</th>
-                                <th>Contact</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var branch in Model)
-                            {
-                                <tr>
-                                    <td>@branch.Id</td>
-                                    <td>@(branch.BranchType == 1 ? "Warehouse" : "Sales Point")</td>
-                                    <td>@branch.Name</td>
-                                    <td>@branch.Address</td>
-                                    <td>@branch.Contact</td>
-                                    <td>
-                                        <button class="btn btn-warning btn-sm"
-                                            onclick="editBranch('@branch.Id', '@branch.BranchType', '@branch.Name', '@branch.Address', '@branch.Contact')"
-                                            data-bs-toggle="modal" data-bs-target="#addBranchModal">
-                                            <i class="bi bi-pencil-square"></i> Edit
-                                        </button>
 
-                                        <button class="btn btn-danger btn-sm">
-                                            <i class="bi bi-trash"></i> Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Branch List</h5>
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addBranchModal">
+                    <i class="bi bi-plus-lg"></i> Add New
+                </button>
+            </div>
+            <div class="card-body">
+                <table id="basic-datatables" class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>SL No.</th>
+                            <th>Branch Type</th>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Contact</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int index = 0;
+                        }
+                        @foreach (var branch in Model)
+                        {
+                            index++;
+                            <tr>
+                                <td>@index</td>
+                                <td>@(branch.BranchType == 1 ? "Warehouse" : "Sales Point")</td>
+                                <td>@branch.Name</td>
+                                <td>@branch.Address</td>
+                                <td>@branch.Contact</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm"
+                                        onclick="editBranch('@branch.Id', '@branch.BranchType', '@branch.Name', '@branch.Address', '@branch.Contact')"
+                                        data-bs-toggle="modal" data-bs-target="#addBranchModal">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </button>
+
+                                    <button class="btn btn-danger btn-sm">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Bootstrap 5 Modal for Adding Branch -->
+
 <div class="modal fade" id="addBranchModal" tabindex="-1" aria-labelledby="addBranchModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

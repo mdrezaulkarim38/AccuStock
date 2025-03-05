@@ -95,4 +95,9 @@ public class SettingController : Controller
         return RedirectToAction("Branch");
     }
 
+    [HttpGet]
+    public IActionResult UserList()
+    {
+        return View();
+    }
 }
