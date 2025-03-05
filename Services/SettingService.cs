@@ -51,15 +51,28 @@ namespace AccuStock.Services
                 var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
                 branch.SubscriptionId = int.Parse(subscriptionIdClaim!);
                 var company = await _context.Companies.FirstOrDefaultAsync(c => c.SubscriptionId == int.Parse(subscriptionIdClaim!));
-                branch.CompanyId = company!.Id; 
+                branch.CompanyId = company!.Id;
 
                 await _context.Branches.AddAsync(branch);
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
+            }
+        }
+
+        public async Task<bool> UpdateBranch(Branch branch)
+        {
+            try{
+                var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
+                var existingBranch = await _context.Branches.FirstOrDefaultAsync(b => b.SubscriptionId == int.Parse(subscriptionIdClaim!) && b.Id == branch.Id);
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
         public async Task<bool> CreateCompanyAsync(Company company)
@@ -91,9 +104,9 @@ namespace AccuStock.Services
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -132,9 +145,9 @@ namespace AccuStock.Services
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
