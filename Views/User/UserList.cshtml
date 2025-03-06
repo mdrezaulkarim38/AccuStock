@@ -47,11 +47,16 @@
                     <input type="hidden" id="UserId" name="Id">
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="UserType" class="form-label">User Type</label>
-                            <select class="form-select" id="UserType" name="UserType" required>
-                                <option value="0">Select User Type</option>
-                                <option value="1">Warehouse</option>
-                                <option value="2">Sales Point</option>
+                            <label for="Branch" class="form-label">Select Branch</label>
+                            <select class="form-select" id="Branch" name="Branch" required>
+                                <option value="">Select Branch</option>
+                                @if (ViewBag.Branches != null)
+                                {
+                                    @foreach (var branch in ViewBag.Branches)
+                                    {
+                                        <option value="@branch.Id">@branch.Name</option>
+                                    }
+                                }
                             </select>
                         </div>
 
