@@ -58,6 +58,17 @@ namespace AccuStock.Controllers
             return RedirectToAction("UserList");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ToggleUserStatus(int userId)
+        {
+            bool success = await _userService.ToggleUserStatusAsync(userId);
+
+            if (!success)
+                return NotFound();
+
+            return RedirectToAction("UserList");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

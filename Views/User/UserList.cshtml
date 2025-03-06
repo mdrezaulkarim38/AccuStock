@@ -43,7 +43,13 @@
                                     <td>@user.Address</td>
                                     <td>@(user.RoleId == 2 ? "Admin" : "Operator")</td>
                                     <td>
-                                        <span class="badge bg-success">Active</span>
+                                        <!-- Form to toggle status -->
+                                        <form method="post" action="@Url.Action("ToggleUserStatus", "User")">
+                                            <input type="hidden" name="userId" value="@user.Id" />
+                                            <button type="submit" class="btn @(user.Status ? "btn-success" : "btn-danger") btn-sm">
+                                                @(user.Status ? "Active" : "Inactive")
+                                            </button>
+                                        </form>
                                     </td>
                                     <td>
                                         <button class="btn btn-warning btn-sm"

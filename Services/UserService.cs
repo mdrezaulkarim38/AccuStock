@@ -21,7 +21,7 @@ namespace AccuStock.Services
                 var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
                 user.SubscriptionId = int.Parse(subscriptionIdClaim!);
                 user.Password = GenerateResetPassword();
-                user.Status = UserStatusUpdate(false);
+                user.Status = true;
                 await _context.Users.AddAsync(user);
                 await _context.SaveChangesAsync();
                 return true;
@@ -69,12 +69,16 @@ namespace AccuStock.Services
             return "1234";
         }
 
-        public bool UserStatusUpdate(bool status)
+        public async Task<bool> ToggleUserStatusAsync(int userId)
         {
-            if(status)
-            {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
                 return false;
-            }
+
+            user.Status = !user.Status;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
             return true;
         }
 
