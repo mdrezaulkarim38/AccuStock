@@ -1,6 +1,7 @@
 using AccuStock.Interface;
 using Microsoft.AspNetCore.Mvc;
 using AccuStock.Models;
+using AccuStock.Services;
 
 namespace AccuStock.Controllers
 {
@@ -48,6 +49,28 @@ namespace AccuStock.Controllers
 
             return RedirectToAction("Branch");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteBranch(int id)
+        {
+            var result = await _BranchService.DeleteBranch(id);
+
+            if (result == "Branch not found.")
+            {
+                TempData["ErrorMessage"] = "Branch not found.";
+                return RedirectToAction("Branch");
+            }
+
+            if (result == "Cannot delete this branch because users are assigned to it.")
+            {
+                TempData["ErrorMessage"] = "Cannot delete this branch because users are assigned to it.";
+                return RedirectToAction("Branch");
+            }
+
+            TempData["SuccessMessage"] = "Branch deleted successfully.";
+            return RedirectToAction("Branch");
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
