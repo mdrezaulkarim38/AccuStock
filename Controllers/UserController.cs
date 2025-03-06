@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AccuStock.Interface;
+using AccuStock.Models;
+using AccuStock.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -29,7 +31,32 @@ namespace AccuStock.Controllers
             return View(userList);
         }
 
-        
+        [HttpPost]
+        public async Task<IActionResult> CreateOrUpdateUser(User user)
+        {
+            if (user.Id == 0)
+            {
+                bool isCreated = await _userService.CreateUser(user);
+                if (!isCreated)
+                {
+                    TempData["ErrorMessage"] = "A User already exists for this SubscriptionId.";
+                    return RedirectToAction("Branch");
+                }
+                TempData["SuccessMessage"] = "User Created Successfully";
+            }
+            else
+            {
+                bool isUpdated = await _userService.UpdateUser(user);
+                if (!isUpdated)
+                {
+                    TempData["ErrorMessage"] = "User name already exists or update failed";
+                    return RedirectToAction("Branch");
+                }
+                TempData["SuccessMessage"] = "User Updated Successfully";
+            }
+
+            return RedirectToAction("UserList");
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

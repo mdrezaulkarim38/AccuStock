@@ -75,10 +75,6 @@ namespace AccuStock.Services
                 return false;
             }
         }
-
-
-
-
         public async Task<List<Branch>> GetAllBranches()
         {
             var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId");
