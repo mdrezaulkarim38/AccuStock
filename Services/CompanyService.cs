@@ -6,13 +6,13 @@ using System.Security.Claims;
 
 namespace AccuStock.Services
 {
-    public class SettingService : ISettingService
+    public class CompanyService : ICompanyService
     {
         private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public SettingService(AppDbContext context,
+        public CompanyService(AppDbContext context,
                             IWebHostEnvironment webHostEnvironment,
                             IHttpContextAccessor httpContextAccessor)
         {
@@ -42,60 +42,6 @@ namespace AccuStock.Services
                 return false;
 
             return await _context.Companies.AnyAsync(c => c.Name == name);
-        }
-
-        public async Task<bool> CreateBranch(Branch branch)
-        {
-            try
-            {
-                var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-                branch.SubscriptionId = int.Parse(subscriptionIdClaim!);
-                var company = await _context.Companies.FirstOrDefaultAsync(c => c.SubscriptionId == int.Parse(subscriptionIdClaim!));
-                branch.CompanyId = company!.Id;
-
-                await _context.Branches.AddAsync(branch);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public async Task<bool> UpdateBranch(Branch branch)
-        {
-            try
-            {
-                var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-                if (subscriptionIdClaim == null)
-                {
-                    return false;
-                }
-
-                var existingBranch = await _context.Branches
-                    .FirstOrDefaultAsync(b => b.SubscriptionId == int.Parse(subscriptionIdClaim) && b.Id == branch.Id);
-
-                if (existingBranch == null)
-                {
-                    return false;
-                }
-
-                existingBranch.BranchType = branch.BranchType;
-                existingBranch.Name = branch.Name;
-                existingBranch.Contact = branch.Contact;
-                existingBranch.Address = branch.Address;
-
-                _context.Branches.Update(existingBranch);
-                await _context.SaveChangesAsync();
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error updating branch: {ex.Message}");
-                return false;
-            }
         }
 
         public async Task<bool> CreateCompanyAsync(Company company)
@@ -213,25 +159,6 @@ namespace AccuStock.Services
         {
             var subscriptionId = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")!.Value;
             return await _context.Companies.FirstOrDefaultAsync(c => c.SubscriptionId == int.Parse(subscriptionId!));
-        }
-
-        public async Task<List<Branch>> GetAllBranches()
-        {
-            var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId");
-
-            if (subscriptionIdClaim == null || string.IsNullOrEmpty(subscriptionIdClaim.Value))
-            {
-                return new List<Branch>();
-            }
-
-            if (!int.TryParse(subscriptionIdClaim.Value, out int subscriptionId))
-            {
-                return new List<Branch>();
-            }
-
-            return await _context.Branches
-                .Where(b => b.SubscriptionId == subscriptionId)
-                .ToListAsync();
         }
 
     }

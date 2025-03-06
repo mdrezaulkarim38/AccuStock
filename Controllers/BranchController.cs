@@ -1,30 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using AccuStock.Interface;
 using Microsoft.AspNetCore.Mvc;
 using AccuStock.Models;
-using Microsoft.Extensions.Logging;
 
 namespace AccuStock.Controllers
 {
     public class BranchController : Controller
     {
-        private readonly ISettingService _SettingService;
+        private readonly IBranchService _BranchService;
         private readonly ILogger<BranchController> _logger;
 
-        public BranchController(ILogger<BranchController> logger,ISettingService SettingService)
+        public BranchController(ILogger<BranchController> logger,IBranchService BranchService)
         {
             _logger = logger;
-            _SettingService = SettingService;
+            _BranchService = BranchService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Branch()
         {
-            var branches = await _SettingService.GetAllBranches();
+            var branches = await _BranchService.GetAllBranches();
             return View(branches);
         }
 
@@ -33,7 +27,7 @@ namespace AccuStock.Controllers
         {
             if (branch.Id == 0)
             {
-                bool isCreated = await _SettingService.CreateBranch(branch);
+                bool isCreated = await _BranchService.CreateBranch(branch);
                 if (!isCreated)
                 {
                     TempData["ErrorMessage"] = "A Branch already exists for this SubscriptionId.";
@@ -43,7 +37,7 @@ namespace AccuStock.Controllers
             }
             else
             {
-                bool isUpdated = await _SettingService.UpdateBranch(branch);
+                bool isUpdated = await _BranchService.UpdateBranch(branch);
                 if (!isUpdated)
                 {
                     TempData["ErrorMessage"] = "Branch name already exists or update failed";

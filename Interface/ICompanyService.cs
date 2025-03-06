@@ -2,7 +2,7 @@ using AccuStock.Models;
 
 namespace AccuStock.Interface
 {
-    public interface ISettingService
+    public interface ICompanyService
     {
         Task<List<Company>> GetAllAsync();
         Task<Company> GetByIdAsync(int id);
@@ -10,10 +10,5 @@ namespace AccuStock.Interface
         Task<bool> UpdateCompanyAsync(Company company);
         Task<bool> IsCompanyNameExistsAsync(string name);
         Task<Company?> GetCompanyBySubscriptionId();
-        Task<List<Branch>> GetAllBranches();
-        Task<bool> CreateBranch(Branch branch);
-        Task<bool> UpdateBranch(Branch branch);
-
-
     }
 }
