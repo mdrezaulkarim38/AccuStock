@@ -25,7 +25,8 @@ namespace AccuStock.Controllers
         {
             var branchList = await _branchService.GetAllBranches();
             ViewBag.Branches = branchList;
-            return View();
+            var userList = await _userService.GetAllUsers();
+            return View(userList);
         }
 
         

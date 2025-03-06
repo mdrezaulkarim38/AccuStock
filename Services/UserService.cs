@@ -77,5 +77,11 @@ namespace AccuStock.Services
             }
             return true;
         }
+
+        public async Task<List<User>> GetAllUsers()
+        {
+            var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
+            return await _context.Users.Where(u => u.SubscriptionId == int.Parse(subscriptionIdClaim!) && u.RoleId != 1).ToListAsync();
+        }
     }
 }
