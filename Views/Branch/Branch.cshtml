@@ -14,45 +14,47 @@
                 </button>
             </div>
             <div class="card-body">
-                <table id="basic-datatables" class="table table-bordered table-striped">
-                    <thead class="table-primary">
-                        <tr>
-                            <th>SL No.</th>
-                            <th>Branch Type</th>
-                            <th>Name</th>
-                            <th>Address</th>
-                            <th>Contact</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            int index = 0;
-                        }
-                        @foreach (var branch in Model)
-                        {
-                            index++;
+                <div class="table-responsive">
+                    <table id="basic-datatables" class="display table table-bordered table-striped">
+                        <thead class="table-primary">
                             <tr>
-                                <td>@index</td>
-                                <td>@(branch.BranchType == 1 ? "Warehouse" : "Sales Point")</td>
-                                <td>@branch.Name</td>
-                                <td>@branch.Address</td>
-                                <td>@branch.Contact</td>
-                                <td>
-                                    <button class="btn btn-warning btn-sm"
-                                        onclick="editBranch('@branch.Id', '@branch.BranchType', '@branch.Name', '@branch.Address', '@branch.Contact')"
-                                        data-bs-toggle="modal" data-bs-target="#addBranchModal">
-                                        <i class="bi bi-pencil-square"></i> Edit
-                                    </button>
-
-                                    <button class="btn btn-danger btn-sm" id="alert_demo_3_2">
-                                        <i class="bi bi-trash"></i> Delete
-                                    </button>
-                                </td>
+                                <th>SL No.</th>
+                                <th>Branch Type</th>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>Contact</th>
+                                <th>Actions</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @{
+                                int index = 0;
+                            }
+                            @foreach (var branch in Model)
+                            {
+                                index++;
+                                <tr>
+                                    <td>@index</td>
+                                    <td>@(branch.BranchType == 1 ? "Warehouse" : "Sales Point")</td>
+                                    <td>@branch.Name</td>
+                                    <td>@branch.Address</td>
+                                    <td>@branch.Contact</td>
+                                    <td>
+                                        <button class="btn btn-warning btn-sm"
+                                            onclick="editBranch('@branch.Id', '@branch.BranchType', '@branch.Name', '@branch.Address', '@branch.Contact')"
+                                            data-bs-toggle="modal" data-bs-target="#addBranchModal">
+                                            <i class="bi bi-pencil-square"></i> Edit
+                                        </button>
+
+                                        <button class="btn btn-danger btn-sm" id="alert_demo_3_2">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
