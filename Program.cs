@@ -20,6 +20,7 @@ builder.Services.AddLogging(logging =>
 builder.Services.AddScoped<HashedPassword>();
 builder.Services.AddScoped<ISettingService, SettingService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IBranchService, BranchService>();
 builder.Services.AddHttpContextAccessor();
 
 // Configure DbContext with resilience
