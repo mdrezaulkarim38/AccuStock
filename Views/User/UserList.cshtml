@@ -82,7 +82,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="BranchId" class="form-label">Select Branch</label>
-                            <select class="form-select" id="Branch" name="BranchId" required>
+                            <select class="form-select" id="BranchId" name="BranchId" required>
                                 <option value="">Select Branch</option>
                                 @if (ViewBag.Branches != null)
                                 {
@@ -114,7 +114,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="RoleId" class="form-label">User Type</label>
-                            <select class="form-select" id="UserType" name="RoleId" required>
+                            <select class="form-select" id="RoleId" name="RoleId" required>
                                 <option value="0">Select User Type</option>
                                 <option value="2">Admin</option>
                                 <option value="3">Operator</option>
@@ -140,12 +140,13 @@
     <script>
         function editUser(id, branchId, fullName, address, mobile, email, roleId) {
             document.getElementById("UserId").value = id;
-            document.getElementById("Branch").value = branchId;
+            document.getElementById("BranchId").value = branchId;
             document.getElementById("FullName").value = fullName;
             document.getElementById("Address").value = address;
             document.getElementById("Mobile").value = mobile;
             document.getElementById("Email").value = email;
-            document.getElementById("UserType").value = roleId.toString();
+            console.log(roleId);
+            document.getElementById("RoleId").value = roleId.toString();
 
             document.getElementById("addUserModalLabel").textContent = "Edit User";
             document.getElementById("modalSubmitText").textContent = "Update";
