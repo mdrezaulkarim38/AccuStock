@@ -75,6 +75,23 @@ namespace AccuStock.Services
                 return false;
             }
         }
+
+        public async Task<string> DeleteBranch(int branchId)
+        {
+            var branch = await _context.Branches.FindAsync(branchId);
+            if (branch == null)
+                return "Branch not found.";
+
+            bool hasUsers = await _context.Users.AnyAsync(u => u.BranchId == branchId);
+            if (hasUsers)
+                return "Cannot delete this branch because users are assigned to it.";
+
+            _context.Branches.Remove(branch);
+            await _context.SaveChangesAsync();
+            return "Branch deleted successfully.";
+        }
+
+
         public async Task<List<Branch>> GetAllBranches()
         {
             var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId");

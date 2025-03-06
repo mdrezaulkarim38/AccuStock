@@ -7,5 +7,6 @@ namespace AccuStock.Interface
         Task<List<Branch>> GetAllBranches();
         Task<bool> CreateBranch(Branch branch);
         Task<bool> UpdateBranch(Branch branch);
+        Task<string> DeleteBranch(int branchId);
     }
 }
