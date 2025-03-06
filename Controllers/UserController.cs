@@ -22,7 +22,7 @@ namespace AccuStock.Controllers
             _userService = userService;
             _branchService = branchService;
         }
-
+        [HttpGet]
         public async Task<IActionResult> UserList()
         {
             var branchList = await _branchService.GetAllBranches();
