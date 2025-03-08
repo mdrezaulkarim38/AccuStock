@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using AccuStock.Data;
 using System.Security.Claims;
 using AccuStock.DTOS.AuthDto;
-using AccuStock.Models;
-using AccuStock.Services;
 using AccuStock.Interface;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace AccuStock.Controllers
 {

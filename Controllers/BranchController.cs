@@ -1,7 +1,6 @@
 using AccuStock.Interface;
 using Microsoft.AspNetCore.Mvc;
 using AccuStock.Models;
-using AccuStock.Services;
 
 namespace AccuStock.Controllers
 {

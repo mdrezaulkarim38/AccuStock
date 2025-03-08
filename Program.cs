@@ -37,13 +37,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         config.ExpireTimeSpan = TimeSpan.FromMinutes(5);
         config.SlidingExpiration = true;
     });
-
-// // Add Authorization
-// builder.Services.AddAuthorization(options =>
-// {
-//     options.AddPolicy("SuperAdminOnly", policy => policy.RequireRole("SuperAdmin"));
-// });
-
 var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
