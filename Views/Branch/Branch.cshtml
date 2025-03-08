@@ -39,19 +39,19 @@
                                     <td>@branch.Name</td>
                                     <td>@branch.Address</td>
                                     <td>@branch.Contact</td>
-                                    <td>
+                                    <td class="d-flex align-items-center gap-2">
                                         <button class="btn btn-warning btn-sm"
                                             onclick="editBranch('@branch.Id', '@branch.BranchType', '@branch.Name', '@branch.Address', '@branch.Contact')"
                                             data-bs-toggle="modal" data-bs-target="#addBranchModal">
-                                            <i class="bi bi-pencil-square"></i> Edit
+                                            <i class="fas fa-edit"></i> Edit
                                         </button>
                                         <form asp-action="DeleteBranch" method="post">
                                             <input type="hidden" name="id" value="@branch.Id" />
                                             <button type="submit" class="btn btn-danger btn-sm">
-                                                <i class="bi bi-trash"></i> Delete
-                                            </button>
+                                                <i class="fas fa-trash-alt"></i> Delete</button>
                                         </form>
                                     </td>
+
                                 </tr>
                             }
                         </tbody>
