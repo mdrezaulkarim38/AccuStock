@@ -1,9 +1,11 @@
 using AccuStock.Interface;
 using Microsoft.AspNetCore.Mvc;
 using AccuStock.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AccuStock.Controllers
 {
+    [Authorize]
     public class BranchController : Controller
     {
         private readonly IBranchService _BranchService;
