@@ -54,15 +54,11 @@
                                         </form>
                                     </td>
                                     <td>
-                                       @*  <button class="btn btn-warning btn-sm"
-                                                onclick="editUser('@user.Id', '@user.BranchId', '@user.FullName', '@user.Address', '@user.Mobile', '@user.Email', '@user.RoleId')"
+                                        <button class="btn btn-warning btn-sm"
+                                                onclick="editBusinessyear('@businessYear.Id', '@businessYear.Name', '@businessYear.FromDate', '@businessYear.ToDate')"
                                                 data-bs-toggle="modal" data-bs-target="#addUserModal">
                                             <i class="fas fa-edit"></i> Edit
                                         </button>
-
-                                        <button class="btn btn-danger btn-sm" id="alert_demo_3_2">
-                                            <i class="fas fa-trash-alt"></i> Reset Password
-                                        </button> *@
                                     </td>
                                 </tr>
                             }
@@ -118,17 +114,13 @@
     </div>
 </div>
 
-@* @section Scripts {
+@section Scripts {
     <script>
-        function editUser(id, branchId, fullName, address, mobile, email, roleId) {
+        function editBusinessyear(id, Name,FromDate,ToDate) {
             document.getElementById("UserId").value = id;
-            document.getElementById("BranchId").value = branchId.toString();
-            document.getElementById("FullName").value = fullName;
-            document.getElementById("Address").value = address;
-            document.getElementById("Mobile").value = mobile;
-            document.getElementById("Email").value = email;
-            console.log(roleId);
-            document.getElementById("RoleId").value = roleId.toString();
+            document.getElementById("Name").value = Name.toString();
+            document.getElementById("FromDate").value = FromDate;
+            document.getElementById("ToDate").value = ToDate;
 
             document.getElementById("addUserModalLabel").textContent = "Edit User";
             document.getElementById("modalSubmitText").textContent = "Update";
@@ -140,14 +132,11 @@
                 document.getElementById("addUserModalLabel").textContent = "Add User";
                 document.getElementById("modalSubmitText").textContent = "Submit";
                 document.getElementById("UserId").value = "";
-                document.getElementById("Branch").value = "";
-                document.getElementById("FullName").value = "";
-                document.getElementById("Address").value = "";
-                document.getElementById("Mobile").value = "";
-                document.getElementById("Email").value = "";
-                document.getElementById("UserType").value = "0";
+                document.getElementById("Name").value = "";
+                document.getElementById("FromDate").value = "";
+                document.getElementById("ToDate").value = "";               
             });
         });
     </script>
 
-} *@ 
+} 
