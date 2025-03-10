@@ -15,7 +15,7 @@ public class BusinessYearController : Controller
     [HttpGet]
     public async Task<IActionResult> BusinessYearList()
     {
-        var businessYear = await _businessYearService.GetAllBusinsessYear();
+        var businessYear = await _businessYearService.GetAllBusinessYear();
         return View(businessYear);
     }
 }

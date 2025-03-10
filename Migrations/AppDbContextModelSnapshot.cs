@@ -55,7 +55,7 @@ namespace AccuStock.Migrations
 
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("Branches");
+                    b.ToTable("Branches", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.BusinessYear", b =>
@@ -99,7 +99,7 @@ namespace AccuStock.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("BusinessYears");
+                    b.ToTable("BusinessYears", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.Company", b =>
@@ -148,7 +148,7 @@ namespace AccuStock.Migrations
 
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("Companies");
+                    b.ToTable("Companies", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.Module", b =>
@@ -172,7 +172,7 @@ namespace AccuStock.Migrations
 
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("Modules");
+                    b.ToTable("Modules", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.Role", b =>
@@ -188,7 +188,7 @@ namespace AccuStock.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
@@ -227,7 +227,7 @@ namespace AccuStock.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Subscriptions");
+                    b.ToTable("Subscriptions", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.User", b =>
@@ -279,7 +279,7 @@ namespace AccuStock.Migrations
 
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.Branch", b =>

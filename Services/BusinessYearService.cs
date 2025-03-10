@@ -18,7 +18,7 @@ public class BusinessYearService : IBusinessYear
         throw new NotImplementedException();
     }
 
-    public async Task<List<BusinessYear>> GetAllBusinsessYear()
+    public async Task<List<BusinessYear>> GetAllBusinessYear()
     {
         var subscriptionId = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
         return await _context.BusinessYears.Where(b=> b.SubscriptionId == int.Parse(subscriptionId!)).ToListAsync();
