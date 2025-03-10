@@ -63,12 +63,12 @@ public class BusinessYearService : IBusinessYear
 
     public async Task<bool> ToggleBusinessYearStatusAsync(int busineesyearId)
     {
-        var businesyearId = await _context.BusinessYears.FindAsync(busineesyearId);
-        if (businesyearId == null)
+        var businessYear = await _context.BusinessYears.FindAsync(busineesyearId);
+        if (businessYear == null)
             return false;
 
-        businesyearId.Status = !businesyearId.Status;
-        _context.BusinessYears.Update(businesyearId);
+        businessYear.Status = !businessYear.Status;
+        _context.BusinessYears.Update(businessYear);
         await _context.SaveChangesAsync();
         return true;
     }

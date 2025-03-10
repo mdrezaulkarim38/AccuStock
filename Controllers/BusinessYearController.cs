@@ -49,12 +49,15 @@ public class BusinessYearController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> ToggleBusinessYearStatusAsync(int busineesyearId)
+    public async Task<IActionResult> ToggleStatus(int businessYearId)
     {
-        bool success = await _businessYearService.ToggleBusinessYearStatusAsync(busineesyearId);
+        bool success = await _businessYearService.ToggleBusinessYearStatusAsync(businessYearId);
 
         if (!success)
-            return NotFound();
+        {
+            TempData["ErrorMessage"] = "Business Year Not Found";
+            return RedirectToAction("BusinessYearList");
+        }
 
         return RedirectToAction("BusinessYearList");
     }

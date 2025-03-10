@@ -10,7 +10,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Business Year List</h5>
                 <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addUserModal">
-                    <i class="fa-solid fa-plus"></i> Add New
+                    <i class="fas fa-solid fa-plus"></i> Add New
                 </button>
             </div>
             <div class="card-body">
@@ -39,9 +39,8 @@
                                     <td>@businessYear.FromDate</td>
                                     <td>@businessYear.ToDate</td>
                                     <td>
-                                        <!-- Form to toggle status -->
-                                        <form method="post" action="@Url.Action("ToggleBusinessYearStatusAsync", "BusinessYear")">
-                                            <input type="hidden" name="busineesyearId" value="@businessYear.Id" />
+                                        <form method="post" action="@Url.Action("ToggleStatus", "BusinessYear")">
+                                            <input type="hidden" name="businessYearId" value="@businessYear.Id" />
                                             <button type="submit" class="btn @(businessYear.Status ? "btn-success" : "btn-danger") btn-sm">
                                                 @if (businessYear.Status)
                                                 {
@@ -49,7 +48,7 @@
                                                 }
                                                 else
                                                 {
-                                                    <i class="fas fa-alt-slash"></i> <span>Inactive</span>
+                                                    <i class="fas fa-times"></i> <span>Inactive</span>
                                                 }
                                             </button>
                                         </form>
