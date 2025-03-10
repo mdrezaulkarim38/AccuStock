@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using AccuStock.Data;
 using AccuStock.Interface;
 using AccuStock.Models;
@@ -20,7 +21,6 @@ public class BusinessYearService : IBusinessYear
     public async Task<List<BusinessYear>> GetAllBusinsessYear()
     {
         var subscriptionId = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-        // return await _context.BusinessYears.Where().ToListAsync();
-        throw new NotImplementedException();
+        return await _context.BusinessYears.Where(b=> b.SubscriptionId == int.Parse(subscriptionId!)).ToListAsync();
     }
 }

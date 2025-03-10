@@ -3,5 +3,6 @@ namespace AccuStock.Interface;
 
 public interface IBusinessYear
 {
-    Task<bool> CreateBusinessYear(BusinessYear businessYear);   
+    Task<bool> CreateBusinessYear(BusinessYear businessYear);
+    Task<List<BusinessYear>> GetAllBusinsessYear(); 
 }
