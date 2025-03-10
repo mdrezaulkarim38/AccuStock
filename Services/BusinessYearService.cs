@@ -13,9 +13,49 @@ public class BusinessYearService : IBusinessYear
         _httpContextAccessor = httpContextAccessor;
         _context = appDbContext;
     }
-    public Task<bool> CreateBusinessYear(BusinessYear businessYear)
+    public async Task<bool> CreateBusinessYear(BusinessYear businessYear)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
+            businessYear.SubscriptionId = int.Parse(subscriptionIdClaim!);            
+            await _context.BusinessYears.AddAsync(businessYear);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+    public async Task<bool> UpdateBusinessYear(BusinessYear businessYear)
+    {
+        try
+        {
+            var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
+            if (subscriptionIdClaim == null)
+            {
+                return false;
+            }
+            var existingBusinessYear = await _context.BusinessYears
+                .FirstOrDefaultAsync(u => u.SubscriptionId == int.Parse(subscriptionIdClaim) && u.Id == businessYear.Id);
+
+            if (existingBusinessYear == null)
+            {
+                return false;
+            }
+
+            existingBusinessYear.Name = businessYear.Name;
+            existingBusinessYear.FromDate = businessYear.FromDate;
+            existingBusinessYear.ToDate = businessYear.ToDate;
+            _context.BusinessYears.Update(existingBusinessYear);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
     public async Task<List<BusinessYear>> GetAllBusinessYear()
