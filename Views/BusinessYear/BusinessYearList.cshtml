@@ -41,7 +41,7 @@
                                     <td>
                                         <!-- Form to toggle status -->
                                         <form method="post" action="@Url.Action("ToggleBusinessYearStatusAsync", "BusinessYear")">
-                                            <input type="hidden" name="userId" value="@businessYear.Id" />
+                                            <input type="hidden" name="busineesyearId" value="@businessYear.Id" />
                                             <button type="submit" class="btn @(businessYear.Status ? "btn-success" : "btn-danger") btn-sm">
                                                 @if (businessYear.Status)
                                                 {
@@ -86,7 +86,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form asp-action="CreateOrUpdateUser" method="post">
+                <form asp-action="CreateOrUpdateBusinessYear" method="post">
                     <input type="hidden" id="UserId" name="Id">
                     <div class="row">
                         <div class="col-md-6 mb-3">
