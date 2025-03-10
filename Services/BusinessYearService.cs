@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using AccuStock.Data;
 using AccuStock.Interface;
 using AccuStock.Models;
+using System.Security.Claims;
 
 namespace AccuStock.Services;
 public class BusinessYearService : IBusinessYear
@@ -18,7 +19,8 @@ public class BusinessYearService : IBusinessYear
         try
         {
             var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-            businessYear.SubscriptionId = int.Parse(subscriptionIdClaim!);            
+            businessYear.SubscriptionId = int.Parse(subscriptionIdClaim!);  
+            businessYear.UserId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);         
             await _context.BusinessYears.AddAsync(businessYear);
             await _context.SaveChangesAsync();
             return true;
@@ -48,6 +50,7 @@ public class BusinessYearService : IBusinessYear
             existingBusinessYear.Name = businessYear.Name;
             existingBusinessYear.FromDate = businessYear.FromDate;
             existingBusinessYear.ToDate = businessYear.ToDate;
+            existingBusinessYear.UserId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!); 
             _context.BusinessYears.Update(existingBusinessYear);
             await _context.SaveChangesAsync();
             return true;
