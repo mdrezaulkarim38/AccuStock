@@ -2,7 +2,7 @@
 
 namespace AccuStock.Interface
 {
-    public interface IbankAccounts
+    public interface IBankAccounts
     {
         Task<List<BankAccounts>> GetAllBannk();
         Task<bool> CreateBank(BankAccounts bank);

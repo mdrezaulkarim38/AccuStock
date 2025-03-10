@@ -8,7 +8,7 @@
         public string? RoutingNo { get; set; }
         public string? AccountNo { get; set; }
         public string? Remarks { get; set; }
-        public bool Status { get; set; }
+        public bool Status { get; set; } = true;
         public int? UserId { get; set; }
         public User? User { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
