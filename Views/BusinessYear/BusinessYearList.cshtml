@@ -9,7 +9,7 @@
         <div class="card shadow">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Business Year List</h5>
-                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addBusinessYearModal">
                     <i class="fas fa-solid fa-plus"></i> Add New
                 </button>
             </div>
@@ -36,7 +36,7 @@
                                 <tr>
                                     <td>@index</td>
                                     <td>@businessYear.Name</td>
-                                    <td>@businessYear.FromDate</td>
+                                    <td>@businessYear.FromDate.ToString("DD/MM/YYYY")</td>
                                     <td>@businessYear.ToDate</td>
                                     <td>
                                         <form method="post" action="@Url.Action("ToggleStatus", "BusinessYear")">
@@ -55,8 +55,8 @@
                                     </td>
                                     <td>
                                         <button class="btn btn-warning btn-sm"
-                                                onclick="editBusinessyear('@businessYear.Id', '@businessYear.Name', '@businessYear.FromDate', '@businessYear.ToDate')"
-                                                data-bs-toggle="modal" data-bs-target="#addUserModal">
+                                                onclick="editBusinessYear('@businessYear.Id', '@businessYear.Name', '@businessYear.FromDate', '@businessYear.ToDate')"
+                                                data-bs-toggle="modal" data-bs-target="#addBusinessYearModal">
                                             <i class="fas fa-edit"></i> Edit
                                         </button>
                                     </td>
@@ -73,16 +73,16 @@
 
 
 
-<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+<div class="modal fade" id="addBusinessYearModal" tabindex="-1" aria-labelledby="addBusinessYearModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="addUserModalLabel">Add BusinessYear</h5>
+                <h5 class="modal-title" id="addBusinessYearModalLabel">Add BusinessYear</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form asp-action="CreateOrUpdateBusinessYear" method="post">
-                    <input type="hidden" id="UserId" name="Id">
+                    <input type="hidden" id="byId" name="Id">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="FullName" class="form-label">Name</label>
@@ -116,22 +116,22 @@
 
 @section Scripts {
     <script>
-        function editBusinessyear(id, Name,FromDate,ToDate) {
-            document.getElementById("UserId").value = id;
+        function editBusinessYear(id, Name,FromDate,ToDate) {
+            document.getElementById("byId").value = id;
             document.getElementById("Name").value = Name.toString();
             document.getElementById("FromDate").value = FromDate;
             document.getElementById("ToDate").value = ToDate;
 
-            document.getElementById("addUserModalLabel").textContent = "Edit User";
+            document.getElementById("addBusinessYearModalLabel").textContent = "Edit User";
             document.getElementById("modalSubmitText").textContent = "Update";
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            var addUserModal = document.getElementById("addUserModal");
-            addUserModal.addEventListener("hidden.bs.modal", function () {
-                document.getElementById("addUserModalLabel").textContent = "Add User";
+            var addBusinessYearModal = document.getElementById("addBusinessYearModal");
+            addBusinessYearModal.addEventListener("hidden.bs.modal", function () {
+                document.getElementById("addBusinessYearModalLabel").textContent = "Add User";
                 document.getElementById("modalSubmitText").textContent = "Submit";
-                document.getElementById("UserId").value = "";
+                document.getElementById("byId").value = "";
                 document.getElementById("Name").value = "";
                 document.getElementById("FromDate").value = "";
                 document.getElementById("ToDate").value = "";               
