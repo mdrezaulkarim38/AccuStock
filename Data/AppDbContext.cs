@@ -14,6 +14,7 @@ namespace AccuStock.Data
         public DbSet<Branch> Branches { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<BusinessYear> BusinessYears { get; set; }
+        public DbSet<BankAccounts> BankAccounts { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
