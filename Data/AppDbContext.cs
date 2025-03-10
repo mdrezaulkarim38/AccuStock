@@ -13,6 +13,7 @@ namespace AccuStock.Data
         public DbSet<Module> Modules { get; set; }
         public DbSet<Branch> Branches { get; set; }
         public DbSet<Company> Companies { get; set; }
+        public DbSet<BusinessYear> BusinessYears { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
