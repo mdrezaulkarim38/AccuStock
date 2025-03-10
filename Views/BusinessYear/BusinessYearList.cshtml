@@ -40,7 +40,7 @@
                                     <td>@businessYear.ToDate</td>
                                     <td>
                                         <!-- Form to toggle status -->
-                                        <form method="post" action="@Url.Action("ToggleUserStatus", "User")">
+                                        <form method="post" action="@Url.Action("ToggleBusinessYearStatusAsync", "BusinessYear")">
                                             <input type="hidden" name="userId" value="@businessYear.Id" />
                                             <button type="submit" class="btn @(businessYear.Status ? "btn-success" : "btn-danger") btn-sm">
                                                 @if (businessYear.Status)
