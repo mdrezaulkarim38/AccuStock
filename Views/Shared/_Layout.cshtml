@@ -48,47 +48,10 @@
       </a>
 
       <ul class="nav user-menu">
-        @* <li class="nav-item">
-          <div class="top-nav-search">
-            <a href="javascript:void(0);" class="responsive-search">
-              <i class="fa fa-search"></i>
-            </a>
-            <form action="#">
-              <div class="searchinputs">
-                <input type="text" placeholder="Search Here ..." />
-                <div class="search-addon">
-                  <span><img src="assets/img/icons/closes.svg" alt="img" /></span>
-                </div>
-              </div>
-              <a class="btn" id="searchdiv"><img src="assets/img/icons/search.svg" alt="img" /></a>
-            </form>
-          </div>
-        </li> *@
-
-        @* <li class="nav-item dropdown has-arrow flag-nav">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="javascript:void(0);" role="button">
-            <img src="assets/img/flags/us1.png" alt="" height="20" />
-          </a>
-          <div class="dropdown-menu dropdown-menu-right">
-            <a href="javascript:void(0);" class="dropdown-item">
-              <img src="assets/img/flags/us.png" alt="" height="16" /> English
-            </a>
-            <a href="javascript:void(0);" class="dropdown-item">
-              <img src="assets/img/flags/fr.png" alt="" height="16" /> French
-            </a>
-            <a href="javascript:void(0);" class="dropdown-item">
-              <img src="assets/img/flags/es.png" alt="" height="16" /> Spanish
-            </a>
-            <a href="javascript:void(0);" class="dropdown-item">
-              <img src="assets/img/flags/de.png" alt="" height="16" /> German
-            </a>
-          </div>
-        </li> *@
-
         <li class="nav-item dropdown">
           <a href="javascript:void(0);" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
             <img src="assets/img/icons/notification-bing.svg" alt="img" />
-            <span class="badge rounded-pill">4</span>
+            <span class="badge rounded-pill">1</span>
           </a>
           <div class="dropdown-menu notifications">
             <div class="topnav-dropdown-header">
@@ -169,7 +132,8 @@
         <div id="sidebar-menu" class="sidebar-menu">
           <ul>
             <li>
-              <a href="index.html"><img src="~/assets/img/icons/dashboard.svg" alt="img" /><span>
+              <a asp-controller="Home" asp-action="Dashboard"><img src="~/assets/img/icons/dashboard.svg"
+                  alt="img" /><span>
                   Dashboard</span>
               </a>
             </li>
@@ -178,9 +142,10 @@
                   Settings</span>
                 <span class="menu-arrow"></span></a>
               <ul>
-                <li><a href="generalsettings.html">Company Settings</a></li>
-                <li><a href="emailsettings.html">Add Branch</a></li>
-                <li><a href="paymentsettings.html">Add User</a></li>
+                <li><a asp-controller="Company" asp-action="Company">Company Settings</a></li>
+                <li><a asp-controller="Branch" asp-action="Branch">Add Branch</a></li>
+                <li><a asp-controller="User" asp-action="UserList">Add User</a></li>
+                <li><a asp-controller="User" asp-action="UserList">Add Business Year</a></li>
               </ul>
             </li>
           </ul>
@@ -219,6 +184,8 @@
   <script src="~/assets/js/jquery-3.6.0.min.js"></script>
   <script src="~/assets/js/feather.min.js"></script>
   <script src="~/assets/js/jquery.slimscroll.min.js"></script>
+  <script src="~/assets/js/jquery.dataTables.min.js"></script>
+  <script src="~/assets/js/dataTables.bootstrap4.min.js"></script>
   <script src="~/assets/js/bootstrap.bundle.min.js"></script>
   <script src="~/assets/js/script.js"></script>
   <script src="~/js/toastr.min.js"></script>
