@@ -1,4 +1,5 @@
 using AccuStock.Interface;
+using AccuStock.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,5 +18,16 @@ public class BusinessYearController : Controller
     {
         var businessYear = await _businessYearService.GetAllBusinessYear();
         return View(businessYear);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ToggleBusinessYearStatusAsync(int userId)
+    {
+        bool success = await _businessYearService.ToggleBusinessYearStatusAsync(userId);
+
+        if (!success)
+            return NotFound();
+
+        return RedirectToAction("BusinessYearList");
     }
 }

@@ -90,44 +90,18 @@
                     <input type="hidden" id="UserId" name="Id">
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="BranchId" class="form-label">Select Branch</label>
-                            <select class="form-select" id="BranchId" name="BranchId" required>
-                                <option value="">Select Branch</option>
-                                @if (ViewBag.Branches != null)
-                                {
-                                    @foreach (var branch in ViewBag.Branches)
-                                    {
-                                        <option value="@branch.Id">@branch.Name</option>
-                                    }
-                                }
-                            </select>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
                             <label for="FullName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="FullName" name="FullName" required>
+                            <input type="text" class="form-control" id="Name" name="Name" required>
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label for="Address" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="Address" name="Address">
+                            <label for="FromDate" class="form-label">FromDate</label>
+                            <input type="date" class="form-control" id="FromDate" name="FromDate">
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label for="Mobile" class="form-label">Contact No</label>
-                            <input type="text" class="form-control" id="Mobile" name="Mobile">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="Email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="Email" name="Email">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="RoleId" class="form-label">User Type</label>
-                            <select class="form-select" id="RoleId" name="RoleId" required>
-                                <option value="0">Select User Type</option>
-                                <option value="2">Admin</option>
-                                <option value="3">Operator</option>
-                            </select>
+                            <label for="ToDate" class="form-label">ToDate</label>
+                            <input type="date" class="form-control" id="ToDate" name="ToDate">
                         </div>
                     </div>
 
