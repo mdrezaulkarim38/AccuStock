@@ -78,27 +78,6 @@ namespace AccuStock.Services
             return "Branch deleted successfully.";
         }
 
-
-        /*public async Task<List<Branch>> GetAllBranches()
-        {
-            var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId");
-
-            if (subscriptionIdClaim == null || string.IsNullOrEmpty(subscriptionIdClaim.Value))
-            {
-                return new List<Branch>();
-            }
-
-            if (!int.TryParse(subscriptionIdClaim.Value, out int subscriptionId))
-            {
-                return new List<Branch>();
-            }
-
-            return await _context.Branches
-                .Where(b => b.SubscriptionId == subscriptionId)
-                .ToListAsync();
-        }*/
-
-        // Shuvo
         public async Task<List<Branch>> GetAllBranches()
         {
             var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;

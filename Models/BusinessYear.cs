@@ -14,4 +14,6 @@ public class BusinessYear
     
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }
+    public int SubscriptionId { get; set; }
+    public Subscription? Subscription { get; set; }
 }

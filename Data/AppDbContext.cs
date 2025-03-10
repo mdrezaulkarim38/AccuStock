@@ -33,6 +33,12 @@ namespace AccuStock.Data
                 .WithMany()
                 .HasForeignKey(b => b.SubscriptionId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<BusinessYear>()
+            .HasOne(b => b.Subscription)
+            .WithMany()
+            .HasForeignKey(b => b.SubscriptionId)
+            .OnDelete(DeleteBehavior.Restrict);
         }
 
     }
