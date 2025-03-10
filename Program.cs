@@ -22,6 +22,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IBranchService, BranchService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IBusinessYear, BusinessYearService>();
 builder.Services.AddHttpContextAccessor();
 
 // Configure DbContext with resilience
