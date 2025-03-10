@@ -36,8 +36,9 @@
                                 <tr>
                                     <td>@index</td>
                                     <td>@businessYear.Name</td>
-                                    <td>@businessYear.FromDate.ToString("DD/MM/YYYY")</td>
-                                    <td>@businessYear.ToDate</td>
+                                    <td>@businessYear.FromDate.ToString("dd/MM/yyyy")</td>
+                                    <td>@businessYear.ToDate.ToString("dd/MM/yyyy")</td>
+
                                     <td>
                                         <form method="post" action="@Url.Action("ToggleStatus", "BusinessYear")">
                                             <input type="hidden" name="businessYearId" value="@businessYear.Id" />
@@ -119,10 +120,10 @@
         function editBusinessYear(id, Name,FromDate,ToDate) {
             document.getElementById("byId").value = id;
             document.getElementById("Name").value = Name.toString();
-            document.getElementById("FromDate").value = FromDate;
-            document.getElementById("ToDate").value = ToDate;
+            document.getElementById("FromDate").value = new Date(FromDate).toISOString().split('T')[0];
+            document.getElementById("ToDate").value = new Date(ToDate).toISOString().split('T')[0];
 
-            document.getElementById("addBusinessYearModalLabel").textContent = "Edit User";
+            document.getElementById("addBusinessYearModalLabel").textContent = "Edit Year";
             document.getElementById("modalSubmitText").textContent = "Update";
         }
 
