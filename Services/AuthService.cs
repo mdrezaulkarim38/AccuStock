@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using AccuStock.Data;
-using AccuStock.DTOS.AuthDto;
 using AccuStock.Interface;
 using AccuStock.Models;
+using AccuStock.Models.ViewModels.Auth;
 
 namespace AccuStock.Services
 {
@@ -35,9 +35,9 @@ namespace AccuStock.Services
             return user;
         }
 
-        public async Task<User> RegisterAsync(RegisterDto registerDto)
+        public async Task<User> RegisterAsync(RegisterViewModel registerViewModel)
         {
-            if (await _context.Users.AnyAsync(u => u.Email == registerDto.Email))
+            if (await _context.Users.AnyAsync(u => u.Email == registerViewModel.Email))
             {
                 throw new Exception("Email already exists");
             }
@@ -46,11 +46,11 @@ namespace AccuStock.Services
             // Create new user
             var user = new User
             {
-                FullName = registerDto.FullName,
-                Email = registerDto.Email,
-                Password = registerDto.Password,
-                Mobile = registerDto.ContactNumber,
-                RoleId = registerDto.RoleId ?? 1, // Default to 1 if not provided
+                FullName = registerViewModel.FullName,
+                Email = registerViewModel.Email,
+                Password = registerViewModel.Password,
+                Mobile = registerViewModel.ContactNumber,
+                RoleId = registerViewModel.RoleId ?? 1, // Default to 1 if not provided
                 Status = true, // Active by default
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
