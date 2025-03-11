@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AccuStock.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250310092240_bankaccounts")]
-    partial class bankaccounts
+    [Migration("20250311015518_NewBankAccountPageMigrations")]
+    partial class NewBankAccountPageMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using AccuStock.Models.ViewModels.Auth;
-using AccuStock.DTOS.AuthDto;
 using AccuStock.Interface;
 
 namespace AccuStock.Controllers;
@@ -25,24 +24,25 @@ public class AuthController : Controller
     // POST Register
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register(RegisterDto registerDto)
+    public async Task<IActionResult> Register(RegisterViewModel registerViewModel)
     {
         if (!ModelState.IsValid)
         {
-            return View(registerDto);
+            return View(registerViewModel);
         }
 
         try
         {
-            var user = await _authService.RegisterAsync(registerDto);
+            await _authService.RegisterAsync(registerViewModel);
             TempData["SuccessMessage"] = "Registration successful! Please log in.";
             return RedirectToAction("Login", "Auth");
+
         }
         catch (Exception ex)
         {
 
             TempData["ErrorMessage"] = "Registration Unsuccessful!" + ex.Message;
-            return View(registerDto);
+            return View(registerViewModel);
         }
     }
 
@@ -68,11 +68,11 @@ public class AuthController : Controller
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.FullName!),
-                new Claim(ClaimTypes.Email, user.Email!),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Role, user.RoleId == 1 ? "SuperAdmin" : user.RoleId == 2 ? "Admin" : "Operator"),
-                new Claim("SubscriptionId", user.SubscriptionId.ToString())
+                new(ClaimTypes.Name, user.FullName!),
+                new(ClaimTypes.Email, user.Email!),
+                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new(ClaimTypes.Role, user.RoleId == 1 ? "SuperAdmin" : user.RoleId == 2 ? "Admin" : "Operator"),
+                new("SubscriptionId", user.SubscriptionId.ToString())
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
