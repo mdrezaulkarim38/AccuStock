@@ -60,10 +60,11 @@
                                     </td>
                                     <td>
                                         <button class="btn btn-warning btn-sm"
-                                                onclick="editUser('@bank.Id', '@bank.BranchId', '@bank.BankName', '@bank.BranchName', '@bank.RoutingNo', '@bank.AccountNo', '@bank.Remarks')"
-                                                data-bs-toggle="modal" data-bs-target="#addBankAccountModal">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </button>
+                                            onclick="editBankAccount('@bank.Id', '@bank.BranchId', '@bank.BankName', '@bank.BranchName', '@bank.RoutingNo', '@bank.AccountNo', '@bank.Remarks')"
+                                            data-bs-toggle="modal" data-bs-target="#addBankAccountModal">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+
                                     </td>
                                 </tr>
                             }
@@ -76,8 +77,6 @@
 </div>
 
 
-
-
 <div class="modal fade" id="addBankAccountModal" tabindex="-1" aria-labelledby="addBankAccountModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -87,7 +86,7 @@
             </div>
             <div class="modal-body">
                 <form asp-action="CreateOrUpdateBank" asp-controller="BankAccounts" method="post">
-                    <input type="hidden" id="UserId" name="Id">
+                    <input type="hidden" id="bankId" name="Id">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="BranchId" class="form-label">Select Branch</label>
@@ -143,34 +142,35 @@
 
 @section Scripts {
     <script>
-        function editUser(id, branchId, fullName, address, mobile, email, roleId) {
-            document.getElementById("UserId").value = id;
-            document.getElementById("BranchId").value = branchId.toString();
-            document.getElementById("FullName").value = fullName;
-            document.getElementById("Address").value = address;
-            document.getElementById("Mobile").value = mobile;
-            document.getElementById("Email").value = email;
-            console.log(roleId);
-            document.getElementById("RoleId").value = roleId.toString();
+        function editBankAccount(id, branchId, bankName, branchName, routingNo, accountNo, remarks) {
+        document.getElementById("bankId").value = id;
+        document.getElementById("BranchId").value = branchId; // Ensure this matches the <select> option values
+        document.getElementById("BankName").value = bankName;
+        document.getElementById("BranchName").value = branchName;
+        document.getElementById("RoutingNo").value = routingNo;
+        document.getElementById("AccountNo").value = accountNo;
+        document.getElementById("Remarks").value = remarks;
 
-            document.getElementById("addBankAccountModalLabel").textContent = "Edit User";
-            document.getElementById("modalSubmitText").textContent = "Update";
-        }
+        document.getElementById("addBankAccountModalLabel").textContent = "Edit Bank Account";
+        document.getElementById("modalSubmitText").textContent = "Update";
+}
 
-        document.addEventListener("DOMContentLoaded", function () {
-            var addBankAccountModal = document.getElementById("addBankAccountModal");
-            addBankAccountModal.addEventListener("hidden.bs.modal", function () {
-                document.getElementById("addBankAccountModalLabel").textContent = "Add User";
-                document.getElementById("modalSubmitText").textContent = "Submit";
-                document.getElementById("UserId").value = "";
-                document.getElementById("Branch").value = "";
-                document.getElementById("FullName").value = "";
-                document.getElementById("Address").value = "";
-                document.getElementById("Mobile").value = "";
-                document.getElementById("Email").value = "";
-                document.getElementById("UserType").value = "0";
-            });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var addBankAccountModal = document.getElementById("addBankAccountModal");
+        addBankAccountModal.addEventListener("hidden.bs.modal", function () {
+            document.getElementById("addBankAccountModalLabel").textContent = "Add Bank Account";
+            document.getElementById("modalSubmitText").textContent = "Submit";
+
+            // Reset the form fields
+            document.getElementById("bankId").value = "";
+            document.getElementById("BranchId").value = "";
+            document.getElementById("BankName").value = "";
+            document.getElementById("BranchName").value = "";
+            document.getElementById("RoutingNo").value = "";
+            document.getElementById("AccountNo").value = "";
+            document.getElementById("Remarks").value = "";
         });
-    </script>
-
+    });
+</script>
 }
