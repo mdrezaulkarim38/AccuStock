@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AccuStock.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250310055502_BusinessYear")]
-    partial class BusinessYear
+    [Migration("20250311055021_InitialDatabase")]
+    partial class InitialDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,58 @@ namespace AccuStock.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("AccuStock.Models.BankAccount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AccountNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BankName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("BranchId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BranchName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoutingNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SubscriptionId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
+
+                    b.HasIndex("SubscriptionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("BankAccounts");
+                });
 
             modelBuilder.Entity("AccuStock.Models.Branch", b =>
                 {
@@ -84,6 +136,9 @@ namespace AccuStock.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
+                    b.Property<int>("SubscriptionId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("ToDate")
                         .HasColumnType("datetime2");
 
@@ -94,6 +149,8 @@ namespace AccuStock.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SubscriptionId");
 
                     b.HasIndex("UserId");
 
@@ -280,6 +337,29 @@ namespace AccuStock.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("AccuStock.Models.BankAccount", b =>
+                {
+                    b.HasOne("AccuStock.Models.Branch", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchId");
+
+                    b.HasOne("AccuStock.Models.Subscription", "Subscription")
+                        .WithMany()
+                        .HasForeignKey("SubscriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AccuStock.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("Subscription");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("AccuStock.Models.Branch", b =>
                 {
                     b.HasOne("AccuStock.Models.Company", "Company")
@@ -301,11 +381,19 @@ namespace AccuStock.Migrations
 
             modelBuilder.Entity("AccuStock.Models.BusinessYear", b =>
                 {
+                    b.HasOne("AccuStock.Models.Subscription", "Subscription")
+                        .WithMany()
+                        .HasForeignKey("SubscriptionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("AccuStock.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Subscription");
 
                     b.Navigation("User");
                 });

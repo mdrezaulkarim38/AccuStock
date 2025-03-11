@@ -22,7 +22,7 @@ namespace AccuStock.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AccuStock.Models.BankAccounts", b =>
+            modelBuilder.Entity("AccuStock.Models.BankAccount", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -334,7 +334,7 @@ namespace AccuStock.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("AccuStock.Models.BankAccounts", b =>
+            modelBuilder.Entity("AccuStock.Models.BankAccount", b =>
                 {
                     b.HasOne("AccuStock.Models.Branch", "Branch")
                         .WithMany()
