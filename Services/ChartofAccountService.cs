@@ -22,6 +22,10 @@ namespace AccuStock.Services
                                  .Where(c => c.SubScriptionId == int.Parse(subscriptionIdClaim!))
                                  .ToListAsync();
         }
+        public async Task<List<ChartOfAccountType>> GetAllChartOfAccountType()
+        {
+            return await _context.ChartOfAccountTypes.ToListAsync();
+        }
     }
 }
-}
+
