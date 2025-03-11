@@ -15,6 +15,8 @@ namespace AccuStock.Data
         public DbSet<Company> Companies { get; set; }
         public DbSet<BusinessYear> BusinessYears { get; set; }
         public DbSet<BankAccount> BankAccounts { get; set; }
+        public DbSet<ChartOfAccountType> ChartOfAccountTypes { get; set; }
+        public DbSet<ChartOfAccount> ChartOfAccounts { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -40,6 +42,8 @@ namespace AccuStock.Data
             .WithMany()
             .HasForeignKey(b => b.SubscriptionId)
             .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ChartOfAccount>().HasOne(ca => ca.Subscription).WithMany().HasForeignKey(ca=> ca.SubScriptionId).OnDelete(DeleteBehavior.Restrict);
         }
 
     }
