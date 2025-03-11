@@ -49,7 +49,6 @@ namespace AccuStock.Controllers
                 }
                 TempData["SuccessMessage"] = "User Updated Successfully";
             }
-
             return RedirectToAction("UserList");
         }
 
