@@ -75,10 +75,18 @@
                                 <option value="">Select COA Type</option>
                                 @if (ViewBag.ChartofAccountType != null)
                                 {
-                                    @foreach (var coa in ViewBag.ChartofAccountType)
+                                    var ListOfCOAType = (List<AccuStock.Models.ChartOfAccountType>)ViewBag.ChartofAccountType;
+                                    var parentAccounts = ListOfCOAType.Where(coa => coa.ParentId == 0).OrderBy(coa => coa.Name);
+
+                                    @foreach (var parent in parentAccounts)
                                     {
-                                        <optgroup label="@coa.Name">
-                                        <option value="@coa.Id">@coa.Name</option>
+                                        var childAccounts = ListOfCOAType.Where(coa => coa.ParentId == parent.Id).OrderBy(coa => coa.Name).ToList();
+
+                                        <optgroup label="@parent.Name">
+                                            @foreach (var child in childAccounts)
+                                            {
+                                                <option value="@child.Id">@child.Name</option>
+                                            }
                                         </optgroup>
                                     }
                                 }
