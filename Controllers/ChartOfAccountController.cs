@@ -1,25 +1,41 @@
 ﻿using AccuStock.Interface;
-using AccuStock.Services;
+using AccuStock.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
-namespace AccuStock.Controllers;
-
-[Authorize]
-public class ChartOfAccountController : Controller
+namespace AccuStock.Controllers
 {
-    private readonly IChartOfAccount _chartOfAccount;
-    public ChartOfAccountController(IChartOfAccount chartOfAccount)
+    [Authorize]
+    public class ChartOfAccountController : Controller
     {
-        _chartOfAccount = chartOfAccount;
-    }
-    [HttpGet]
-    public async Task<IActionResult> ChartOfAccountList()
-    {
-        var ChartofAccountTypeList = await _chartOfAccount.GetAllChartOfAccountType();
-        ViewBag.ChartofAccountType = ChartofAccountTypeList;
-        var ChartofAccountList = await _chartOfAccount.GetAllChartOfAccount();
-        return View(ChartofAccountList);
+        private readonly IChartOfAccount _chartOfAccount;
+
+        public ChartOfAccountController(IChartOfAccount chartOfAccount)
+        {
+            _chartOfAccount = chartOfAccount;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ChartOfAccountList()
+        {
+            ViewBag.ChartofAccountType = await _chartOfAccount.GetAllChartOfAccountType();
+            ViewBag.selectChartOfAccountList = await _chartOfAccount.GetAllChartOfAccount();
+            return View(await _chartOfAccount.GetAllChartOfAccount());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateOrUpdateChartOfAccount(ChartOfAccount model)
+        {
+            if (model.Id == 0)
+            {
+                //await _chartOfAccount.CreateChartOfAccount(model);
+            }
+            else
+            {
+                //await _chartOfAccount.UpdateChartOfAccount(model);
+            }
+            return RedirectToAction("ChartOfAccountList");
+        }
     }
 }
-
