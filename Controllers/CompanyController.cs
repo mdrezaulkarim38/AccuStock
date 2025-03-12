@@ -3,74 +3,73 @@ using AccuStock.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AccuStock.Controllers
+namespace AccuStock.Controllers;
+
+[Authorize]
+public class CompanyController : Controller
 {
-    [Authorize]
-    public class CompanyController : Controller
+    private readonly ILogger<CompanyController> _logger;
+    private readonly ICompanyService _companyService;
+
+    public CompanyController(ILogger<CompanyController> logger, ICompanyService companyService)
     {
-        private readonly ILogger<CompanyController> _logger;
-        private readonly ICompanyService _companyService;
+        _logger = logger;
+        _companyService = companyService;
+    }
 
-        public CompanyController(ILogger<CompanyController> logger, ICompanyService companyService)
+    [HttpGet]
+    public async Task<IActionResult> Company()
+    {
+        var company = await _companyService.GetCompanyBySubscriptionId();
+        if (company == null)
         {
-            _logger = logger;
-            _companyService = companyService;
+            return View(new Company());
         }
+        return View(company);
+    }
 
-        [HttpGet]
-        public async Task<IActionResult> Company()
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Company(Company company)
+    {
+        if (!ModelState.IsValid)
         {
-            var company = await _companyService.GetCompanyBySubscriptionId();
-            if (company == null)
-            {
-                return View(new Company());
-            }
             return View(company);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Company(Company company)
+        try
         {
-            if (!ModelState.IsValid)
+            if (company.Id == 0)
             {
-                return View(company);
-            }
-
-            try
-            {
-                if (company.Id == 0)
+                bool isCreated = await _companyService.CreateCompanyAsync(company);
+                if (!isCreated)
                 {
-                    bool isCreated = await _companyService.CreateCompanyAsync(company);
-                    if (!isCreated)
-                    {
-                        TempData["ErrorMessage"] = "A company already exists for this SubscriptionId.";
-                        return View(company);
-                    }
+                    TempData["ErrorMessage"] = "A company already exists for this SubscriptionId.";
+                    return View(company);
                 }
-                else
-                {
-                    bool isUpdated = await _companyService.UpdateCompanyAsync(company);
-                    if (!isUpdated)
-                    {
-                        TempData["ErrorMessage"] = "Company name already exists or update failed";
-                        return View(company);
-                    }
-                }
-                TempData["SuccessMessage"] = "Company Created Successfully";
-                return RedirectToAction("Company");
             }
-            catch (Exception ex)
+            else
             {
-                ModelState.AddModelError(string.Empty, "An error occurred: " + ex.Message);
-                return View(company);
+                bool isUpdated = await _companyService.UpdateCompanyAsync(company);
+                if (!isUpdated)
+                {
+                    TempData["ErrorMessage"] = "Company name already exists or update failed";
+                    return View(company);
+                }
             }
+            TempData["SuccessMessage"] = "Company Created Successfully";
+            return RedirectToAction("Company");
         }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        catch (Exception ex)
         {
-            return View("Error!");
+            ModelState.AddModelError(string.Empty, "An error occurred: " + ex.Message);
+            return View(company);
         }
+    }
+
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View("Error!");
     }
 }
