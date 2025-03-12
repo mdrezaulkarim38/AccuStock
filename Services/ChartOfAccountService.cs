@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AccuStock.Services
 {
-    public class ChartofAccountService : IChartofAccount
+    public class ChartOfAccountService : IChartOfAccount
     {
         private readonly AppDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ChartofAccountService(AppDbContext context, IHttpContextAccessor httpContextAccessor)
+        public ChartOfAccountService(AppDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;

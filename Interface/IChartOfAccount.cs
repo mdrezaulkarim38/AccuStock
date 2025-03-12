@@ -2,7 +2,7 @@
 
 namespace AccuStock.Interface
 {
-    public interface IChartofAccount
+    public interface IChartOfAccount
     {
         Task<List<ChartOfAccount>> GetAllChartOfAccount();
         Task<List<ChartOfAccountType>> GetAllChartOfAccountType();

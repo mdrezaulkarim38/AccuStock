@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using AccuStock.Data;
 using AccuStock.Interface;
+using AccuStock.Models;
 using AccuStock.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +25,7 @@ builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBusinessYear, BusinessYearService>();
 builder.Services.AddScoped<IBankAccountService, BankAccountsService>();
+builder.Services.AddScoped<IChartOfAccount, ChartOfAccountService>();
 builder.Services.AddHttpContextAccessor();
 
 // Configure DbContext with resilience
