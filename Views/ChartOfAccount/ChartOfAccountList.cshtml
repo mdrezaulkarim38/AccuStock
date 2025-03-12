@@ -39,13 +39,13 @@
                                 <td>@chartOfAccount.ChartOfAccountType?.Name</td>
                                 <td>
                                     <button class="btn btn-warning btn-sm"
-                                            onclick="editCOA('@chartOfAccount.Id', '@chartOfAccount.ParentId', '@chartOfAccount.Name', '@chartOfAccount.AccountCode', '@chartOfAccount.AccountTypeId')"
+                                                onclick="editCOA('@chartOfAccount.Id', '@chartOfAccount.ParentId', '@chartOfAccount.Name', '@chartOfAccount.AccountCode', '@chartOfAccount.ChartOfAccountTypeId')"
                                             data-bs-toggle="modal" data-bs-target="#addCOAModal">
                                         <i class="fas fa-edit"></i> Edit
                                     </button>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteCOA('@chartOfAccount.Id')">
+                                    @* <button class="btn btn-danger btn-sm" onclick="deleteCOA('@chartOfAccount.Id')">
                                         <i class="fas fa-trash-alt"></i> Delete
-                                    </button>
+                                    </button> *@
                                 </td>
                             </tr>
                         }
@@ -70,14 +70,16 @@
                     <input type="hidden" id="COAId" name="Id">
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="AccountTypeId" class="form-label">Select COA Type</label>
-                            <select class="form-select" id="AccountTypeId" name="AccountTypeId" required>
+                            <label for="ChartOfAccountTypeId" class="form-label">Select COA Type</label>
+                            <select class="form-select" id="ChartOfAccountTypeId" name="ChartOfAccountTypeId" required>
                                 <option value="">Select COA Type</option>
                                 @if (ViewBag.ChartofAccountType != null)
                                 {
                                     @foreach (var coa in ViewBag.ChartofAccountType)
                                     {
+                                        <optgroup label="@coa.Name">
                                         <option value="@coa.Id">@coa.Name</option>
+                                        </optgroup>
                                     }
                                 }
                             </select>
@@ -101,12 +103,23 @@
                                 <option value="">Select Parent</option>
                                 @if (ViewBag.selectChartOfAccountList != null)
                                 {
-                                    @foreach (var coaList in ViewBag.selectChartOfAccountList)
+                                    var chartOfAccounts = (List<AccuStock.Models.ChartOfAccount>)ViewBag.selectChartOfAccountList;
+                                    var groupedCOAs = chartOfAccounts
+                                    .GroupBy(coa => coa.ChartOfAccountType?.Name ?? "Uncategorized")
+                                    .OrderBy(g => g.Key);
+
+                                    @foreach (var group in groupedCOAs)
                                     {
-                                        <option value="@coaList.Id">@coaList.Name</option>
+                                        <optgroup label="@group.Key">
+                                            @foreach (var coa in group.OrderBy(coa => coa.Name)) 
+                                            {
+                                                <option value="@coa.Id">@coa.Name</option>
+                                            }
+                                        </optgroup>
                                     }
                                 }
                             </select>
+
                         </div>
 
                         <div class="col-md-6 mb-3">
@@ -139,7 +152,7 @@
             document.getElementById("COAId").value = id;
             document.getElementById("Name").value = name;
             document.getElementById("AccountCode").value = accountCode;
-            document.getElementById("AccountTypeId").value = accountTypeId;
+            document.getElementById("ChartOfAccountTypeId").value = accountTypeId;
             document.getElementById("isSubAccount").checked = parentId !== "null";
             document.getElementById("parentAccountContainer").style.display = parentId !== "null" ? "block" : "none";
             document.getElementById("ParentId").value = parentId;

@@ -6,5 +6,7 @@ namespace AccuStock.Interface
     {
         Task<List<ChartOfAccount>> GetAllChartOfAccount();
         Task<List<ChartOfAccountType>> GetAllChartOfAccountType();
+        Task<bool> CreateChartOfAccount(ChartOfAccount chartOfAccount);
+        Task<bool> UpdateChartOfAccount(ChartOfAccount chartOfAccount);
     }
 }

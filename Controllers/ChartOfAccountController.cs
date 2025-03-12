@@ -29,12 +29,27 @@ namespace AccuStock.Controllers
         {
             if (model.Id == 0)
             {
-                //await _chartOfAccount.CreateChartOfAccount(model);
+                bool isCreated = await _chartOfAccount.CreateChartOfAccount(model);
+                if (!isCreated)
+                {
+                    TempData["ErrorMessage"] = "Unsuccessfull to Create.";
+                    return RedirectToAction("ChartOfAccountList");
+                }
+
+                TempData["SuccessMessage"] = "ChartOfAccount Year Created Successfully";
             }
             else
             {
-                //await _chartOfAccount.UpdateChartOfAccount(model);
+                bool isUpdated = await _chartOfAccount.UpdateChartOfAccount(model);
+                if (!isUpdated)
+                {
+                    TempData["ErrorMessage"] = "Unsuccessfull to Create update";
+                    return RedirectToAction("ChartOfAccountList");
+                }
+
+                TempData["SuccessMessage"] = "Chart Of Account Updated Successfully";
             }
+
             return RedirectToAction("ChartOfAccountList");
         }
     }
