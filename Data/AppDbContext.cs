@@ -17,8 +17,7 @@ namespace AccuStock.Data
         public DbSet<BankAccount> BankAccounts { get; set; }
         public DbSet<ChartOfAccountType> ChartOfAccountTypes { get; set; }
         public DbSet<ChartOfAccount> ChartOfAccounts { get; set; }
-
-
+        public DbSet<OpeningBalances> OpeningBalances { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
