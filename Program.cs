@@ -26,6 +26,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBusinessYear, BusinessYearService>();
 builder.Services.AddScoped<IBankAccountService, BankAccountsService>();
 builder.Services.AddScoped<IChartOfAccount, ChartOfAccountService>();
+builder.Services.AddScoped<IOpeningBalanceService, OpeningBalanceService>();
 builder.Services.AddHttpContextAccessor();
 
 // Configure DbContext with resilience

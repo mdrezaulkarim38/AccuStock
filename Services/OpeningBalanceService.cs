@@ -57,6 +57,10 @@ namespace AccuStock.Services
                 return false;
             }
         }
-
+        public async Task<List<OpeningBalances>> GetOpBl()
+        {
+            var subscriptionId = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
+            return await _context.OpeningBalances.Where(o => o.SubScriptionId == int.Parse(subscriptionId!)).ToListAsync();
+        }
     }
 }

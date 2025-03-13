@@ -4,7 +4,7 @@ namespace AccuStock.Interface
 {
     public interface IOpeningBalanceService
     {
-       // Task<List<OpeningBalances>> GetAllOpBl();
+        Task<List<OpeningBalances>> GetOpBl();
         Task<bool> CreateOpBl(OpeningBalances opbl);
         Task<bool> UpdateOpBl(OpeningBalances opbl);
     }

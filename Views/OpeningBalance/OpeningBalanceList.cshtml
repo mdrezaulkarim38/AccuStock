@@ -1,0 +1,161 @@
+﻿@model IEnumerable<AccuStock.Models.OpeningBalances>
+
+@{
+    ViewData["Title"] = "Opening Balance List";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Opening Balance List</h5>
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addOpBlModal">
+                    <i class="fas fa-plus"></i> Add New
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="basic-datatables" class="display table table-striped table-hover">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>SL No.</th>
+                                <th>Business Year</th>
+                                <th>Chart Of Accounts</th>
+                                <th>Account Type</th>
+                                <th>Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int index = 0;
+                            }
+                            @foreach (var opbl in Model)
+                            {
+                                index++;
+                                <tr>
+                                    <td>@index</td>
+                                    <td>@opbl.BusinessYear?.Name</td>
+                                    <td>@((ViewBag.charofAccountsList as List<ChartOfAccount>)?.FirstOrDefault(c => c.Id == opbl.ChartOfAccountId)?.Name ?? "N/A")</td>
+                                    <td>@(opbl.Debit > 0 ? "Debit" : "Credit")</td>
+                                    <td>@(opbl.Debit > 0 ? opbl.Debit : opbl.Credit)</td>
+                                    <td>
+                                        <button class="btn btn-warning btn-sm"
+                                                onclick="editOpeningBalance('@opbl.Id', '@opbl.ChartOfAccountId', '@opbl.BusinessYearId', '@(opbl.Debit > 0 ? "Debit" : "Credit")', '@(opbl.Debit > 0 ? opbl.Debit : opbl.Credit)')"
+                                                data-bs-toggle="modal" data-bs-target="#addOpBlModal">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal fade" id="addOpBlModal" tabindex="-1" aria-labelledby="addOpBlModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addOpBlModalLabel">Add Opening Balance</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="CreateOrUpdateOpeningBalance" asp-controller="OpeningBalance" method="post">
+                    <input type="hidden" id="OpeningBalanceId" name="Id">
+
+                    <div class="mb-3">
+                        <label for="ChartOfAccountId" class="form-label">Chart Of Account</label>
+                        <select class="form-select" id="ChartOfAccountId" name="ChartOfAccountId" required>
+                            <option value="">Select Account</option>
+                            @if (ViewBag.charofAccountsList != null)
+                            {
+                                @foreach (var account in ViewBag.charofAccountsList)
+                                {
+                                    <option value="@account.Id">@account.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="BusinessYearId" class="form-label">Business Year</label>
+                        <select class="form-select" id="BusinessYearId" name="BusinessYearId" required>
+                            <option value="">Select Year</option>
+                            @if (ViewBag.BusinessYears != null)
+                            {
+                                @foreach (var year in ViewBag.BusinessYears)
+                                {
+                                    <option value="@year.Id">@year.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Account Type</label>
+                        <div>
+                            <input type="radio" id="DebitType" name="AccountType" value="Debit" checked>
+                            <label for="DebitType">Debit</label>
+
+                            <input type="radio" id="CreditType" name="AccountType" value="Credit">
+                            <label for="CreditType">Credit</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Amount" class="form-label">Amount</label>
+                        <input type="number" class="form-control" id="Amount" name="Amount" required>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> <span id="modalSubmitText">Submit</span>
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="bi bi-arrow-clockwise"></i> Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function editOpeningBalance(id, chartOfAccountId, businessYearId, accountType, amount) {
+            document.getElementById("OpeningBalanceId").value = id;
+            document.getElementById("ChartOfAccountId").value = chartOfAccountId;
+            document.getElementById("BusinessYearId").value = businessYearId;
+            document.getElementById("Amount").value = amount;
+
+            if (accountType === "Debit") {
+                document.getElementById("DebitType").checked = true;
+            } else {
+                document.getElementById("CreditType").checked = true;
+            }
+
+            document.getElementById("addOpBlModalLabel").textContent = "Edit Opening Balance";
+            document.getElementById("modalSubmitText").textContent = "Update";
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var addOpBlModal = document.getElementById("addOpBlModal");
+            addOpBlModal.addEventListener("hidden.bs.modal", function () {
+                document.getElementById("addOpBlModalLabel").textContent = "Add Opening Balance";
+                document.getElementById("modalSubmitText").textContent = "Submit";
+
+                document.getElementById("OpeningBalanceId").value = "";
+                document.getElementById("ChartOfAccountId").value = "";
+                document.getElementById("BusinessYearId").value = "";
+                document.getElementById("Amount").value = "";
+                document.getElementById("DebitType").checked = true;
+            });
+        });
+    </script>
+}
