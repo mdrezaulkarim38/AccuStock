@@ -1,5 +1,6 @@
 ﻿using AccuStock.Interface;
 using AccuStock.Models;
+using AccuStock.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccuStock.Controllers
@@ -8,17 +9,23 @@ namespace AccuStock.Controllers
     {
         private readonly IOpeningBalanceService _openingBalanceService;
         private readonly IChartOfAccount _chartOfAccountService;
-        public OpeningBalanceController(IOpeningBalanceService openingBalanceService, IChartOfAccount chartOfAccount)
+        private readonly IBusinessYear _businessYear;
+        public OpeningBalanceController(IOpeningBalanceService openingBalanceService, IChartOfAccount chartOfAccount, IBusinessYear businessYear)
         {
             _openingBalanceService = openingBalanceService;
             _chartOfAccountService = chartOfAccount;
+            _businessYear = businessYear;
         }
         [HttpGet]
         public async Task<IActionResult> OpeningBalanceList()
         {
-            var chartOfAccount = await _chartOfAccountService.GetAllChartOfAccount();
+            var chartOfAccount = await _chartOfAccountService.GetAllChartOfAccountType();
              ViewBag.charofAccountsList = chartOfAccount;
             var opblList = await _openingBalanceService.GetOpBl();
+
+            var businessYears = await _businessYear.GetAllBusinessYear(); // Fetch from database
+            ViewBag.BusinessYears = businessYears;
+
             return View(opblList);
         }
         [HttpPost]

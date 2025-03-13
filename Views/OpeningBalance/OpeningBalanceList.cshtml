@@ -88,13 +88,14 @@
                             <option value="">Select Year</option>
                             @if (ViewBag.BusinessYears != null)
                             {
-                                @foreach (var year in ViewBag.BusinessYears)
+                                @foreach (var year in ViewBag.BusinessYears as List<BusinessYear>)
                                 {
                                     <option value="@year.Id">@year.Name</option>
                                 }
                             }
                         </select>
                     </div>
+
 
                     <div class="mb-3">
                         <label class="form-label">Account Type</label>
