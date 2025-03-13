@@ -3,12 +3,12 @@
     public class OpeningBalances
     {
         public int Id { get; set; }
-        public decimal? OpnDebit { get; set; }
-        public decimal? OpnCredit { get; set; }
-        public decimal? Debit { get; set; }
-        public decimal? Credit { get; set; }
-        public decimal? ClsDebit { get; set; }
-        public decimal? ClsCredit { get; set; }
+        public decimal? OpnDebit { get; set; } = 0.00M;
+        public decimal? OpnCredit { get; set; } = 0.00M;
+        public decimal? Debit { get; set; } = 0.00M;
+        public decimal? Credit { get; set; } = 0.00M;
+        public decimal? ClsDebit { get; set; } = 0.00M;
+        public decimal? ClsCredit { get; set; } = 0.00M;
         public bool Status { get;set; } = true;
         public int ChartOfAccountId { get; set; }
         public ChartOfAccount? ChartOfAccount { get; set; }
