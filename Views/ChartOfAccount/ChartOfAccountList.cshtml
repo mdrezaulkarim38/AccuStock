@@ -39,7 +39,7 @@
                                 <td>@chartOfAccount.ChartOfAccountType?.Name</td>
                                 <td>
                                     <button class="btn btn-warning btn-sm"
-                                                onclick="editCOA('@chartOfAccount.Id', '@chartOfAccount.ParentId', '@chartOfAccount.Name', '@chartOfAccount.AccountCode', '@chartOfAccount.ChartOfAccountTypeId')"
+                                            onclick="editCOA('@chartOfAccount.Id', '@chartOfAccount.ParentId', '@chartOfAccount.Name', '@chartOfAccount.AccountCode', '@chartOfAccount.ChartOfAccountTypeId')"
                                             data-bs-toggle="modal" data-bs-target="#addCOAModal">
                                         <i class="fas fa-edit"></i> Edit
                                     </button>
@@ -75,12 +75,12 @@
                                 <option value="">Select COA Type</option>
                                 @if (ViewBag.ChartofAccountType != null)
                                 {
-                                    var ListOfCOAType = (List<AccuStock.Models.ChartOfAccountType>)ViewBag.ChartofAccountType;
-                                    var parentAccounts = ListOfCOAType.Where(coa => coa.ParentId == 0).OrderBy(coa => coa.Name);
+                                    var listOfCoaType = (List<ChartOfAccountType>)ViewBag.ChartofAccountType;
+                                    var parentAccounts = listOfCoaType.Where(coa => coa.ParentId == 0).OrderBy(coa => coa.Name);
 
                                     @foreach (var parent in parentAccounts)
                                     {
-                                        var childAccounts = ListOfCOAType.Where(coa => coa.ParentId == parent.Id).OrderBy(coa => coa.Name).ToList();
+                                        var childAccounts = listOfCoaType.Where(coa => coa.ParentId == parent.Id).OrderBy(coa => coa.Name).ToList();
 
                                         <optgroup label="@parent.Name">
                                             @foreach (var child in childAccounts)
@@ -111,15 +111,15 @@
                                 <option value="">Select Parent</option>
                                 @if (ViewBag.selectChartOfAccountList != null)
                                 {
-                                    var chartOfAccounts = (List<AccuStock.Models.ChartOfAccount>)ViewBag.selectChartOfAccountList;
-                                    var groupedCOAs = chartOfAccounts
-                                    .GroupBy(coa => coa.ChartOfAccountType?.Name ?? "Uncategorized")
-                                    .OrderBy(g => g.Key);
+                                    var chartOfAccounts = (List<ChartOfAccount>)ViewBag.selectChartOfAccountList;
+                                    var groupedCoAs = chartOfAccounts
+                                        .GroupBy(coa => coa.ChartOfAccountType?.Name ?? "Uncategorized")
+                                        .OrderBy(g => g.Key);
 
-                                    @foreach (var group in groupedCOAs)
+                                    @foreach (var group in groupedCoAs)
                                     {
                                         <optgroup label="@group.Key">
-                                            @foreach (var coa in group.OrderBy(coa => coa.Name)) 
+                                            @foreach (var coa in group.OrderBy(coa => coa.Name))
                                             {
                                                 <option value="@coa.Id">@coa.Name</option>
                                             }
