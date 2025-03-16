@@ -19,8 +19,9 @@ namespace AccuStock.Controllers
         [HttpGet]
         public async Task<IActionResult> OpeningBalanceList()
         {
-            var chartOfAccount = await _chartOfAccountService.GetAllChartOfAccountType();
-             ViewBag.charofAccountsList = chartOfAccount;
+            //var chartOfAccountType = await _chartOfAccountService.GetAllChartOfAccountType();
+            var chartOfAccount = await _chartOfAccountService.GetAllChartOfAccount();
+            ViewBag.charofAccountsList = chartOfAccount;
             var opblList = await _openingBalanceService.GetOpBl();
 
             var businessYears = await _businessYear.GetAllBusinessYear(); // Fetch from database
