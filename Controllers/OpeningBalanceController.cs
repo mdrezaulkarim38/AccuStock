@@ -18,42 +18,67 @@ namespace AccuStock.Controllers
         }
         [HttpGet]
         public async Task<IActionResult> OpeningBalanceList()
-        {
-            //var chartOfAccountType = await _chartOfAccountService.GetAllChartOfAccountType();
+        {               
             var chartOfAccount = await _chartOfAccountService.GetAllChartOfAccount();
             ViewBag.charofAccountsList = chartOfAccount;
             var opblList = await _openingBalanceService.GetOpBl();
 
-            var businessYears = await _businessYear.GetAllBusinessYear(); // Fetch from database
+            var businessYears = await _businessYear.GetAllBusinessYear();
             ViewBag.BusinessYears = businessYears;
 
             return View(opblList);
         }
         [HttpPost]
         public async Task<IActionResult> CreateOrUpdateOpeningBalance(OpeningBalances opbl)
-        {
+        {           
+            var accountType = Request.Form["AccountType"].ToString();
+            var amount = Convert.ToDecimal(Request.Form["Amount"]);
+
             if (opbl.Id == 0)
             {
+                if (accountType == "Debit")
+                {
+                    opbl.Debit = amount;
+                    opbl.Credit = 0;
+                }
+                else if (accountType == "Credit")
+                {
+                    opbl.Credit = amount;
+                    opbl.Debit = 0;
+                }
+
                 bool isCreated = await _openingBalanceService.CreateOpBl(opbl);
                 if (!isCreated)
                 {
-                    TempData["ErrorMessage"] = "A Branch already exists for this SubscriptionId.";
-                    return RedirectToAction("Branch");
+                    TempData["ErrorMessage"] = "An Error Occour For Creating Bpening Balance";
+                    return RedirectToAction("OpeningBalanceList");
                 }
-                TempData["SuccessMessage"] = "Branch Created Successfully";
+                TempData["SuccessMessage"] = "Opening Balance Created Successfully";
             }
-            else
+            else 
             {
+                if (accountType == "Debit")
+                {
+                    opbl.Debit = amount;
+                    opbl.Credit = 0;
+                }
+                else if (accountType == "Credit")
+                {
+                    opbl.Credit = amount;
+                    opbl.Debit = 0;
+                }
+
                 bool isUpdated = await _openingBalanceService.UpdateOpBl(opbl);
                 if (!isUpdated)
                 {
-                    TempData["ErrorMessage"] = "Branch name already exists or update failed";
+                    TempData["ErrorMessage"] = "An Error Occour For Updating Opening Balance";
                     return RedirectToAction("Branch");
                 }
-                TempData["SuccessMessage"] = "Branch Updated Successfully";
+                TempData["SuccessMessage"] = "Opening Balance Updated Successfully";
             }
 
             return RedirectToAction("OpeningBalanceList");
         }
+
     }
 }

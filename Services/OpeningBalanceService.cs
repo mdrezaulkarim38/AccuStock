@@ -24,6 +24,7 @@ namespace AccuStock.Services
                 var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
                 openingBalance.SubScriptionId = int.Parse(subscriptionIdClaim!);
                 openingBalance.UserId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+                
                 await _context.OpeningBalances.AddAsync(openingBalance);
                 await _context.SaveChangesAsync();
                 return true;
