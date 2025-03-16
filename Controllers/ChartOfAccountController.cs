@@ -19,8 +19,6 @@ namespace AccuStock.Controllers
         [HttpGet]
         public async Task<IActionResult> ChartOfAccountList()
         {
-            ViewBag.ChartofAccountType = await _chartOfAccount.GetAllChartOfAccountType();
-            ViewBag.selectChartOfAccountList = await _chartOfAccount.GetAllChartOfAccount();
             return View(await _chartOfAccount.GetAllChartOfAccount());
         }
 

@@ -117,7 +117,7 @@
                         <button type="submit" class="btn btn-success btn-sm me-2">
                             <i class="bi bi-check-circle"></i> <span id="modalSubmitText">Submit</span>
                         </button>
-                        <button type="reset" class="btn btn-secondary btn-sm">
+                        <button type="reset" class="btn btn-secondary btn-sm" id="refreshBuutton">
                             <i class="bi bi-arrow-clockwise"></i> Refresh
                         </button>
                     </div>
@@ -129,18 +129,36 @@
 
 @section Scripts {
     <script>
+        function resetOpeningBalanceForm() {
+            document.getElementById("OpeningBalanceId").value = "";
+            document.getElementById("ChartOfAccountId").value = "";
+            document.getElementById("BusinessYearId").value = "";
+            document.getElementById("Amount").value = "";
+            document.getElementById("DebitType").checked = true; 
+
+            document.getElementById("ChartOfAccountId").disabled = false;
+            document.getElementById("BusinessYearId").disabled = false;
+
+            document.getElementById("refreshBuutton").style.display = "inline-block";
+            document.getElementById("addOpBlModalLabel").textContent = "Add Opening Balance";
+            document.getElementById("modalSubmitText").textContent = "Submit";
+        }
+
         function editOpeningBalance(id, chartOfAccountId, businessYearId, accountType, amount) {
             document.getElementById("OpeningBalanceId").value = id;
             document.getElementById("ChartOfAccountId").value = chartOfAccountId;
             document.getElementById("BusinessYearId").value = businessYearId;
             document.getElementById("Amount").value = amount;
-
             if (accountType === "Debit") {
                 document.getElementById("DebitType").checked = true;
             } else {
                 document.getElementById("CreditType").checked = true;
             }
 
+            document.getElementById("ChartOfAccountId").disabled = true;
+            document.getElementById("BusinessYearId").disabled = true;
+
+            document.getElementById("refreshBuutton").style.display = "none";
             document.getElementById("addOpBlModalLabel").textContent = "Edit Opening Balance";
             document.getElementById("modalSubmitText").textContent = "Update";
         }
@@ -148,15 +166,12 @@
         document.addEventListener("DOMContentLoaded", function () {
             var addOpBlModal = document.getElementById("addOpBlModal");
             addOpBlModal.addEventListener("hidden.bs.modal", function () {
-                document.getElementById("addOpBlModalLabel").textContent = "Add Opening Balance";
-                document.getElementById("modalSubmitText").textContent = "Submit";
-
-                document.getElementById("OpeningBalanceId").value = "";
-                document.getElementById("ChartOfAccountId").value = "";
-                document.getElementById("BusinessYearId").value = "";
-                document.getElementById("Amount").value = "";
-                document.getElementById("DebitType").checked = true;
+                resetOpeningBalanceForm();
+            });
+            document.querySelector("[data-bs-target='#addOpBlModal']").addEventListener("click", function () {
+                resetOpeningBalanceForm();
             });
         });
     </script>
 }
+
