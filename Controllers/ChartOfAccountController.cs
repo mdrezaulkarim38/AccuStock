@@ -24,6 +24,24 @@ namespace AccuStock.Controllers
             return View(await _chartOfAccount.GetAllChartOfAccount());
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> GetChartOfAccountTypes()
+        {
+            var types = await _chartOfAccount.GetAllChartOfAccountType();
+            return Json(types);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetParentAccounts(int? chartOfAccountTypeId = null)
+        {
+            var accounts = await _chartOfAccount.GetAllChartOfAccount();
+            if (chartOfAccountTypeId.HasValue)
+            {
+                accounts = accounts.Where(a => a.ChartOfAccountTypeId == chartOfAccountTypeId.Value).ToList();
+            }
+            return Json(accounts);
+        }
         [HttpPost]
         public async Task<IActionResult> CreateOrUpdateChartOfAccount(ChartOfAccount model)
         {

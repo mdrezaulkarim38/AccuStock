@@ -66,30 +66,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form asp-action="CreateOrUpdateChartOfAccount" method="post">
+                <form id="coaForm" asp-action="CreateOrUpdateChartOfAccount" method="post">
                     <input type="hidden" id="COAId" name="Id">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="ChartOfAccountTypeId" class="form-label">Select COA Type</label>
                             <select class="form-select" id="ChartOfAccountTypeId" name="ChartOfAccountTypeId" required>
                                 <option value="">Select COA Type</option>
-                                @if (ViewBag.ChartofAccountType != null)
-                                {
-                                    var listOfCoaType = (List<ChartOfAccountType>)ViewBag.ChartofAccountType;
-                                    var parentAccounts = listOfCoaType.Where(coa => coa.ParentId == 0).OrderBy(coa => coa.Name);
-
-                                    @foreach (var parent in parentAccounts)
-                                    {
-                                        var childAccounts = listOfCoaType.Where(coa => coa.ParentId == parent.Id).OrderBy(coa => coa.Name).ToList();
-
-                                        <optgroup label="@parent.Name">
-                                            @foreach (var child in childAccounts)
-                                            {
-                                                <option value="@child.Id">@child.Name</option>
-                                            }
-                                        </optgroup>
-                                    }
-                                }
                             </select>
                         </div>
 
@@ -100,7 +83,7 @@
 
                         <div class="col-md-6 mb-3">
                             <label>
-                                <input type="checkbox" id="isSubAccount" name="isSubAccount"/>
+                                <input type="checkbox" id="isSubAccount" name="isSubAccount" />
                                 Make this a sub-account
                             </label>
                         </div>
@@ -109,25 +92,7 @@
                             <label for="ParentId" class="form-label">Select Parent</label>
                             <select class="form-select" id="ParentId" name="ParentId">
                                 <option value="">Select Parent</option>
-                                @if (ViewBag.selectChartOfAccountList != null)
-                                {
-                                    var chartOfAccounts = (List<ChartOfAccount>)ViewBag.selectChartOfAccountList;
-                                    var groupedCoAs = chartOfAccounts
-                                        .GroupBy(coa => coa.ChartOfAccountType?.Name ?? "Uncategorized")
-                                        .OrderBy(g => g.Key);
-
-                                    @foreach (var group in groupedCoAs)
-                                    {
-                                        <optgroup label="@group.Key">
-                                            @foreach (var coa in group.OrderBy(coa => coa.Name))
-                                            {
-                                                <option value="@coa.Id">@coa.Name</option>
-                                            }
-                                        </optgroup>
-                                    }
-                                }
                             </select>
-
                         </div>
 
                         <div class="col-md-6 mb-3">
@@ -140,7 +105,7 @@
                         <button type="submit" class="btn btn-success btn-sm me-2">
                             <i class="bi bi-check-circle"></i> <span id="modalSubmitText">Submit</span>
                         </button>
-                        <button type="reset" class="btn btn-secondary btn-sm">
+                        <button type="reset" class="btn btn-secondary btn-sm" id="resetForm">
                             <i class="bi bi-arrow-clockwise"></i> Refresh
                         </button>
                     </div>
@@ -152,21 +117,121 @@
 
 @section Scripts {
     <script>
-        document.getElementById("isSubAccount").addEventListener("change", function () {
-            document.getElementById("parentAccountContainer").style.display = this.checked ? "block" : "none";
+        $('#addCOAModal').on('show.bs.modal', function (e) {
+            loadChartOfAccountTypes();
         });
+
+        document.getElementById("isSubAccount").addEventListener("change", function () {
+            const parentContainer = document.getElementById("parentAccountContainer");
+            parentContainer.style.display = this.checked ? "block" : "none";
+            if (this.checked) {
+                const selectedTypeId = $('#ChartOfAccountTypeId').val();
+                loadParentAccounts(selectedTypeId);
+            }
+        });
+
+        $('#ChartOfAccountTypeId').on('change', function() {
+            if ($('#isSubAccount').is(':checked')) {
+                loadParentAccounts(this.value);
+            }
+        });
+
+        function loadChartOfAccountTypes(selectedId = '') {
+            $.ajax({
+                url: '@Url.Action("GetChartOfAccountTypes", "ChartOfAccount")',
+                type: 'GET',
+                success: function (data) {
+                    const select = $('#ChartOfAccountTypeId');
+                    select.empty();
+                    select.append('<option value="">Select COA Type</option>');
+
+                    const parentAccounts = data.filter(coa => coa.parentId === 0);
+                    parentAccounts.forEach(parent => {
+                        const childAccounts = data.filter(coa => coa.parentId === parent.id);
+                        if (childAccounts.length > 0) {
+                            let optgroup = $('<optgroup>').attr('label', parent.name);
+                            childAccounts.forEach(child => {
+                                let option = $('<option>').val(child.id).text(child.name);
+                                if (child.id == selectedId) option.attr('selected', 'selected');
+                                optgroup.append(option);
+                            });
+                            select.append(optgroup);
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading COA types:', error);
+                }
+            });
+        }
+
+        function loadParentAccounts(chartOfAccountTypeId = '', selectedId = '') {
+            $.ajax({
+                url: '@Url.Action("GetParentAccounts", "ChartOfAccount")',
+                type: 'GET',
+                data: { chartOfAccountTypeId: chartOfAccountTypeId },
+                success: function (data) {
+                    const select = $('#ParentId');
+                    select.empty();
+                    select.append('<option value="">Select Parent</option>');
+                    if (!chartOfAccountTypeId) {
+                        const groupedAccounts = {};
+                        data.forEach(coa => {
+                            const typeName = coa.chartOfAccountType?.name || 'Uncategorized';
+                            if (!groupedAccounts[typeName]) {
+                                groupedAccounts[typeName] = [];
+                            }
+                            groupedAccounts[typeName].push(coa);
+                        });
+
+                        for (const [typeName, accounts] of Object.entries(groupedAccounts)) {
+                            let optgroup = $('<optgroup>').attr('label', typeName);
+                            accounts.sort((a, b) => a.name.localeCompare(b.name)).forEach(coa => {
+                                let option = $('<option>').val(coa.id).text(coa.name);
+                                if (coa.id == selectedId) option.attr('selected', 'selected');
+                                optgroup.append(option);
+                            });
+                            select.append(optgroup);
+                        }
+                    } else {
+                        data.sort((a, b) => a.name.localeCompare(b.name)).forEach(coa => {
+                            let option = $('<option>').val(coa.id).text(coa.name);
+                            if (coa.id == selectedId) option.attr('selected', 'selected');
+                            select.append(option);
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading parent accounts:', error);
+                }
+            });
+        }
 
         function editCOA(id, parentId, name, accountCode, accountTypeId) {
             document.getElementById("COAId").value = id;
             document.getElementById("Name").value = name;
             document.getElementById("AccountCode").value = accountCode;
-            document.getElementById("ChartOfAccountTypeId").value = accountTypeId;
-            document.getElementById("isSubAccount").checked = parentId !== "null";
-            document.getElementById("parentAccountContainer").style.display = parentId !== "null" ? "block" : "none";
-            document.getElementById("ParentId").value = parentId;
+
+            const isSubAccount = parentId !== "null" && parentId !== "0";
+            document.getElementById("isSubAccount").checked = isSubAccount;
+            document.getElementById("parentAccountContainer").style.display = isSubAccount ? "block" : "none";
+
+            loadChartOfAccountTypes(accountTypeId);
+            if (isSubAccount) {
+                loadParentAccounts(accountTypeId, parentId);
+            }
 
             document.getElementById("addCOAModalLabel").textContent = "Edit Chart Of Account";
             document.getElementById("modalSubmitText").textContent = "Update";
         }
+
+        $('#resetForm').click(function() {
+            $('#coaForm')[0].reset();
+            document.getElementById("parentAccountContainer").style.display = "none";
+            document.getElementById("COAId").value = "";
+            document.getElementById("addCOAModalLabel").textContent = "Chart Of Account";
+            document.getElementById("modalSubmitText").textContent = "Submit";
+            loadChartOfAccountTypes();
+        });
     </script>
 }
