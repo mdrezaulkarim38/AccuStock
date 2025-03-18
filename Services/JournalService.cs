@@ -1,11 +1,12 @@
 ﻿using AccuStock.Data;
+using AccuStock.Interface;
 using AccuStock.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace AccuStock.Services
 {
-    public class JournalService
+    public class JournalService : IjournalService
     {
         private readonly AppDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -35,6 +36,37 @@ namespace AccuStock.Services
             }
         }
 
+        public async Task<bool> UpdateJournal(JournalPost journal)
+        {
+            if (journal == null) throw new ArgumentNullException(nameof(journal));
+            try
+            {
+                int subscriptionId = GetSubscriptionId();
+                var existingJournal = await _context.JournalPosts
+                    .FirstOrDefaultAsync(j => j.SubscriptionId == subscriptionId && j.Id == journal.Id);
+
+                if (existingJournal == null) return false;
+
+                existingJournal.UserId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+                existingJournal.BranchId = journal.BranchId;
+                existingJournal.VchNo = journal.VchNo;
+                existingJournal.VchType = journal.VchType;
+                existingJournal.VchDate = journal.VchDate;
+                existingJournal.Debit = journal.Debit;
+                existingJournal.Credit = journal.Credit;
+                existingJournal.RefNo = journal.RefNo;
+                existingJournal.Notes = journal.Notes;
+                existingJournal.Updated = DateTime.Now;
+                _context.JournalPosts.Update(existingJournal);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return false;
+            }
+        }
         private async Task<string> GenerateVchNoAsync(int subscriptionId)
         {
             // Get the current year
@@ -79,5 +111,10 @@ namespace AccuStock.Services
             return int.TryParse(subscriptionIdClaim, out var subscriptionId) ? subscriptionId : 0;
         }
 
+        public async Task<List<JournalPost>> GetJournal()
+        {
+            var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
+            return await _context.JournalPosts.Where(b => b.SubscriptionId == int.Parse(subscriptionIdClaim!)).ToListAsync();
+        }
     }
 }

@@ -6,6 +6,6 @@ namespace AccuStock.Interface
     {
         Task<List<JournalPost>> GetJournal();
         Task<bool> Createjournal(JournalPost journal);
-        Task<bool> UpdateOpBl(JournalPost journal);
+        Task<bool> UpdateJournal(JournalPost journal);
     }
 }
