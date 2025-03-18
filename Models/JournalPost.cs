@@ -10,8 +10,8 @@ public class JournalPost
     public string? VchNo { get; set; }
     public DateTime? VchDate { get; set; }
     public int? VchType {  get; set; }
-    public Decimal? Debit {  get; set; }
-    public Decimal? Credit {  get; set; }
+    public decimal? Debit {  get; set; }
+    public decimal? Credit {  get; set; }
     public bool? Status { get; set; }
     public int? PurchaseId { get; set; }
     public int? VendorPaymentId { get; set; }

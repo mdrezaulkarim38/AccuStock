@@ -14,8 +14,8 @@ public class JournalPostDetail
     public string? VchNo { get; set; }
     public DateTime? VchDate { get; set; }
     public int? VchType { get; set; }
-    public Decimal? Debit { get; set; }
-    public Decimal? Credit { get; set; }
+    public decimal? Debit { get; set; }
+    public decimal? Credit { get; set; }
     public string? ChqNo {  get; set; }
     public DateTime? ChqDate {  get; set; }
     public string? Remarks {  get; set; }
