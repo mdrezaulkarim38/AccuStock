@@ -19,7 +19,6 @@
                         <thead class="table-primary">
                             <tr>
                                 <th>SL No.</th>
-                                <th>Name</th>
                                 <th>Date</th>
                                 <th>Journal#</th>
                                 <th>Reference Number</th>
@@ -32,17 +31,17 @@
                             @{
                                 int index = 0;
                             }
-                            @foreach (var user in Model)
+                            @foreach (var journal in Model)
                             {
                                 index++;
                                 <tr>
                                     <td>@index</td>
-                                    <td>@user.FullName</td>
-                                    <td>@user.Email</td>
-                                    <td>@user.Mobile</td>
-                                    <td>@user.Address</td>
-                                    <td>@(user.RoleId == 2 ? "Admin" : "Operator")</td>
-                                    <td>
+                                    <td>@journal.VchDate</td>
+                                    <td>@journal.VchNo</td>
+                                    <td>@journal.RefNo</td>
+                                    <td>@journal.Notes</td>
+                                    <td>@journal.Debit</td>                                                                        
+                                   @*  <td>
                                         <!-- Form to toggle status -->
                                         <form method="post" action="@Url.Action("ToggleUserStatus", "User")">
                                             <input type="hidden" name="userId" value="@user.Id" />
@@ -57,10 +56,10 @@
                                                 }
                                             </button>
                                         </form>
-                                    </td>
+                                    </td> *@
                                     <td>
                                         <button class="btn btn-warning btn-sm"
-                                                onclick="editUser('@user.Id', '@user.BranchId', '@user.FullName', '@user.Address', '@user.Mobile', '@user.Email', '@user.RoleId')"
+                                                onclick="editJournal('@journal.Id', '@journal.VchDate', '@journal.VchNo', '@journal.RefNo', '@journal.Notes', '@journal.Notes', '@journal.Debit')"
                                                 data-bs-toggle="modal" data-bs-target="#addJournalModal">
                                             <i class="fas fa-edit"></i> Edit
                                         </button>
@@ -86,12 +85,12 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header text-dark" style="background : #f9f9fb;">
-                <h5 class="modal-title" id="addJournalModalLabel">Add User</h5>
+                <h5 class="modal-title" id="addJournalModalLabel">Add Journal</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form asp-action="CreateOrUpdateUser" method="post">
-                    <input type="hidden" id="UserId" name="Id">
+                <form asp-action="CreateOrUpdatejournal" method="post">
+                    <input type="hidden" id="JournalId" name="Id">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="BranchId" class="form-label">Select Branch</label>
@@ -152,7 +151,7 @@
 
 @section Scripts {
     <script>
-        function editUser(id, branchId, fullName, address, mobile, email, roleId) {
+        function editJournal(id, branchId, fullName, address, mobile, email, roleId) {
             document.getElementById("UserId").value = id;
             document.getElementById("BranchId").value = branchId.toString();
             document.getElementById("FullName").value = fullName;

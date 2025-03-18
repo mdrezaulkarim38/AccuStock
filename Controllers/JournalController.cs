@@ -21,5 +21,31 @@ namespace AccuStock.Controllers
             var JournalList = await _journalService.GetJournal();           
             return View(JournalList);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateOrUpdatejournal(JournalPost journal)
+        {
+            //if (user.Id == 0)
+            //{
+            //    bool isCreated = await _userService.CreateUser(user);
+            //    if (!isCreated)
+            //    {
+            //        TempData["ErrorMessage"] = "A User already exists for this SubscriptionId.";
+            //        return RedirectToAction("UserList");
+            //    }
+            //    TempData["SuccessMessage"] = "User Created Successfully";
+            //}
+            //else
+            //{
+            //    bool isUpdated = await _userService.UpdateUser(user);
+            //    if (!isUpdated)
+            //    {
+            //        TempData["ErrorMessage"] = "User name already exists or update failed";
+            //        return RedirectToAction("UserList");
+            //    }
+            //    TempData["SuccessMessage"] = "User Updated Successfully";
+            //}
+            return RedirectToAction("JournalList");
+        }
     }
 }
