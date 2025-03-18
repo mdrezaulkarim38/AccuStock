@@ -18,6 +18,8 @@ namespace AccuStock.Data
         public DbSet<ChartOfAccountType> ChartOfAccountTypes { get; set; }
         public DbSet<ChartOfAccount> ChartOfAccounts { get; set; }
         public DbSet<OpeningBalances> OpeningBalances { get; set; }
+        public DbSet<JournalPost> JournalPosts { get; set; }
+        public DbSet<JournalPostDetail> JournalPostDetails { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

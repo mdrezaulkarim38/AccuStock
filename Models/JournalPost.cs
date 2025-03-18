@@ -9,6 +9,7 @@ public class JournalPost
     public Branch? Branch { get; set; }
     public string? VchNo { get; set; }
     public DateTime? VchDate { get; set; }
+
     public int? VchType {  get; set; }
     public decimal? Debit {  get; set; }
     public decimal? Credit {  get; set; }
