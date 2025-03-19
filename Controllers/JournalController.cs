@@ -24,6 +24,12 @@ public class JournalController : Controller
         return View(journalList);
     }
 
+    [HttpGet]
+    public IActionResult AddJournal()
+    {
+        return View();
+    }
+
     [HttpPost]
     public Task<IActionResult> CreateOrUpdatejournal(JournalPost journal)
     {
