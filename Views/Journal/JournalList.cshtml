@@ -9,7 +9,7 @@
         <div class="card shadow">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Users List</h5>
-                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addJournalModal">
+                <button class="btn btn-primary btn-sm">
                     <i class="fas fa-solid fa-plus"></i> Add New
                 </button>
             </div>
@@ -17,31 +17,31 @@
                 <div class="table-responsive">
                     <table class="table  datanew">
                         <thead class="table-primary">
-                            <tr>
-                                <th>SL No.</th>
-                                <th>Date</th>
-                                <th>Journal#</th>
-                                <th>Reference Number</th>
-                                <th>Notes</th>
-                                <th>Amount</th>
-                                <th>Action</th>
-                            </tr>
+                        <tr>
+                            <th>SL No.</th>
+                            <th>Date</th>
+                            <th>Journal No</th>
+                            <th>Reference Number</th>
+                            <th>Notes</th>
+                            <th>Amount</th>
+                            <th>Action</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            @{
-                                int index = 0;
-                            }
-                            @foreach (var journal in Model)
-                            {
-                                index++;
-                                <tr>
-                                    <td>@index</td>
-                                    <td>@journal.VchDate</td>
-                                    <td>@journal.VchNo</td>
-                                    <td>@journal.RefNo</td>
-                                    <td>@journal.Notes</td>
-                                    <td>@journal.Debit</td>                                                                        
-                                   @*  <td>
+                        @{
+                            int index = 0;
+                        }
+                        @foreach (var journal in Model)
+                        {
+                            index++;
+                            <tr>
+                                <td>@index</td>
+                                <td>@journal.VchDate</td>
+                                <td>@journal.VchNo</td>
+                                <td>@journal.RefNo</td>
+                                <td>@journal.Notes</td>
+                                <td>@journal.Debit</td>
+                                @*  <td>
                                         <!-- Form to toggle status -->
                                         <form method="post" action="@Url.Action("ToggleUserStatus", "User")">
                                             <input type="hidden" name="userId" value="@user.Id" />
@@ -57,19 +57,19 @@
                                             </button>
                                         </form>
                                     </td> *@
-                                    <td>
-                                        <button class="btn btn-warning btn-sm"
-                                                onclick="editJournal('@journal.Id', '@journal.VchDate', '@journal.VchNo', '@journal.RefNo', '@journal.Notes', '@journal.Notes', '@journal.Debit')"
-                                                data-bs-toggle="modal" data-bs-target="#addJournalModal">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </button>
+                                <td>
+                                    <button class="btn btn-warning btn-sm"
+                                            onclick="editJournal('@journal.Id', '@journal.VchDate', '@journal.VchNo', '@journal.RefNo', '@journal.Notes', '@journal.Notes', '@journal.Debit')"
+                                            data-bs-toggle="modal" data-bs-target="#addJournalModal">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
 
-                                        <button class="btn btn-danger btn-sm" id="alert_demo_3_2">
-                                            <i class="fas fa-trash-alt"></i> Reset Password
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
+                                    <button class="btn btn-danger btn-sm" id="alert_demo_3_2">
+                                        <i class="fas fa-trash-alt"></i> Reset Password
+                                    </button>
+                                </td>
+                            </tr>
+                        }
                         </tbody>
                     </table>
                 </div>
@@ -77,108 +77,3 @@
         </div>
     </div>
 </div>
-
-
-
-
-<div class="modal fade" id="addJournalModal" tabindex="-1" aria-labelledby="addJournalModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header text-dark" style="background : #f9f9fb;">
-                <h5 class="modal-title" id="addJournalModalLabel">Add Journal</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form asp-action="CreateOrUpdatejournal" method="post">
-                    <input type="hidden" id="JournalId" name="Id">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="BranchId" class="form-label">Select Branch</label>
-                            <select class="form-select" id="BranchId" name="BranchId" required>
-                                <option value="">Select Branch</option>
-                                @if (ViewBag.Branches != null)
-                                {
-                                    @foreach (var branch in ViewBag.Branches)
-                                    {
-                                        <option value="@branch.Id">@branch.Name</option>
-                                    }
-                                }
-                            </select>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="FullName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="FullName" name="FullName" required>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="Address" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="Address" name="Address">
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="Mobile" class="form-label">Contact No</label>
-                            <input type="text" class="form-control" id="Mobile" name="Mobile">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="Email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="Email" name="Email">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="RoleId" class="form-label">User Type</label>
-                            <select class="form-select" id="RoleId" name="RoleId" required>
-                                <option value="0">Select User Type</option>
-                                <option value="2">Admin</option>
-                                <option value="3">Operator</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="d-flex">
-                        <button type="submit" class="btn btn-success btn-sm me-2">
-                            <i class="bi bi-check-circle"></i> <span id="modalSubmitText">Submit</span>
-                        </button>
-                        <button type="reset" class="btn btn-secondary btn-sm">
-                            <i class="bi bi-arrow-clockwise"></i> Refresh
-                        </button>
-                    </div>
-
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-@section Scripts {
-    <script>
-        function editJournal(id, branchId, fullName, address, mobile, email, roleId) {
-            document.getElementById("UserId").value = id;
-            document.getElementById("BranchId").value = branchId.toString();
-            document.getElementById("FullName").value = fullName;
-            document.getElementById("Address").value = address;
-            document.getElementById("Mobile").value = mobile;
-            document.getElementById("Email").value = email;
-            console.log(roleId);
-            document.getElementById("RoleId").value = roleId.toString();
-
-            document.getElementById("addJournalModalLabel").textContent = "Edit User";
-            document.getElementById("modalSubmitText").textContent = "Update";
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            var addJournalModal = document.getElementById("addJournalModal");
-            addJournalModal.addEventListener("hidden.bs.modal", function () {
-                document.getElementById("addJournalModalLabel").textContent = "Add User";
-                document.getElementById("modalSubmitText").textContent = "Submit";
-                document.getElementById("UserId").value = "";
-                document.getElementById("Branch").value = "";
-                document.getElementById("FullName").value = "";
-                document.getElementById("Address").value = "";
-                document.getElementById("Mobile").value = "";
-                document.getElementById("Email").value = "";
-                document.getElementById("UserType").value = "0";
-            });
-        });
-    </script>
-
-}
