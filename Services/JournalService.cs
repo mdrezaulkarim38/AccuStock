@@ -88,7 +88,7 @@ namespace AccuStock.Services
             }
 
             // Extract the year and number from the last VchNo
-            string lastVchNoString = lastVchNo.VchNo.ToString();
+            string lastVchNoString = lastVchNo.VchNo!.ToString();
             int lastYear = int.Parse(lastVchNoString.Substring(0, 4)); // Get the first 4 digits as year
             int lastNumber = int.Parse(lastVchNoString.Substring(4)); // Get the rest as the number part
 
