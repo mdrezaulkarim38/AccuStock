@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AccuStock.Migrations
 {
     /// <inheritdoc />
-    public partial class opbl : Migration
+    public partial class Opbl : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

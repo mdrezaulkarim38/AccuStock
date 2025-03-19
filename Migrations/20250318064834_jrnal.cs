@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AccuStock.Migrations
 {
     /// <inheritdoc />
-    public partial class jrnal : Migration
+    public partial class Jrnal : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AccuStock.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250318064834_jrnal")]
-    partial class jrnal
+    [Migration("20250318064834_Jrnal")]
+    partial class Jrnal
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
