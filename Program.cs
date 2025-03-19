@@ -27,10 +27,12 @@ builder.Services.AddScoped<IBusinessYear, BusinessYearService>();
 builder.Services.AddScoped<IBankAccountService, BankAccountsService>();
 builder.Services.AddScoped<IChartOfAccount, ChartOfAccountService>();
 builder.Services.AddScoped<IOpeningBalanceService, OpeningBalanceService>();
+builder.Services.AddScoped<IJournalService, JournalService>();
 builder.Services.AddHttpContextAccessor();
 
 // Configure DbContext with resilience
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AccountConnection")));
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AccountConnection")));
 
 // Configure cookie authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace AccuStock.Services
 {
-    public class JournalService : IjournalService
+    public class JournalService : IJournalService
     {
         private readonly AppDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -23,7 +23,8 @@ namespace AccuStock.Services
             try
             {
                 journal.SubscriptionId = GetSubscriptionId();
-                journal.UserId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+                journal.UserId =
+                    int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
                 journal.VchNo = await GenerateVchNoAsync(journal.SubscriptionId);
                 _context.Add(journal);
                 await _context.SaveChangesAsync();
@@ -47,7 +48,8 @@ namespace AccuStock.Services
 
                 if (existingJournal == null) return false;
 
-                existingJournal.UserId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+                existingJournal.UserId =
+                    int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
                 existingJournal.BranchId = journal.BranchId;
                 existingJournal.VchNo = journal.VchNo;
                 existingJournal.VchType = journal.VchType;
@@ -67,6 +69,7 @@ namespace AccuStock.Services
                 return false;
             }
         }
+
         private async Task<string> GenerateVchNoAsync(int subscriptionId)
         {
             // Get the current year
@@ -114,7 +117,8 @@ namespace AccuStock.Services
         public async Task<List<JournalPost>> GetJournal()
         {
             var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-            return await _context.JournalPosts.Where(b => b.SubscriptionId == int.Parse(subscriptionIdClaim!)).ToListAsync();
+            return await _context.JournalPosts.Where(b => b.SubscriptionId == int.Parse(subscriptionIdClaim!))
+                .ToListAsync();
         }
     }
 }
