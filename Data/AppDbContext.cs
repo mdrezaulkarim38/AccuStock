@@ -83,7 +83,50 @@ namespace AccuStock.Data
             .HasForeignKey(b => b.SubscriptionId)
             .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ChartOfAccount>().HasOne(ca => ca.Subscription).WithMany().HasForeignKey(ca=> ca.SubScriptionId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ChartOfAccount>().HasOne(ca => ca.Subscription).WithMany().HasForeignKey(ca => ca.SubScriptionId).OnDelete(DeleteBehavior.Restrict);
+
+
+            // Decimal property configuration to avoid truncation warnings
+            modelBuilder.Entity<JournalPost>()
+                .Property(j => j.Credit)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<JournalPost>()
+                .Property(j => j.Debit)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<JournalPostDetail>()
+                .Property(j => j.Credit)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<JournalPostDetail>()
+                .Property(j => j.Debit)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<OpeningBalances>()
+                .Property(o => o.ClsCredit)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<OpeningBalances>()
+                .Property(o => o.ClsDebit)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<OpeningBalances>()
+                .Property(o => o.OpnCredit)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<OpeningBalances>()
+                .Property(o => o.OpnDebit)
+                .HasColumnType("decimal(18,2)");
+            
+            modelBuilder.Entity<OpeningBalances>()
+            .Property(o=> o.Debit)
+            .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<OpeningBalances>()
+            .Property(o=> o.Credit)
+            .HasColumnType("decimal(18,2)");
+
         }
 
     }
