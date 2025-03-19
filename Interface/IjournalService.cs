@@ -2,7 +2,7 @@
 
 namespace AccuStock.Interface
 {
-    public interface IjournalService
+    public interface IJournalService
     {
         Task<List<JournalPost>> GetJournal();
         Task<bool> Createjournal(JournalPost journal);
