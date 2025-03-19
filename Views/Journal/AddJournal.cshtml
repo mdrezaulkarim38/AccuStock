@@ -31,7 +31,7 @@
                         </select>
                     </div>
 
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped" id="journalTable">
                         <thead class="table-primary">
                             <tr>
                                 <th>Head Of Account</th>
@@ -42,25 +42,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><input type="text" name="headOfAccount" id="headOfAccount" class="form-control" /></td>
-                                <td><input type="text" name="Description" id="Description" class="form-control" /></td>
-                                <td><input type="number" name="Debit" id="Debit" class="form-control" /></td>
-                                <td><input type="number" name="Credit" id="Credit" class="form-control" /></td>
-                                <td><button type="button" class="btn btn-danger btn-sm">X</button></td>
-                            </tr>
-                            <tr>
-                                <td><input type="text" name="headOfAccount" id="headOfAccount" class="form-control" /></td>
-                                <td><input type="text" name="Description" id="Description" class="form-control" /></td>
-                                <td><input type="number" name="Debit" id="Debit" class="form-control" /></td>
-                                <td><input type="number" name="Credit" id="Credit" class="form-control" /></td>
-                                <td><button type="button" class="btn btn-danger btn-sm">X</button></td>
+                            <tr class="rowTemplate">
+                                <td><input type="text" name="headOfAccount" class="form-control" /></td>
+                                <td><input type="text" name="Description" class="form-control" /></td>
+                                <td><input type="number" name="Debit" class="form-control" /></td>
+                                <td><input type="number" name="Credit" class="form-control" /></td>
+                                <td><button type="button" class="btn btn-danger btn-sm removeRow">X</button></td>
                             </tr>
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="5" class="">
-                                    <button type="button" class="btn btn-success btn-sm">Add New Row</button>
+                                <td colspan="5">
+                                    <button type="button" class="btn btn-success btn-sm" id="addNewRow">Add New Row</button>
                                 </td>
                             </tr>
                             <tr>
@@ -85,7 +78,27 @@
 </div>
 
 <style>
-.table>:not(:first-child) {
-    border-top: none;!important
-}
+    .table>:not(:first-child) {
+        border-top: none !important;
+    }
 </style>
+
+@section Scripts {
+    <script>
+        document.getElementById("addNewRow").addEventListener("click", function() {
+            var tableBody = document.querySelector("#journalTable tbody");
+            var newRow = document.querySelector(".rowTemplate").cloneNode(true);
+            newRow.querySelectorAll("input").forEach(function(input) {
+                input.value = ""; 
+            });
+            tableBody.appendChild(newRow);
+        });
+
+        document.querySelector("#journalTable").addEventListener("click", function(event) {
+            if (event.target.classList.contains("removeRow")) {
+                var row = event.target.closest("tr");
+                row.remove();
+            }
+        });
+    </script>
+}
