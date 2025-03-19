@@ -88,7 +88,7 @@
                             <option value="">Select Year</option>
                             @if (ViewBag.BusinessYears != null)
                             {
-                                @foreach (var year in ViewBag.BusinessYears as List<BusinessYear>)
+                                @foreach (var year in ViewBag.BusinessYears as List<BusinessYear> ?? new List<BusinessYear>())
                                 {
                                     <option value="@year.Id">@year.Name</option>
                                 }
