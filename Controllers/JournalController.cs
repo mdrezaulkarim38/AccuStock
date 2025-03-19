@@ -1,9 +1,11 @@
 ﻿using AccuStock.Interface;
 using AccuStock.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccuStock.Controllers;
 
+[Authorize]
 public class JournalController : Controller
 {
     private readonly IJournalService _journalService;

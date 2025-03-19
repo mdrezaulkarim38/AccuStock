@@ -4,69 +4,68 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace AccuStock.Controllers
+namespace AccuStock.Controllers;
+
+[Authorize]
+public class ChartOfAccountController : Controller
 {
-    [Authorize]
-    public class ChartOfAccountController : Controller
+    private readonly IChartOfAccount _chartOfAccount;
+
+    public ChartOfAccountController(IChartOfAccount chartOfAccount)
     {
-        private readonly IChartOfAccount _chartOfAccount;
+        _chartOfAccount = chartOfAccount;
+    }
 
-        public ChartOfAccountController(IChartOfAccount chartOfAccount)
+    [HttpGet]
+    public async Task<IActionResult> ChartOfAccountList()
+    {
+        return View(await _chartOfAccount.GetAllChartOfAccount());
+    }
+
+
+    [HttpGet]
+    public async Task<IActionResult> GetChartOfAccountTypes()
+    {
+        var types = await _chartOfAccount.GetAllChartOfAccountType();
+        return Json(types);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetParentAccounts(int? chartOfAccountTypeId = null)
+    {
+        var accounts = await _chartOfAccount.GetAllChartOfAccount();
+        if (chartOfAccountTypeId.HasValue)
         {
-            _chartOfAccount = chartOfAccount;
+            accounts = accounts.Where(a => a.ChartOfAccountTypeId == chartOfAccountTypeId.Value).ToList();
         }
-
-        [HttpGet]
-        public async Task<IActionResult> ChartOfAccountList()
+        return Json(accounts);
+    }
+    [HttpPost]
+    public async Task<IActionResult> CreateOrUpdateChartOfAccount(ChartOfAccount model)
+    {
+        if (model.Id == 0)
         {
-            return View(await _chartOfAccount.GetAllChartOfAccount());
-        }
-
-
-        [HttpGet]
-        public async Task<IActionResult> GetChartOfAccountTypes()
-        {
-            var types = await _chartOfAccount.GetAllChartOfAccountType();
-            return Json(types);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetParentAccounts(int? chartOfAccountTypeId = null)
-        {
-            var accounts = await _chartOfAccount.GetAllChartOfAccount();
-            if (chartOfAccountTypeId.HasValue)
+            bool isCreated = await _chartOfAccount.CreateChartOfAccount(model);
+            if (!isCreated)
             {
-                accounts = accounts.Where(a => a.ChartOfAccountTypeId == chartOfAccountTypeId.Value).ToList();
-            }
-            return Json(accounts);
-        }
-        [HttpPost]
-        public async Task<IActionResult> CreateOrUpdateChartOfAccount(ChartOfAccount model)
-        {
-            if (model.Id == 0)
-            {
-                bool isCreated = await _chartOfAccount.CreateChartOfAccount(model);
-                if (!isCreated)
-                {
-                    TempData["ErrorMessage"] = "Unsuccessfull to Create.";
-                    return RedirectToAction("ChartOfAccountList");
-                }
-
-                TempData["SuccessMessage"] = "ChartOfAccount Year Created Successfully";
-            }
-            else
-            {
-                bool isUpdated = await _chartOfAccount.UpdateChartOfAccount(model);
-                if (!isUpdated)
-                {
-                    TempData["ErrorMessage"] = "Unsuccessfull to Create update";
-                    return RedirectToAction("ChartOfAccountList");
-                }
-
-                TempData["SuccessMessage"] = "Chart Of Account Updated Successfully";
+                TempData["ErrorMessage"] = "Unsuccessfull to Create.";
+                return RedirectToAction("ChartOfAccountList");
             }
 
-            return RedirectToAction("ChartOfAccountList");
+            TempData["SuccessMessage"] = "ChartOfAccount Year Created Successfully";
         }
+        else
+        {
+            bool isUpdated = await _chartOfAccount.UpdateChartOfAccount(model);
+            if (!isUpdated)
+            {
+                TempData["ErrorMessage"] = "Unsuccessfull to Create update";
+                return RedirectToAction("ChartOfAccountList");
+            }
+
+            TempData["SuccessMessage"] = "Chart Of Account Updated Successfully";
+        }
+
+        return RedirectToAction("ChartOfAccountList");
     }
 }
