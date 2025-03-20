@@ -17,17 +17,18 @@
                             <h3>Sign In</h3>
                             <h4>Please login to your account</h4>
                         </div>
+                    <form method="post">
                         <div class="form-login">
-                            <label>Email</label>
+                        <label for="Email" class="form-label">Email</label>
                             <div class="form-addons">
-                                <input type="text" placeholder="Enter your email address">
+                            <input type="email" class="form-control" id="Email" name="Email" required />
                                 <img src="~/assets/img/icons/mail.svg" alt="img">
                             </div>
                         </div>
                         <div class="form-login">
-                            <label>Password</label>
+                        <label for="Password" class="form-label">Password</label>
                             <div class="pass-group">
-                                <input type="password" class="pass-input" placeholder="Enter your password">
+                            <input type="password" class="form-control" id="Password" name="Password" required />
                                 <span class="fas toggle-password fa-eye-slash"></span>
                             </div>
                         </div>
@@ -37,31 +38,15 @@
                             </div>
                         </div>
                         <div class="form-login">
-                            <a class="btn btn-login" href="index.html">Sign In</a>
+                        @* <a class="btn btn-login" asp-controller="Auth" asp-action="Login">Sign In</a> *@
+                            <button type="submit" class="btn btn-login">Login</button>
                         </div>
                         <div class="signinform text-center">
-                            <h4>Don’t have an account? <a href="signup.html" class="hover-a">Sign Up</a></h4>
+                        <h4>Don’t have an account? <a asp-controller="Auth" asp-action="Register" class="hover-a">Sign Up</a></h4>
                         </div>
-                        <div class="form-setlogin">
-                            <h4>Or sign up with</h4>
-                        </div>
-                        <div class="form-sociallink">
-                            <ul>
-                                <li>
-                                    <a href="javascript:void(0);">
-                                        <img src="~/assets/img/icons/google.png" class="me-2" alt="google">
-                                        Sign Up using Google
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:void(0);">
-                                        <img src="~/assets/img/icons/facebook.png" class="me-2" alt="google">
-                                        Sign Up using Facebook
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                    </form>
                     </div>
+                    
                 </div>
                 <div class="login-img">
                     <img src="~/assets/img/login.jpg" alt="img">
