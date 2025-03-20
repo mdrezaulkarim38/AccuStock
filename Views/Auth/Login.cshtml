@@ -5,27 +5,67 @@
     Layout = "~/Views/Shared/_LayoutWithoutNav.cshtml";
 }
 
-<div class="card shadow-lg p-4 w-100" style="max-width: 400px;">
-    <h3 class="text-center mb-4 text-primary">SynergyAccount</h3>
-
-    <p class="text-center mb-4">Don't have an account? <a asp-controller="Auth" asp-action="Register" class="text-decoration-underline text-primary">Create one</a></p>
-
-    <form method="post">
-        <div class="mb-3">
-            <label for="Email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="Email" name="Email" required />
+    <div class="main-wrapper">
+        <div class="account-content">
+            <div class="login-wrapper">
+                <div class="login-content">
+                    <div class="login-userset">
+                        <div class="login-logo">
+                            <img src="~/assets/img/logo.png" alt="img">
+                        </div>
+                        <div class="login-userheading">
+                            <h3>Sign In</h3>
+                            <h4>Please login to your account</h4>
+                        </div>
+                        <div class="form-login">
+                            <label>Email</label>
+                            <div class="form-addons">
+                                <input type="text" placeholder="Enter your email address">
+                                <img src="~/assets/img/icons/mail.svg" alt="img">
+                            </div>
+                        </div>
+                        <div class="form-login">
+                            <label>Password</label>
+                            <div class="pass-group">
+                                <input type="password" class="pass-input" placeholder="Enter your password">
+                                <span class="fas toggle-password fa-eye-slash"></span>
+                            </div>
+                        </div>
+                        <div class="form-login">
+                            <div class="alreadyuser">
+                                <h4><a href="forgetpassword.html" class="hover-a">Forgot Password?</a></h4>
+                            </div>
+                        </div>
+                        <div class="form-login">
+                            <a class="btn btn-login" href="index.html">Sign In</a>
+                        </div>
+                        <div class="signinform text-center">
+                            <h4>Don’t have an account? <a href="signup.html" class="hover-a">Sign Up</a></h4>
+                        </div>
+                        <div class="form-setlogin">
+                            <h4>Or sign up with</h4>
+                        </div>
+                        <div class="form-sociallink">
+                            <ul>
+                                <li>
+                                    <a href="javascript:void(0);">
+                                        <img src="~/assets/img/icons/google.png" class="me-2" alt="google">
+                                        Sign Up using Google
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);">
+                                        <img src="~/assets/img/icons/facebook.png" class="me-2" alt="google">
+                                        Sign Up using Facebook
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="login-img">
+                    <img src="~/assets/img/login.jpg" alt="img">
+                </div>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="Password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="Password" name="Password" required />
-        </div>
-        <button type="submit" class="btn btn-primary w-100">Login</button>
-    </form>
-
-    @if (ViewData.ModelState.ErrorCount > 0)
-    {
-        <div class="alert alert-danger mt-3">
-            Invalid login attempt. Please check your email and password.
-        </div>
-    }
-</div>
+    </div>
