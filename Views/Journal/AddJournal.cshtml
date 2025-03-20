@@ -10,29 +10,41 @@
             </div>
             <div class="card-body">
                 <form method="post">
-                    <div class="mb-3">
-                        <label for="VchDate" class="form-label">Date:</label>
-                        <input type="date" id="VchDate" name="VchDate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="RefNo" class="form-label">Reference:</label>
-                        <input type="text" id="RefNo" name="RefNo" class="form-control" placeholder="Enter Reference No" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="Notes" class="form-label">Notes:</label>
-                        <input type="text" id="Notes" name="Notes" class="form-control" placeholder="Enter Notes" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="JournalType" class="form-label">Journal Type:</label>
-                        <select id="JournalType" class="form-select" name="JournalType">
-                            <option value="" selected>Select Journal Type</option>
-                            <option value="CV">CV</option>
-                            <option value="JV">JV</option>
-                        </select>
-                    </div>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td><strong>Date:</strong></td>
+                                <td>
+                                    <input type="date" id="VchDate" name="VchDate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Reference:</strong></td>
+                                <td>
+                                    <input type="text" id="RefNo" name="RefNo" class="form-control" placeholder="Enter Reference No" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Notes:</strong></td>
+                                <td>
+                                    <input type="text" id="Notes" name="Notes" class="form-control" placeholder="Enter Notes" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Journal Type:</strong></td>
+                                <td>
+                                    <select id="JournalType" class="form-select" name="JournalType">
+                                        <option value="" selected>Select Journal Type</option>
+                                        <option value="CV">CV</option>
+                                        <option value="JV">JV</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                    <table class="table table-bordered table-striped" id="journalTable">
-                        <thead class="table-primary">
+                    <table class="table table-bordered table-striped mt-5" id="journalTable">
+                        <thead style="background:#fafafa;">
                             <tr>
                                 <th>Head Of Account</th>
                                 <th>Description</th>
@@ -78,7 +90,7 @@
 </div>
 
 <style>
-    .table>:not(:first-child) {
+    .table > :not(:first-child) {
         border-top: none !important;
     }
 </style>
@@ -89,7 +101,7 @@
             var tableBody = document.querySelector("#journalTable tbody");
             var newRow = document.querySelector(".rowTemplate").cloneNode(true);
             newRow.querySelectorAll("input").forEach(function(input) {
-                input.value = ""; 
+                input.value = "";
             });
             tableBody.appendChild(newRow);
         });
