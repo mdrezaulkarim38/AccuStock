@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using AccuStock.Models.ViewModels.Auth;
 using AccuStock.Interface;
+using Microsoft.AspNetCore.Identity;
+using AccuStock.Models;
 
 namespace AccuStock.Controllers;
 
@@ -101,6 +103,40 @@ public class AuthController : Controller
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return RedirectToAction("Login", "Auth");
+    }
+
+
+    [HttpGet]
+    public IActionResult ResetPassword()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        try
+        {
+            var result = await _authService.ResetPasswordAsync(model.CurrentPassword, model.NewPassword, model.ConfirmPassword);
+
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Password successfully reset!";
+                return RedirectToAction("Dashboard", "Home");
+            }
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = ex.Message;
+        }
+
+        return View(model);
     }
 
     public IActionResult AccessDenied()

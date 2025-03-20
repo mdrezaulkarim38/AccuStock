@@ -1,6 +1,8 @@
-﻿namespace AccuStock.Models;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class User
+namespace AccuStock.Models;
+
+public class User 
 {
     public int Id { get; set; }
     public string? FullName { get; set; }

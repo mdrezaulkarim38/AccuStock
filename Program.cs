@@ -4,6 +4,7 @@ using AccuStock.Data;
 using AccuStock.Interface;
 using AccuStock.Models;
 using AccuStock.Services;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 

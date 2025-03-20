@@ -3,16 +3,19 @@ using AccuStock.Data;
 using AccuStock.Interface;
 using AccuStock.Models;
 using AccuStock.Models.ViewModels.Auth;
+using System.Security.Claims;
 
 namespace AccuStock.Services
 {
     public class AuthService : IAuthService
     {
         private readonly AppDbContext  _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthService(AppDbContext context)
+        public AuthService(AppDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<User> LoginAsync(string email, string password)
@@ -62,6 +65,33 @@ namespace AccuStock.Services
 
             return user;
         }
+        public async Task<bool> ResetPasswordAsync(string currentPassword, string newPassword, string confirmPassword)
+        {
+            // Get the currently logged-in user
+            var userId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            var user = await _context.Users.FindAsync(int.Parse(userId));
+            if (user == null || user.Password != currentPassword)
+            {
+                throw new Exception("Current password is incorrect");
+            }
+
+            if (newPassword != confirmPassword)
+            {
+                throw new Exception("New password and confirm password do not match");
+            }
+
+            // Update password
+            user.Password = newPassword;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
         private async Task<int> GetDefaultSubscriptionId()
         {
 

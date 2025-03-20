@@ -106,7 +106,7 @@
                             <a class="dropdown-item" href="#">
                                 <i class="me-2" data-feather="user"></i> My Profile
                             </a>
-                            <a class="dropdown-item" href="#"><i class="me-2" data-feather="settings"></i>Settings</a>
+                                <a asp-controller="Auth" asp-action="ResetPassword" class="dropdown-item"><i class="me-2" data-feather="settings"></i>Reset Password</a>
                             <hr class="m-0"/>
                             <a class="dropdown-item logout pb-0" asp-controller="Auth" asp-action="Logout">
                                 <img src="~/assets/img/icons/log-out.svg" class="me-2" alt="img"/>Logout
