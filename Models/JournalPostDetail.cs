@@ -19,7 +19,7 @@ public class JournalPostDetail
     public string? ChqNo {  get; set; }
     public DateTime? ChqDate {  get; set; }
     public string? Remarks {  get; set; }
-    public bool Status {  get; set; }
+    public int Status { get; set; } = 1; // 1 for pending, 2 =Approve and 3 = Reject;
     public int? PurchaseId { get; set; }
     public int? VendorPaymentId {  get; set; }
     public int? SaleId {  get; set; }

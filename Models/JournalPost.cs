@@ -13,7 +13,7 @@ public class JournalPost
     public int? VchType {  get; set; }
     public decimal? Debit {  get; set; }
     public decimal? Credit {  get; set; }
-    public bool? Status { get; set; }
+    public int Status { get; set; } = 1;
     public int? PurchaseId { get; set; }
     public int? VendorPaymentId { get; set; }
     public int? SaleId {  get; set; }
