@@ -9,25 +9,28 @@
                 <h5 class="card-title mb-0">New Journal</h5>
             </div>
             <div class="card-body">
-                <form method="post">
+                <form id="journalForm" method="post">
                     <table class="table">
                         <tbody>
                             <tr>
                                 <td><strong>Date:</strong></td>
                                 <td>
-                                    <input type="date" id="VchDate" name="VchDate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                    <input type="date" id="VchDate" name="VchDate" class="form-control"
+                                        value="@DateTime.Now.ToString("yyyy-MM-dd")" />
                                 </td>
                             </tr>
                             <tr>
                                 <td><strong>Reference:</strong></td>
                                 <td>
-                                    <input type="text" id="RefNo" name="RefNo" class="form-control" placeholder="Enter Reference No" />
+                                    <input type="text" id="RefNo" name="RefNo" class="form-control"
+                                        placeholder="Enter Reference No" />
                                 </td>
                             </tr>
                             <tr>
                                 <td><strong>Notes:</strong></td>
                                 <td>
-                                    <input type="text" id="Notes" name="Notes" class="form-control" placeholder="Enter Notes" />
+                                    <input type="text" id="Notes" name="Notes" class="form-control"
+                                        placeholder="Enter Notes" />
                                 </td>
                             </tr>
                             <tr>
@@ -56,7 +59,7 @@
                         <tbody>
                             <tr class="rowTemplate">
                                 <td>
-                                    <select id="HeadOfAccount" class="form-control">
+                                    <select name="HeadOfAccount" class="form-control headOfAccountDropdown">
                                         <option value="">Select Chart of Account</option>
                                     </select>
                                 </td>
@@ -69,7 +72,8 @@
                         <tfoot>
                             <tr>
                                 <td colspan="5">
-                                    <button type="button" class="btn btn-success btn-sm" id="addNewRow">Add New Row</button>
+                                    <button type="button" class="btn btn-success btn-sm" id="addNewRow">Add New
+                                        Row</button>
                                 </td>
                             </tr>
                             <tr>
@@ -94,27 +98,84 @@
 </div>
 
 <style>
-    .table > :not(:first-child) {
+    .table> :not(:first-child) {
         border-top: none !important;
     }
 </style>
 
 @section Scripts {
     <script>
-        document.getElementById("addNewRow").addEventListener("click", function() {
+        function loadHeadOfAccountDropdown() {
+    $.ajax({
+        url: '@Url.Action("GetHeadOfAccounts", "ChartOfAccount")',
+        type: 'GET',
+        success: function (data) {
+            const selectElements = document.querySelectorAll('.headOfAccountDropdown');
+            selectElements.forEach(select => {
+                select.innerHTML = '<option value="">Select Chart of Account</option>'; 
+                const groupedAccounts = {};
+                data.forEach(account => {
+                    const typeName = account.accountType || 'Uncategorized'; 
+                    if (!groupedAccounts[typeName]) {
+                        groupedAccounts[typeName] = [];
+                    }
+                    groupedAccounts[typeName].push(account);
+                });
+
+                for (const [typeName, accounts] of Object.entries(groupedAccounts)) {
+                    let optgroup = document.createElement('optgroup');
+                    optgroup.label = typeName;
+
+                    accounts.sort((a, b) => a.name.localeCompare(b.name)).forEach(account => {
+                        let option = document.createElement('option');
+                        option.value = account.id;  
+                        option.textContent = '[' + account.accountCode + '] ' + account.name;  
+                        optgroup.appendChild(option);
+                    });
+
+                    select.appendChild(optgroup);
+                }
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error('Error loading Head of Accounts:', error);
+        }
+    });
+}
+
+
+
+        // Add a new row to the table
+        document.getElementById("addNewRow").addEventListener("click", function () {
             var tableBody = document.querySelector("#journalTable tbody");
             var newRow = document.querySelector(".rowTemplate").cloneNode(true);
-            newRow.querySelectorAll("input").forEach(function(input) {
+            newRow.querySelectorAll("input").forEach(function (input) {
                 input.value = "";
             });
             tableBody.appendChild(newRow);
+            loadHeadOfAccountDropdown(); // Reload dropdown for the new row
         });
 
-        document.querySelector("#journalTable").addEventListener("click", function(event) {
+        // Remove row functionality
+        document.querySelector("#journalTable").addEventListener("click", function (event) {
             if (event.target.classList.contains("removeRow")) {
                 var row = event.target.closest("tr");
                 row.remove();
             }
+        });
+
+        // Form validation to ensure at least two rows before submit
+        document.getElementById("journalForm").addEventListener("submit", function (event) {
+            var rows = document.querySelectorAll("#journalTable tbody tr");
+            if (rows.length < 2) {
+                alert("You must have at least two rows in the table.");
+                event.preventDefault();  // Prevent form submission
+            }
+        });
+
+        // Initial load of HeadOfAccount dropdown
+        document.addEventListener("DOMContentLoaded", function () {
+            loadHeadOfAccountDropdown();
         });
     </script>
 }

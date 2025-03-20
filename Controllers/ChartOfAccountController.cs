@@ -40,6 +40,14 @@ public class ChartOfAccountController : Controller
         }
         return Json(accounts);
     }
+    [HttpGet]
+    public async Task<JsonResult> GetHeadOfAccounts()
+    {
+        var accounts = await _chartOfAccount.GetAllChartOfAccount();
+        var result = accounts.Select(a => new { id = a.Id, name = a.Name , a.AccountCode, AccountType = a.ChartOfAccountType?.Name }).ToList(); 
+        return Json(result);
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateOrUpdateChartOfAccount(ChartOfAccount model)
     {
