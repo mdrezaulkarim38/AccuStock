@@ -123,8 +123,11 @@ public class AuthController : Controller
 
         try
         {
-            var result = await _authService.ResetPasswordAsync(model.CurrentPassword, model.NewPassword, model.ConfirmPassword);
-
+            if(model.ConfirmPassword != model.NewPassword)
+            {
+                throw new Exception("New password and confirm password do not match");
+            }
+            var result = await _authService.ResetPasswordAsync(model.CurrentPassword!, model.NewPassword!);
             if (result)
             {
                 TempData["SuccessMessage"] = "Password successfully reset!";

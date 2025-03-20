@@ -7,6 +7,6 @@ namespace AccuStock.Interface
     {
         Task<User> RegisterAsync(RegisterViewModel registerViewModel);
         Task<User> LoginAsync(string email, string password);
-        Task<bool> ResetPasswordAsync(string currentPassword, string newPassword, string confirmPassword);
+        Task<bool> ResetPasswordAsync(string currentPassword, string newPassword);
     }
 }

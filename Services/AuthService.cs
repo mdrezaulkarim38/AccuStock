@@ -65,30 +65,22 @@ namespace AccuStock.Services
 
             return user;
         }
-        public async Task<bool> ResetPasswordAsync(string currentPassword, string newPassword, string confirmPassword)
+        public async Task<bool> ResetPasswordAsync(string currentPassword, string newPassword)
         {
-            // Get the currently logged-in user
             var userId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null)
             {
                 throw new Exception("User not found.");
             }
-
-            var user = await _context.Users.FindAsync(int.Parse(userId));
+            var user = await _context.Users.Where(u => u.Id == int.Parse(userId)).FirstOrDefaultAsync();
             if (user == null || user.Password != currentPassword)
             {
                 throw new Exception("Current password is incorrect");
             }
 
-            if (newPassword != confirmPassword)
-            {
-                throw new Exception("New password and confirm password do not match");
-            }
-
-            // Update password
             user.Password = newPassword;
+            _context.Users.Update(user);
             await _context.SaveChangesAsync();
-
             return true;
         }
 
