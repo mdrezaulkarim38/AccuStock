@@ -72,8 +72,7 @@
                         <tfoot>
                             <tr>
                                 <td colspan="5">
-                                    <button type="button" class="btn btn-success btn-sm" id="addNewRow">Add New
-                                        Row</button>
+                                    <button type="button" class="btn btn-success btn-sm" id="addNewRow">Add New Row</button>
                                 </td>
                             </tr>
                             <tr>
@@ -146,6 +145,42 @@
                 }
             });
         }
+
+        // Event listener for the Debit and Credit fields to ensure only one is filled at a time
+        document.querySelector("#journalTable").addEventListener("input", function (event) {
+            if (event.target.name === "Debit" || event.target.name === "Credit") {
+                var row = event.target.closest("tr");
+                var debitInput = row.querySelector("[name='Debit']");
+                var creditInput = row.querySelector("[name='Credit']");
+                if (event.target.name === "Debit") {
+                    if (debitInput.value !== "") {
+                        creditInput.value = "";
+                    }
+                } else if (event.target.name === "Credit") {
+                    if (creditInput.value !== "") {
+                        debitInput.value = "";
+                    }
+                }
+                updateTotals();  
+            }
+        });
+
+        function updateTotals() {
+            let totalDebit = 0;
+            let totalCredit = 0;
+
+            document.querySelectorAll("#journalTable tbody tr").forEach(function (row) {
+                const debit = parseFloat(row.querySelector("[name='Debit']").value) || 0;
+                const credit = parseFloat(row.querySelector("[name='Credit']").value) || 0;
+
+                totalDebit += debit;
+                totalCredit += credit;
+            });
+
+            document.querySelector("#journalTable tfoot tr:nth-child(2) td span").textContent = totalDebit.toFixed(2);
+            document.querySelector("#journalTable tfoot tr:nth-child(3) td span").textContent = (totalDebit - totalCredit).toFixed(2);
+        }
+
         document.getElementById("addNewRow").addEventListener("click", function () {
             var tableBody = document.querySelector("#journalTable tbody");
             var newRow = document.querySelector(".rowTemplate").cloneNode(true);
@@ -154,13 +189,14 @@
             });
 
             tableBody.appendChild(newRow);
-            loadHeadOfAccountDropdown();
+            loadHeadOfAccountDropdown(); 
         });
 
         document.querySelector("#journalTable").addEventListener("click", function (event) {
             if (event.target.classList.contains("removeRow")) {
                 var row = event.target.closest("tr");
                 row.remove();
+                updateTotals(); 
             }
         });
         document.getElementById("journalForm").addEventListener("submit", function (event) {
@@ -174,6 +210,5 @@
         document.addEventListener("DOMContentLoaded", function () {
             loadHeadOfAccountDropdown();
         });
-
     </script>
 }
