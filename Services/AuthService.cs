@@ -10,12 +10,12 @@ namespace AccuStock.Services
     public class AuthService : IAuthService
     {
         private readonly AppDbContext  _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly BaseService _baseService;
 
-        public AuthService(AppDbContext context, IHttpContextAccessor httpContextAccessor)
+        public AuthService(AppDbContext context, BaseService baseService)
         {
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
+            _baseService = baseService;
         }
 
         public async Task<User> LoginAsync(string email, string password)
@@ -66,12 +66,12 @@ namespace AccuStock.Services
         }
         public async Task<bool> ResetPasswordAsync(string currentPassword, string newPassword)
         {
-            var userId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = _baseService.GetUserId();
             if (userId == null)
             {
                 throw new Exception("User not found.");
             }
-            var user = await _context.Users.Where(u => u.Id == int.Parse(userId)).FirstOrDefaultAsync();
+            var user = await _context.Users.Where(u => u.Id == userId).FirstOrDefaultAsync();
             if (user == null || user.Password != currentPassword)
             {
                 throw new Exception("Current password is incorrect");

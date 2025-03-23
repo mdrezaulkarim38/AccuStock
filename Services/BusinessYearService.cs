@@ -7,20 +7,20 @@ using System.Security.Claims;
 namespace AccuStock.Services;
 public class BusinessYearService : IBusinessYear
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly AppDbContext _context;
-    public BusinessYearService(IHttpContextAccessor httpContextAccessor, AppDbContext appDbContext)
+    private readonly BaseService _baseService;
+    public BusinessYearService(AppDbContext appDbContext, BaseService baseService)
     {
-        _httpContextAccessor = httpContextAccessor;
         _context = appDbContext;
+        _baseService = baseService;
     }
     public async Task<bool> CreateBusinessYear(BusinessYear businessYear)
     {
         try
         {
-            var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-            businessYear.SubscriptionId = int.Parse(subscriptionIdClaim!);  
-            businessYear.UserId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);         
+            var subscriptionIdClaim = _baseService.GetSubscriptionId();
+            businessYear.SubscriptionId = subscriptionIdClaim; 
+            businessYear.UserId = _baseService.GetUserId();
             await _context.BusinessYears.AddAsync(businessYear);
             await _context.SaveChangesAsync();
             return true;
@@ -34,13 +34,13 @@ public class BusinessYearService : IBusinessYear
     {
         try
         {
-            var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
+            var subscriptionIdClaim = _baseService.GetSubscriptionId();
             if (subscriptionIdClaim == null)
             {
                 return false;
             }
             var existingBusinessYear = await _context.BusinessYears
-                .FirstOrDefaultAsync(u => u.SubscriptionId == int.Parse(subscriptionIdClaim) && u.Id == businessYear.Id);
+                .FirstOrDefaultAsync(u => u.SubscriptionId == subscriptionIdClaim && u.Id == businessYear.Id);
 
             if (existingBusinessYear == null)
             {
@@ -50,7 +50,7 @@ public class BusinessYearService : IBusinessYear
             existingBusinessYear.Name = businessYear.Name;
             existingBusinessYear.FromDate = businessYear.FromDate;
             existingBusinessYear.ToDate = businessYear.ToDate;
-            existingBusinessYear.UserId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!); 
+            existingBusinessYear.UserId = _baseService.GetUserId();
             _context.BusinessYears.Update(existingBusinessYear);
             await _context.SaveChangesAsync();
             return true;
@@ -76,7 +76,6 @@ public class BusinessYearService : IBusinessYear
 
     public async Task<List<BusinessYear>> GetAllBusinessYear()
     {
-        var subscriptionId = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-        return await _context.BusinessYears.Where(b=> b.SubscriptionId == int.Parse(subscriptionId!)).ToListAsync();
+        return await _context.BusinessYears.Where(b=> b.SubscriptionId == _baseService.GetSubscriptionId()).ToListAsync();
     }
 }

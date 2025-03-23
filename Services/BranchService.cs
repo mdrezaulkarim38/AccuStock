@@ -8,21 +8,21 @@ namespace AccuStock.Services
     public class BranchService : IBranchService
     {
         private readonly AppDbContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly BaseService _baseService;
 
-        public BranchService(AppDbContext context, IHttpContextAccessor httpContextAccessor)
+        public BranchService(AppDbContext context, BaseService baseService)
         {
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
+            _baseService = baseService;
         }
 
         public async Task<bool> CreateBranch(Branch branch)
         {
             try
             {
-                var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-                branch.SubscriptionId = int.Parse(subscriptionIdClaim!);
-                var company = await _context.Companies.FirstOrDefaultAsync(c => c.SubscriptionId == int.Parse(subscriptionIdClaim!));
+                var subscriptionIdClaim = _baseService.GetSubscriptionId();
+                branch.SubscriptionId = subscriptionIdClaim;
+                var company = await _context.Companies.FirstOrDefaultAsync(c => c.SubscriptionId == subscriptionIdClaim);
                 branch.CompanyId = company!.Id;
 
                 _context.Branches.Add(branch);
@@ -39,8 +39,8 @@ namespace AccuStock.Services
         {
             try
             {
-                var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-                var existingBranch = await _context.Branches.FirstOrDefaultAsync(b => b.SubscriptionId == int.Parse(subscriptionIdClaim!) && b.Id == branch.Id);
+                var subscriptionIdClaim = _baseService.GetSubscriptionId();
+                var existingBranch = await _context.Branches.FirstOrDefaultAsync(b => b.SubscriptionId == subscriptionIdClaim && b.Id == branch.Id);
 
                 if (existingBranch == null)
                 {
@@ -80,8 +80,7 @@ namespace AccuStock.Services
 
         public async Task<List<Branch>> GetAllBranches()
         {
-            var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-            return await _context.Branches.Where(b => b.SubscriptionId == int.Parse(subscriptionIdClaim!)).ToListAsync();
+            return await _context.Branches.Where(b => b.SubscriptionId == _baseService.GetSubscriptionId()).ToListAsync();
         }
 
 

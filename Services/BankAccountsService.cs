@@ -9,13 +9,11 @@ namespace AccuStock.Services;
 public class BankAccountsService : IBankAccountService
 {
     private readonly AppDbContext _context;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly BaseService _baseService;
 
-    public BankAccountsService(AppDbContext context, IHttpContextAccessor httpContextAccessor, BaseService baseService)
+    public BankAccountsService(AppDbContext context, BaseService baseService)
     {
         _context = context;
-        _httpContextAccessor = httpContextAccessor;
         _baseService = baseService;
     }
     public async Task<bool> CreateBank(BankAccount bankAccount)
