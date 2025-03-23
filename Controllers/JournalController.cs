@@ -31,28 +31,30 @@ public class JournalController : Controller
     }
 
     [HttpPost]
-    public Task<IActionResult> CreateOrUpdatejournal(JournalPost journal)
+    public async Task<IActionResult> CreateOrUpdateJournal([FromBody] JournalPost journal)
     {
-        //if (user.Id == 0)
-        //{
-        //    bool isCreated = await _userService.CreateUser(user);
-        //    if (!isCreated)
-        //    {
-        //        TempData["ErrorMessage"] = "A User already exists for this SubscriptionId.";
-        //        return RedirectToAction("UserList");
-        //    }
-        //    TempData["SuccessMessage"] = "User Created Successfully";
-        //}
-        //else
-        //{
-        //    bool isUpdated = await _userService.UpdateUser(user);
-        //    if (!isUpdated)
-        //    {
-        //        TempData["ErrorMessage"] = "User name already exists or update failed";
-        //        return RedirectToAction("UserList");
-        //    }
-        //    TempData["SuccessMessage"] = "User Updated Successfully";
-        //}
-        return Task.FromResult<IActionResult>(RedirectToAction("JournalList"));
+        if (!ModelState.IsValid)
+        {
+            return Json(new { success = false, message = "Invalid data" });
+        }
+
+        try
+        {
+            bool result;
+            if (journal.Id == 0)
+            {
+                result = await _journalService.CreateJournal(journal);
+            }
+            else
+            {
+                result = await _journalService.UpdateJournal(journal);
+            }
+
+            return Json(new { success = result, message = result ? "Journal saved successfully" : "Failed to save journal" });
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
     }
 }

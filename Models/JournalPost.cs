@@ -9,16 +9,15 @@ public class JournalPost
     public Branch? Branch { get; set; }
     public string? VchNo { get; set; }
     public DateTime? VchDate { get; set; }
-
-    public int? VchType {  get; set; }
-    public decimal? Debit {  get; set; }
-    public decimal? Credit {  get; set; }
+    public int? VchType { get; set; }
+    public decimal? Debit { get; set; }
+    public decimal? Credit { get; set; }
     public int Status { get; set; } = 1;
     public int? PurchaseId { get; set; }
     public int? VendorPaymentId { get; set; }
-    public int? SaleId {  get; set; }
-    public int? CustomerPaymentId {  get; set; }
-    public int? UserId {  get; set; }
+    public int? SaleId { get; set; }
+    public int? CustomerPaymentId { get; set; }
+    public int? UserId { get; set; }
     public User? User { get; set; }
     public string? RefNo { get; set; }
     public string? Notes { get; set; }
@@ -26,4 +25,5 @@ public class JournalPost
     public DateTime? Updated { get; set; }
     public int SubscriptionId { get; set; }
     public Subscription? Subscription { get; set; }
+    public List<JournalPostDetail> JournalPostDetails { get; set; } = new List<JournalPostDetail>();
 }

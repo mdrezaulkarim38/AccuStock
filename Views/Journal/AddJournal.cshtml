@@ -253,5 +253,69 @@ document.getElementById("journalForm").addEventListener("submit", function (even
         event.preventDefault();
     }
         });
+
+        document.getElementById("journalForm").addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Validate minimum rows
+            let rows = document.querySelectorAll("#journalTable tbody tr");
+            if (rows.length < 2) {
+                alert("You must have at least two rows in the table.");
+                return;
+            }
+
+            // Collect form data
+            let journalData = {
+                VchDate: document.getElementById("VchDate").value,
+                RefNo: document.getElementById("RefNo").value,
+                Notes: document.getElementById("Notes").value,
+                VchType: parseInt(document.getElementById("JournalType").value),
+                JournalPostDetails: []
+            };
+
+            // Collect table row data (JournalPostDetails)
+            rows.forEach(row => {
+                let headOfAccount = row.querySelector(".headOfAccountDropdown").value;
+                let description = row.querySelector("[name='Description']").value;
+                let debit = parseFloat(row.querySelector("[name='Debit']").value) || 0;
+                let credit = parseFloat(row.querySelector("[name='Credit']").value) || 0;
+
+                if (headOfAccount) { // Only add row if head of account is selected
+                    journalData.JournalPostDetails.push({
+                        ChartOfAccountId: parseInt(headOfAccount),
+                        Description: description,
+                        Debit: debit,
+                        Credit: credit
+                    });
+                }
+            });
+
+            // Validate totals
+            let totalDebit = journalData.JournalPostDetails.reduce((sum, detail) => sum + detail.Debit, 0);
+            let totalCredit = journalData.JournalPostDetails.reduce((sum, detail) => sum + detail.Credit, 0);
+            if (totalDebit !== totalCredit) {
+                alert("Debit and Credit totals must match.");
+                return;
+            }
+
+            // Send data to controller via AJAX
+            $.ajax({
+                url: '@Url.Action("CreateOrUpdateJournal", "Journal")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(journalData),
+                success: function (response) {
+                    if (response.success) {
+                        alert("Journal saved successfully!");
+                        window.location.href = '@Url.Action("JournalList", "Journal")';
+                    } else {
+                        alert("Error saving journal: " + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("Error saving journal: " + error);
+                }
+            });
+        });
     </script>
 }
