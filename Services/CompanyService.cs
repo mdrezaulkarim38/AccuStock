@@ -10,15 +10,15 @@ namespace AccuStock.Services
     {
         private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly BaseService _baseService;
 
         public CompanyService(AppDbContext context,
-                            IWebHostEnvironment webHostEnvironment,
-                            IHttpContextAccessor httpContextAccessor)
+                            IWebHostEnvironment webHostEnvironment, BaseService baseService
+                            )
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _webHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+            _baseService = baseService;
         }
 
         public async Task<List<Company>> GetAllAsync()
@@ -51,10 +51,9 @@ namespace AccuStock.Services
                 if (company == null)
                     throw new ArgumentNullException(nameof(company));
 
-                var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-                if (subscriptionIdClaim != null)
+                var subscriptionId = _baseService.GetSubscriptionId();
+                if (subscriptionId != 0)
                 {
-                    var subscriptionId = int.Parse(subscriptionIdClaim);
                     var existingCompany = await _context.Companies
                         .FirstOrDefaultAsync(c => c.SubscriptionId == subscriptionId);
 
@@ -157,8 +156,7 @@ namespace AccuStock.Services
 
         public async Task<Company?> GetCompanyBySubscriptionId()
         {
-            var subscriptionId = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")!.Value;
-            return await _context.Companies.FirstOrDefaultAsync(c => c.SubscriptionId == int.Parse(subscriptionId!));
+            return await _context.Companies.FirstOrDefaultAsync(c => c.SubscriptionId == _baseService.GetSubscriptionId());
         }
 
     }
