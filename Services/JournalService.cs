@@ -23,19 +23,20 @@ namespace AccuStock.Services
         {
             if (journal == null) throw new ArgumentNullException(nameof(journal));
 
+            int userId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
                 journal.SubscriptionId = GetSubscriptionId();
-                journal.UserId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+                journal.UserId = userId;
                 journal.VchNo = await GenerateVchNoAsync(journal.SubscriptionId);
                 journal.Debit = journal.JournalPostDetails?.Sum(d => d.Debit) ?? 0;
                 journal.Credit = journal.JournalPostDetails?.Sum(d => d.Credit) ?? 0;
                 journal.Created = DateTime.Now;
 
-                journal.BusinessYearId =  await GetOrCreateBusinessYearId(journal.SubscriptionId, int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!));
+                journal.BusinessYearId = await GetOrCreateBusinessYearId(journal.SubscriptionId, userId);
 
-                journal.BranchId = journal.BranchId > 0 ? journal.BranchId : 1; 
+                journal.BranchId = await GetBranchId(journal.SubscriptionId, userId); 
                 journal.Status = 1; 
 
                 if (journal.JournalPostDetails != null)
@@ -69,6 +70,7 @@ namespace AccuStock.Services
         {
             if (journal == null) throw new ArgumentNullException(nameof(journal));
 
+            int userId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
@@ -78,7 +80,7 @@ namespace AccuStock.Services
                     .FirstOrDefaultAsync(j => j.SubscriptionId == subscriptionId && j.Id == journal.Id);
 
                 if (existingJournal == null) return false;
-                existingJournal.UserId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+                existingJournal.UserId = userId;
                 existingJournal.BranchId = journal.BranchId;
                 existingJournal.VchNo = journal.VchNo;
                 existingJournal.VchType = journal.VchType;
@@ -88,7 +90,7 @@ namespace AccuStock.Services
                 existingJournal.Debit = journal.JournalPostDetails?.Sum(d => d.Debit) ?? 0;
                 existingJournal.Credit = journal.JournalPostDetails?.Sum(d => d.Credit) ?? 0;
                 existingJournal.Updated = DateTime.Now;
-                existingJournal.BusinessYearId = await GetOrCreateBusinessYearId(subscriptionId, int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!));
+                existingJournal.BusinessYearId = await GetOrCreateBusinessYearId(subscriptionId, userId);
 
                 if (existingJournal.JournalPostDetails != null)
                 {
@@ -188,6 +190,12 @@ namespace AccuStock.Services
         {
             var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
             return int.TryParse(subscriptionIdClaim, out var subscriptionId) ? subscriptionId : 0;
+        }
+
+        private async Task<int> GetBranchId(int subscriptionId, int userId)
+        {
+            var userBranch = await _context.Users.Where(u => u.Id == userId && u.SubscriptionId == subscriptionId).FirstOrDefaultAsync();
+            return userBranch?.BranchId ?? 0;
         }
 
         public async Task<List<JournalPost>> GetJournal()
