@@ -18,6 +18,11 @@ namespace AccuStock.Services
         public async Task<bool> CreateUser(User user)
         {
             try {
+                var OldUserInfo = await _context.Users.Where(u => u.Email == user.Email).FirstOrDefaultAsync();
+                if(OldUserInfo != null)
+                {
+                    return false;
+                }
                 var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
                 user.SubscriptionId = int.Parse(subscriptionIdClaim!);
                 user.Password = "1234";
@@ -36,6 +41,11 @@ namespace AccuStock.Services
             {
                 var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
                 if (subscriptionIdClaim == null)
+                {
+                    return false;
+                }
+                var existingEmail = await _context.Users.Where(u => u.Id != user.Id && u.Email == user.Email).FirstOrDefaultAsync();
+                if(existingEmail != null)
                 {
                     return false;
                 }

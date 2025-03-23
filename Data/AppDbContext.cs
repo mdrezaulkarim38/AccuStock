@@ -24,6 +24,10 @@ namespace AccuStock.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<User>()
+                    .HasIndex(u => u.Email)
+                    .IsUnique();
+                    
             // Seeding the Role data
             modelBuilder.Entity<Role>().HasData(
                 new Role { Id = 1, Name = "SuperAdmin" },
@@ -118,13 +122,13 @@ namespace AccuStock.Data
             modelBuilder.Entity<OpeningBalances>()
                 .Property(o => o.OpnDebit)
                 .HasColumnType("decimal(18,2)");
-            
+
             modelBuilder.Entity<OpeningBalances>()
-            .Property(o=> o.Debit)
+            .Property(o => o.Debit)
             .HasColumnType("decimal(18,2)");
 
             modelBuilder.Entity<OpeningBalances>()
-            .Property(o=> o.Credit)
+            .Property(o => o.Credit)
             .HasColumnType("decimal(18,2)");
 
         }
