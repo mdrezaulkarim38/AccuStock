@@ -9,21 +9,19 @@ namespace AccuStock.Services
     public class OpeningBalanceService : IOpeningBalanceService
     {
         private readonly AppDbContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public OpeningBalanceService(AppDbContext context, IHttpContextAccessor httpContextAccessor)
+        private readonly BaseService _baseService;
+        public OpeningBalanceService(AppDbContext context, BaseService baseService)
         {
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
+            _baseService = baseService;
         }
 
         public async Task<bool> CreateOpBl(OpeningBalances openingBalance)
         {
             try
             {
-                var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-                openingBalance.SubScriptionId = int.Parse(subscriptionIdClaim!);
-                openingBalance.UserId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+                openingBalance.SubScriptionId = _baseService.GetSubscriptionId();
+                openingBalance.UserId = _baseService.GetUserId();
                 
                 await _context.OpeningBalances.AddAsync(openingBalance);
                 await _context.SaveChangesAsync();
@@ -38,8 +36,8 @@ namespace AccuStock.Services
         {
             try
             {
-                var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-                var existingOpBl = await _context.OpeningBalances.FirstOrDefaultAsync(o => o.SubScriptionId == int.Parse(subscriptionIdClaim!) && o.Id == opbl.Id);
+                var subscriptionIdClaim = _baseService.GetSubscriptionId();
+                var existingOpBl = await _context.OpeningBalances.FirstOrDefaultAsync(o => o.SubScriptionId == subscriptionIdClaim && o.Id == opbl.Id);
 
                 if (existingOpBl == null)
                 {
@@ -47,7 +45,7 @@ namespace AccuStock.Services
                 }
                 existingOpBl.Debit = opbl.Debit;
                 existingOpBl.Credit = opbl.Credit;                
-                existingOpBl.UserId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+                existingOpBl.UserId = _baseService.GetUserId();
                 _context.OpeningBalances.Update(existingOpBl);
                 await _context.SaveChangesAsync();
                 return true;
@@ -60,8 +58,7 @@ namespace AccuStock.Services
         }
         public async Task<List<OpeningBalances>> GetOpBl()
         {
-            var subscriptionId = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-            return await _context.OpeningBalances.Where(o => o.SubScriptionId == int.Parse(subscriptionId!)).ToListAsync();
+            return await _context.OpeningBalances.Where(o => o.SubScriptionId == _baseService.GetSubscriptionId()).ToListAsync();
         }
     }
 }

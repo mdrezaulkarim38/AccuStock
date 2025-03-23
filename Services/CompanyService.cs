@@ -11,7 +11,6 @@ namespace AccuStock.Services
         private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly BaseService _baseService;
-
         public CompanyService(AppDbContext context,
                             IWebHostEnvironment webHostEnvironment, BaseService baseService
                             )

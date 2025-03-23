@@ -10,7 +10,6 @@ public class BankAccountsService : IBankAccountService
 {
     private readonly AppDbContext _context;
     private readonly BaseService _baseService;
-
     public BankAccountsService(AppDbContext context, BaseService baseService)
     {
         _context = context;

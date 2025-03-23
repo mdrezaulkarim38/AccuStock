@@ -7,13 +7,11 @@ namespace AccuStock.Services
     public class UserService: IUserService
     {
         private readonly AppDbContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly BaseService _baseService;
 
-        public UserService(AppDbContext context, IHttpContextAccessor httpContextAccessor, BaseService baseService)
+        public UserService(AppDbContext context, BaseService baseService)
         {
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
             _baseService = baseService;
         }
 
