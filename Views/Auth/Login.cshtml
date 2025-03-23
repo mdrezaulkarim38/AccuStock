@@ -28,8 +28,8 @@
                         <div class="form-login">
                         <label for="Password" class="form-label">Password</label>
                             <div class="pass-group">
-                            <input type="password" class="form-control" id="Password" name="Password" required />
-                                <span class="fas toggle-password fa-eye-slash"></span>
+                                <input type="password" class="form-control" id="Password" name="Password" required />
+                                <span class="fas toggle-password fa-eye-slash" onclick="togglePassword()"></span>
                             </div>
                         </div>
                         <div class="form-login">
@@ -54,3 +54,20 @@
             </div>
         </div>
     </div>
+
+<script>
+    function togglePassword() {
+        var passwordInput = document.getElementById("Password");
+        var toggleIcon = document.querySelector(".toggle-password");
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text"; // Show password
+            toggleIcon.classList.remove("fa-eye-slash");
+            toggleIcon.classList.add("fa-eye");
+        } else {
+            passwordInput.type = "password"; // Hide password
+            toggleIcon.classList.remove("fa-eye");
+            toggleIcon.classList.add("fa-eye-slash");
+        }
+    }
+</script>
