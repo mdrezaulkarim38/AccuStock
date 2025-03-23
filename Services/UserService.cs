@@ -8,11 +8,13 @@ namespace AccuStock.Services
     {
         private readonly AppDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly BaseService _baseService;
 
-        public UserService(AppDbContext context, IHttpContextAccessor httpContextAccessor)
+        public UserService(AppDbContext context, IHttpContextAccessor httpContextAccessor, BaseService baseService)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
+            _baseService = baseService;
         }
 
         public async Task<bool> CreateUser(User user)
@@ -23,8 +25,8 @@ namespace AccuStock.Services
                 {
                     return false;
                 }
-                var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-                user.SubscriptionId = int.Parse(subscriptionIdClaim!);
+                var subscriptionIdClaim = _baseService.GetSubscriptionId();
+                user.SubscriptionId = subscriptionIdClaim;
                 user.Password = "1234";
                 user.Status = true;
                 await _context.Users.AddAsync(user);
@@ -39,18 +41,14 @@ namespace AccuStock.Services
         {
             try
             {
-                var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-                if (subscriptionIdClaim == null)
-                {
-                    return false;
-                }
+                var subscriptionIdClaim = _baseService.GetSubscriptionId();
                 var existingEmail = await _context.Users.Where(u => u.Id != user.Id && u.Email == user.Email).FirstOrDefaultAsync();
                 if(existingEmail != null)
                 {
                     return false;
                 }
                 var existingUser = await _context.Users
-                    .FirstOrDefaultAsync(u => u.SubscriptionId == int.Parse(subscriptionIdClaim) && u.Id == user.Id);
+                    .FirstOrDefaultAsync(u => u.SubscriptionId == subscriptionIdClaim && u.Id == user.Id);
 
                 if (existingUser == null)
                 {
@@ -88,8 +86,7 @@ namespace AccuStock.Services
 
         public async Task<List<User>> GetAllUsers()
         {
-            var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-            return await _context.Users.Where(u => u.SubscriptionId == int.Parse(subscriptionIdClaim!) && u.RoleId != 1).ToListAsync();
+            return await _context.Users.Where(u => u.SubscriptionId == _baseService.GetSubscriptionId() && u.RoleId != 1).ToListAsync();
         }
     }
 }
