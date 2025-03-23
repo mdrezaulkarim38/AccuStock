@@ -20,10 +20,9 @@ namespace AccuStock.Services
 
         public async Task<User> LoginAsync(string email, string password)
         {
-            // Find user by email
             var user = await _context.Users
                 .Include(u => u.Subscription)
-                .FirstOrDefaultAsync(u => u.Email == email && u.Status); // Only active users
+                .FirstOrDefaultAsync(u => u.Email == email && u.Status);
 
             if (user == null)
             {
@@ -92,7 +91,7 @@ namespace AccuStock.Services
                     IsActive = true                  
                 };
                 _context.Subscriptions.Add(subscription);
-                await _context.SaveChangesAsync(); // This persists the new subscription and assigns an ID
+                await _context.SaveChangesAsync();
             
             return subscription.Id;
         }
