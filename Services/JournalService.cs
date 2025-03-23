@@ -10,7 +10,7 @@ namespace AccuStock.Services
     {
         private readonly AppDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IBusinessYear _businessYearService; // Add dependency
+        private readonly IBusinessYear _businessYearService;
 
         public JournalService(AppDbContext context, IHttpContextAccessor httpContextAccessor, IBusinessYear businessYearService)
         {
@@ -26,7 +26,6 @@ namespace AccuStock.Services
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                // Set journal properties
                 journal.SubscriptionId = GetSubscriptionId();
                 journal.UserId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
                 journal.VchNo = await GenerateVchNoAsync(journal.SubscriptionId);
@@ -34,14 +33,11 @@ namespace AccuStock.Services
                 journal.Credit = journal.JournalPostDetails?.Sum(d => d.Credit) ?? 0;
                 journal.Created = DateTime.Now;
 
-                // Ensure a valid BusinessYearId
                 journal.BusinessYearId =  await GetOrCreateBusinessYearId(journal.SubscriptionId, int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!));
 
-                // Get default branch if needed
-                journal.BranchId = journal.BranchId > 0 ? journal.BranchId : 1; // Assuming 1 as default branch ID
-                journal.Status = 1; // Pending status
+                journal.BranchId = journal.BranchId > 0 ? journal.BranchId : 1; 
+                journal.Status = 1; 
 
-                // Add journal details
                 if (journal.JournalPostDetails != null)
                 {
                     foreach (var detail in journal.JournalPostDetails)
@@ -51,8 +47,8 @@ namespace AccuStock.Services
                         detail.VchDate = journal.VchDate;
                         detail.VchType = journal.VchType;
                         detail.BranchId = journal.BranchId;
-                        detail.BusinessYearId = journal.BusinessYearId; // Set BusinessYearId for details
-                        detail.Status = 1; // Pending status
+                        detail.BusinessYearId = journal.BusinessYearId;
+                        detail.Status = 1; 
                     }
                 }
 
@@ -82,8 +78,6 @@ namespace AccuStock.Services
                     .FirstOrDefaultAsync(j => j.SubscriptionId == subscriptionId && j.Id == journal.Id);
 
                 if (existingJournal == null) return false;
-
-                // Update journal properties
                 existingJournal.UserId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
                 existingJournal.BranchId = journal.BranchId;
                 existingJournal.VchNo = journal.VchNo;
@@ -96,7 +90,6 @@ namespace AccuStock.Services
                 existingJournal.Updated = DateTime.Now;
                 existingJournal.BusinessYearId = await GetOrCreateBusinessYearId(subscriptionId, int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!));
 
-                // Update or add journal details
                 if (existingJournal.JournalPostDetails != null)
                 {
                     _context.JournalPostDetails.RemoveRange(existingJournal.JournalPostDetails);
@@ -135,10 +128,7 @@ namespace AccuStock.Services
         {
             int currentYear = DateTime.Now.Year;
 
-            // Get all business years for the subscription
             var businessYears = await _businessYearService.GetAllBusinessYear();
-
-            // Check if an active business year exists for the current year
             var businessYear = businessYears
                 .FirstOrDefault(by => by.SubscriptionId == subscriptionId &&
                                      by.FromDate.Year <= currentYear &&
@@ -148,7 +138,6 @@ namespace AccuStock.Services
 
             if (businessYear == null)
             {
-                // Create a new business year if none exists
                 businessYear = new BusinessYear
                 {
                     Name = $"Business Year {currentYear}",
