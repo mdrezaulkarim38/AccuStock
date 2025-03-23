@@ -35,7 +35,7 @@ public class BusinessYearService : IBusinessYear
         try
         {
             var subscriptionIdClaim = _baseService.GetSubscriptionId();
-            if (subscriptionIdClaim == null)
+            if (subscriptionIdClaim == 0)
             {
                 return false;
             }

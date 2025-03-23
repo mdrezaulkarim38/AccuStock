@@ -67,7 +67,7 @@ namespace AccuStock.Services
         public async Task<bool> ResetPasswordAsync(string currentPassword, string newPassword)
         {
             var userId = _baseService.GetUserId();
-            if (userId == null)
+            if (userId == 0)
             {
                 throw new Exception("User not found.");
             }

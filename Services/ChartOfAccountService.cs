@@ -9,23 +9,16 @@ namespace AccuStock.Services;
 public class ChartOfAccountService : IChartOfAccount
 {
     private readonly AppDbContext _context;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly BaseService _baseService;
 
-    public ChartOfAccountService(AppDbContext context, IHttpContextAccessor httpContextAccessor)
+    public ChartOfAccountService(AppDbContext context, BaseService baseService)
     {
         _context = context;
-        _httpContextAccessor = httpContextAccessor;
+        _baseService = baseService;
     }
-
-    private int GetSubscriptionId()
-    {
-        var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-        return int.TryParse(subscriptionIdClaim, out var subscriptionId) ? subscriptionId : 0;
-    }
-
     public async Task<List<ChartOfAccount>> GetAllChartOfAccount()
     {
-        int subscriptionId = GetSubscriptionId();
+        int subscriptionId = _baseService.GetSubscriptionId();
         return await _context.ChartOfAccounts
             .Include(c => c.ChartOfAccountType)
             .Where(c => c.SubScriptionId == subscriptionId)
@@ -42,8 +35,8 @@ public class ChartOfAccountService : IChartOfAccount
         if (chartOfAccount == null) throw new ArgumentNullException(nameof(chartOfAccount));
         try
         {
-            chartOfAccount.SubScriptionId = GetSubscriptionId();
-            chartOfAccount.UserId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+            chartOfAccount.SubScriptionId = _baseService.GetSubscriptionId();
+            chartOfAccount.UserId = _baseService.GetUserId();
 
             _context.Add(chartOfAccount);
             await _context.SaveChangesAsync();
@@ -61,13 +54,13 @@ public class ChartOfAccountService : IChartOfAccount
         if (chartOfAccount == null) throw new ArgumentNullException(nameof(chartOfAccount));
         try
         {
-            int subscriptionId = GetSubscriptionId();
+            int subscriptionId = _baseService.GetSubscriptionId();
             var existingCoa = await _context.ChartOfAccounts
                 .FirstOrDefaultAsync(coa => coa.SubScriptionId == subscriptionId && coa.Id == chartOfAccount.Id);
 
             if (existingCoa == null) return false;
 
-            existingCoa.UserId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+            existingCoa.UserId = _baseService.GetUserId();
             existingCoa.AccountCode = chartOfAccount.AccountCode;
             existingCoa.Name = chartOfAccount.Name;
             existingCoa.ParentId = chartOfAccount.ParentId;

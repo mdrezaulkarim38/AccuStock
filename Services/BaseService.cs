@@ -16,14 +16,14 @@ public class BaseService
 
     public int GetSubscriptionId()
     {
-        var subscriptionId = _httpContextAccessor.HttpContext!.User.FindFirst("SubscriptionId")!.Value;
-        return int.Parse(subscriptionId);
+        var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
+        return int.TryParse(subscriptionIdClaim, out var subscriptionId) ? subscriptionId : 0;
     }
 
     public int GetUserId()
     {
         var userId = _httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
-        return int.Parse(userId);
+        return int.TryParse(userId, out var Id) ? Id : 0;
     }
     
 }
