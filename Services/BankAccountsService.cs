@@ -10,19 +10,21 @@ public class BankAccountsService : IBankAccountService
 {
     private readonly AppDbContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly BaseService _baseService;
 
-    public BankAccountsService(AppDbContext context, IHttpContextAccessor httpContextAccessor)
+    public BankAccountsService(AppDbContext context, IHttpContextAccessor httpContextAccessor, BaseService baseService)
     {
         _context = context;
         _httpContextAccessor = httpContextAccessor;
+        _baseService = baseService;
     }
     public async Task<bool> CreateBank(BankAccount bankAccount)
     {
         try
         {
-            var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-            bankAccount.SubscriptionId = int.Parse(subscriptionIdClaim!);
-            bankAccount.UserId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+            var subscriptionIdClaim = _baseService.GetSubscriptionId();
+            bankAccount.SubscriptionId = subscriptionIdClaim;
+            bankAccount.UserId = _baseService.GetUserId();
             await _context.BankAccounts.AddAsync(bankAccount);
             await _context.SaveChangesAsync();
             return true;
@@ -37,13 +39,13 @@ public class BankAccountsService : IBankAccountService
     {
         try
         {
-            var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
+            var subscriptionIdClaim = _baseService.GetSubscriptionId();
             if (subscriptionIdClaim == null)
             {
                 return false;
             }
             var existingBank = await _context.BankAccounts
-                .FirstOrDefaultAsync(b => b.SubscriptionId == int.Parse(subscriptionIdClaim) && b.Id == bankAccount.Id);
+                .FirstOrDefaultAsync(b => b.SubscriptionId == subscriptionIdClaim && b.Id == bankAccount.Id);
 
             if (existingBank == null)
             {
@@ -55,7 +57,7 @@ public class BankAccountsService : IBankAccountService
             existingBank.AccountNo = bankAccount.AccountNo;
             existingBank.Remarks = bankAccount.Remarks;
             existingBank.BranchId = bankAccount.BranchId;
-            existingBank.UserId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+            existingBank.UserId = _baseService.GetUserId();
             _context.BankAccounts.Update(existingBank);
             await _context.SaveChangesAsync();
             return true;
@@ -79,8 +81,7 @@ public class BankAccountsService : IBankAccountService
 
     public async Task<List<BankAccount>> GetAllBankAccount()
     {
-        var subscriptionId = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
-        return await _context.BankAccounts.Where(b => b.SubscriptionId == int.Parse(subscriptionId!)).ToListAsync();
+        return await _context.BankAccounts.Where(b => b.SubscriptionId == _baseService.GetSubscriptionId()).ToListAsync();
     }
 
 }
