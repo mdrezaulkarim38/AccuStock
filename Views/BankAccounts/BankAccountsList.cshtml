@@ -9,7 +9,7 @@
         <div class="card shadow">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">BankAccounts List</h5>
-                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addBankAccountModal">
+                <button class="btn btn-primary btn-sm" id="addNewBankAccountBtn" data-bs-toggle="modal" data-bs-target="#addBankAccountModal">
                     <i class="fas fa-solid fa-plus"></i> Add New
                 </button>
             </div>
@@ -156,7 +156,7 @@
             document.getElementById("modalSubmitText").textContent = "Submit";
         }
 
-        document.querySelector('[data-bs-target="#addBankAccountModal"]').addEventListener("click", function () {
+        document.getElementById("addNewBankAccountBtn").addEventListener("click", function () {
             resetBankAccountForm();
         });
 
