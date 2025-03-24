@@ -43,7 +43,7 @@ public class AuthController : Controller
         catch (Exception ex)
         {
 
-            TempData["ErrorMessage"] = "Registration Unsuccessful!" + ex.Message;
+            TempData["ErrorMessage"] = "Registration Unsuccessful! " + ex.Message;
             return View(registerViewModel);
         }
     }
@@ -95,7 +95,7 @@ public class AuthController : Controller
         }
         catch (Exception ex)
         {
-            TempData["ErrorMessage"] = "Login Unsuccessful!" + ex.Message;
+            TempData["ErrorMessage"] = "Login Unsuccessful! " + ex.Message;
             return View(loginViewModel);
         }
     }
