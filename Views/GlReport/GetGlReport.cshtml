@@ -1,0 +1,50 @@
+﻿@model AccuStock.Models.JournalPost;
+
+@{
+    ViewData["title"] = "General Ledger Report";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">General Ledger</div>
+            </div>
+            <div class="card-body">
+                <form asp-action="GetGlReport" method="post">
+                   @*  <input type="hidden" asp-for="" /> *@
+                   <div class="row">
+                       <div class="col-md-2">
+                            <label for="BranchId" class="form-label">Select Branch</label>
+                            <select class="form-select" id="BranchId" name="BranchId" required>
+                                <option value="">Select Branch</option>
+                                @if (ViewBag.Branches != null)
+                                {
+                                    @foreach (var branch in ViewBag.Branches)
+                                    {
+                                        <option value="@branch.Id">@branch.Name</option>
+                                    }
+                                }
+                            </select>
+                       </div>
+
+                       <div class="col-md-3">
+                            <label for="ChartOfAccountId" class="form-label">Select Account</label>
+                            <select class="form-select" id="ChartOfAccountId" name="ChartOfAccountId" required>
+                                <option value="">Select Account</option>
+                                @if (ViewBag.ChartOfAccounts != null)
+                                {
+                                    @foreach (var coa in ViewBag.ChartOfAccounts)
+                                    {
+                                        <option value="@coa.Id">@coa.Name</option>
+                                    }
+                                }
+                            </select>
+                       </div>
+                   </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
