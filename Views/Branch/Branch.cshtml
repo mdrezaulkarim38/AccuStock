@@ -9,7 +9,7 @@
         <div class="card shadow">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Branch List</h5>
-                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addBranchModal">
+                <button class="btn btn-primary btn-sm" id="addNewData" data-bs-toggle="modal" data-bs-target="#addBranchModal">
                     <i class="fas fa-solid fa-plus"></i> Add New
                 </button>
             </div>
@@ -128,13 +128,35 @@
 
 @section Scripts {
     <script>
+        function resetBranch() {
+            document.getElementById("BranchId").value = ""; 
+            document.getElementById("BranchType").value = "0"; 
+            document.getElementById("Name").value = "";
+            document.getElementById("Address").value = "";
+            document.getElementById("Contact").value = "";
+            document.getElementById("addBranchModalLabel").textContent = "Add Branch"; 
+            document.getElementById("modalSubmitText").textContent = "Submit";
+        }
+
+        document.getElementById("addNewData").addEventListener("click", function() {
+            resetBranch();
+        });
+
         function editBranch(id, branchType, name, address, contact) {
             document.getElementById("BranchId").value = id;
             document.getElementById("BranchType").value = branchType;
             document.getElementById("Name").value = name;
             document.getElementById("Address").value = address;
             document.getElementById("Contact").value = contact;
+            document.getElementById("addBranchModalLabel").textContent = "Edit Branch"; 
             document.getElementById("modalSubmitText").textContent = "Update";
         }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var addBranchModal = document.getElementById("addBranchModal");
+            addBranchModal.addEventListener("hidden.bs.modal", function() {
+                resetBranch();
+            });
+        });
     </script>
 }
