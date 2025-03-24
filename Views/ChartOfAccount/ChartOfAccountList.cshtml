@@ -17,38 +17,38 @@
                 <div class="table-responsive">
                     <table class="table  datanew">
                         <thead class="table-primary">
-                        <tr>
-                            <th>SL No.</th>
-                            <th>Name</th>
-                            <th>Account Code</th>
-                            <th>Account Type</th>
-                            <th>Action</th>
-                        </tr>
+                            <tr>
+                                <th>SL No.</th>
+                                <th>Name</th>
+                                <th>Account Code</th>
+                                <th>Account Type</th>
+                                <th>Action</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        @{
-                            int index = 0;
-                        }
-                        @foreach (var chartOfAccount in Model)
-                        {
-                            index++;
-                            <tr>
-                                <td>@index</td>
-                                <td>@chartOfAccount.Name</td>
-                                <td>@chartOfAccount.AccountCode</td>
-                                <td>@chartOfAccount.ChartOfAccountType?.Name</td>
-                                <td>
-                                    <button class="btn btn-warning btn-sm"
+                            @{
+                                int index = 0;
+                            }
+                            @foreach (var chartOfAccount in Model)
+                            {
+                                index++;
+                                <tr>
+                                    <td>@index</td>
+                                    <td>@chartOfAccount.Name</td>
+                                    <td>@chartOfAccount.AccountCode</td>
+                                    <td>@chartOfAccount.ChartOfAccountType?.Name</td>
+                                    <td>
+                                        <button class="btn btn-warning btn-sm"
                                             onclick="editCOA('@chartOfAccount.Id', '@chartOfAccount.ParentId', '@chartOfAccount.Name', '@chartOfAccount.AccountCode', '@chartOfAccount.ChartOfAccountTypeId')"
                                             data-bs-toggle="modal" data-bs-target="#addCOAModal">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                    @* <button class="btn btn-danger btn-sm" onclick="deleteCOA('@chartOfAccount.Id')">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        @* <button class="btn btn-danger btn-sm" onclick="deleteCOA('@chartOfAccount.Id')">
                                         <i class="fas fa-trash-alt"></i> Delete
                                     </button> *@
-                                </td>
-                            </tr>
-                        }
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -57,7 +57,6 @@
     </div>
 </div>
 
-<!-- Modal for Adding/Editing COA -->
 <div class="modal fade" id="addCOAModal" tabindex="-1" aria-labelledby="addCOAModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -117,8 +116,27 @@
 
 @section Scripts {
     <script>
-        $('#addCOAModal').on('show.bs.modal', function (e) {
+        function resetForm() {
+            $('#coaForm')[0].reset();
+            document.getElementById("COAId").value = ""; 
+            document.getElementById("isSubAccount").checked = false; 
+            document.getElementById("parentAccountContainer").style.display = "none"; 
+            document.getElementById("addCOAModalLabel").textContent = "Chart Of Account"; 
+            document.getElementById("modalSubmitText").textContent = "Submit"; 
+            $('#ChartOfAccountTypeId').empty().append('<option value="">Select COA Type</option>');
+            $('#ParentId').empty().append('<option value="">Select Parent</option>');
             loadChartOfAccountTypes();
+        }
+
+        $('#addCOAModal').on('show.bs.modal', function (e) {
+            if (e.relatedTarget && e.relatedTarget.classList.contains('btn-primary')) {
+                resetForm();
+            }
+            loadChartOfAccountTypes();
+        });
+
+        $('#addCOAModal').on('hidden.bs.modal', function () {
+            resetForm(); 
         });
 
         document.getElementById("isSubAccount").addEventListener("change", function () {
@@ -127,10 +145,12 @@
             if (this.checked) {
                 const selectedTypeId = $('#ChartOfAccountTypeId').val();
                 loadParentAccounts(selectedTypeId);
+            } else {
+                $('#ParentId').empty().append('<option value="">Select Parent</option>');
             }
         });
 
-        $('#ChartOfAccountTypeId').on('change', function() {
+        $('#ChartOfAccountTypeId').on('change', function () {
             if ($('#isSubAccount').is(':checked')) {
                 loadParentAccounts(this.value);
             }
@@ -225,13 +245,10 @@
             document.getElementById("modalSubmitText").textContent = "Update";
         }
 
-        $('#resetForm').click(function() {
-            $('#coaForm')[0].reset();
-            document.getElementById("parentAccountContainer").style.display = "none";
-            document.getElementById("COAId").value = "";
-            document.getElementById("addCOAModalLabel").textContent = "Chart Of Account";
-            document.getElementById("modalSubmitText").textContent = "Submit";
-            loadChartOfAccountTypes();
+        // Reset button click
+        $('#resetForm').click(function (e) {
+            e.preventDefault(); // Prevent default reset behavior if needed
+            resetForm();
         });
     </script>
 }
