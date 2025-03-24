@@ -17,6 +17,7 @@ public class OpeningBalanceController : Controller
         _chartOfAccountService = chartOfAccount;
         _businessYear = businessYear;
     }
+
     [HttpGet]
     public async Task<IActionResult> OpeningBalanceList()
     {               
@@ -29,6 +30,7 @@ public class OpeningBalanceController : Controller
 
         return View(opblList);
     }
+    
     [HttpPost]
     public async Task<IActionResult> CreateOrUpdateOpeningBalance(OpeningBalances opbl)
     {           

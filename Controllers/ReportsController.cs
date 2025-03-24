@@ -1,34 +1,35 @@
 ﻿using AccuStock.Interface;
 using AccuStock.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AccuStock.Controllers
+namespace AccuStock.Controllers;
+
+[Authorize]
+public class ReportsController : Controller
 {
-    public class ReportsController : Controller
+    private readonly IBranchService _BranchService;
+    private readonly IChartOfAccount _chartOfAccount;
+
+    public ReportsController(IBranchService BranchService, IChartOfAccount chartOfAccount)
     {
-        private readonly IBranchService _BranchService;
-        private readonly IChartOfAccount _chartOfAccount;
+        _BranchService = BranchService;
+        _chartOfAccount = chartOfAccount;
+    }
 
-        public ReportsController(IBranchService BranchService, IChartOfAccount chartOfAccount)
-        {
-            _BranchService = BranchService;
-            _chartOfAccount = chartOfAccount;
-        }
+    [HttpGet]
+    public async Task<IActionResult> GetGlReport()
+    {
+        var branches = await _BranchService.GetAllBranches();
+        ViewBag.Branches = branches;
+        var chartOfAccounts = await _chartOfAccount.GetAllChartOfAccount();
+        ViewBag.ChartOfAccounts = chartOfAccounts;
+        return View();
+    }
 
-        [HttpGet]
-        public async Task<IActionResult> GetGlReport()
-        {
-            var branches = await _BranchService.GetAllBranches();
-            ViewBag.Branches = branches;
-            var chartOfAccounts = await _chartOfAccount.GetAllChartOfAccount();
-            ViewBag.ChartOfAccounts = chartOfAccounts;
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult GetGlReport(JournalPost journalPost)
-        {
-            return View();
-        }
+    [HttpPost]
+    public IActionResult GetGlReport(JournalPost journalPost)
+    {
+        return View();
     }
 }
