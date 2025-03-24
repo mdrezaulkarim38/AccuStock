@@ -26,7 +26,7 @@ namespace AccuStock.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetGlReport(JournalPost journalPost)
+        public IActionResult GetGlReport(JournalPost journalPost)
         {
             return View();
         }
