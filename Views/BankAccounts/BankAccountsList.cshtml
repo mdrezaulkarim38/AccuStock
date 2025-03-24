@@ -41,19 +41,20 @@
                                     <td>@bank.BranchName</td>
                                     <td>@bank.AccountNo</td>
                                     <td>@bank.RoutingNo</td>
-                                    <td>@bank.Remarks</td>                                    
+                                    <td>@bank.Remarks</td>
                                     <td>
                                         <!-- Form to toggle status -->
                                         <form method="post" asp-action="ToggleBankStatus" asp-controller="BankAccounts">
                                             <input type="hidden" name="bankId" value="@bank.Id" />
-                                            <button type="submit" class="btn @(bank.Status ? "btn-success" : "btn-danger") btn-sm">
+                                            <button type="submit"
+                                                class="btn @(bank.Status ? "btn-success" : "btn-danger") btn-sm">
                                                 @if (bank.Status)
                                                 {
                                                     <span>Active</span>
                                                 }
                                                 else
                                                 {
-                                                   <span>Inactive</span>
+                                                    <span>Inactive</span>
                                                 }
                                             </button>
                                         </form>
@@ -62,8 +63,8 @@
                                         <button class="btn btn-warning btn-sm"
                                             onclick="editBankAccount('@bank.Id', '@bank.BranchId', '@bank.BankName', '@bank.BranchName', '@bank.RoutingNo', '@bank.AccountNo', '@bank.Remarks')"
                                             data-bs-toggle="modal" data-bs-target="#addBankAccountModal">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
 
                                     </td>
                                 </tr>
@@ -77,7 +78,8 @@
 </div>
 
 
-<div class="modal fade" id="addBankAccountModal" tabindex="-1" aria-labelledby="addBankAccountModalLabel" aria-hidden="true">
+<div class="modal fade" id="addBankAccountModal" tabindex="-1" aria-labelledby="addBankAccountModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header text-dark" style="background : #f9f9fb;">
@@ -142,27 +144,7 @@
 
 @section Scripts {
     <script>
-        function editBankAccount(id, branchId, bankName, branchName, routingNo, accountNo, remarks) {
-        document.getElementById("bankId").value = id;
-        document.getElementById("BranchId").value = branchId; // Ensure this matches the <select> option values
-        document.getElementById("BankName").value = bankName;
-        document.getElementById("BranchName").value = branchName;
-        document.getElementById("RoutingNo").value = routingNo;
-        document.getElementById("AccountNo").value = accountNo;
-        document.getElementById("Remarks").value = remarks;
-
-        document.getElementById("addBankAccountModalLabel").textContent = "Edit Bank Account";
-        document.getElementById("modalSubmitText").textContent = "Update";
-}
-
-
-    document.addEventListener("DOMContentLoaded", function () {
-        var addBankAccountModal = document.getElementById("addBankAccountModal");
-        addBankAccountModal.addEventListener("hidden.bs.modal", function () {
-            document.getElementById("addBankAccountModalLabel").textContent = "Add Bank Account";
-            document.getElementById("modalSubmitText").textContent = "Submit";
-
-            // Reset the form fields
+        function resetBankAccountForm() {
             document.getElementById("bankId").value = "";
             document.getElementById("BranchId").value = "";
             document.getElementById("BankName").value = "";
@@ -170,7 +152,30 @@
             document.getElementById("RoutingNo").value = "";
             document.getElementById("AccountNo").value = "";
             document.getElementById("Remarks").value = "";
+            document.getElementById("addBankAccountModalLabel").textContent = "Add Bank Account";
+            document.getElementById("modalSubmitText").textContent = "Submit";
+        }
+
+        document.querySelector('[data-bs-target="#addBankAccountModal"]').addEventListener("click", function () {
+            resetBankAccountForm();
         });
-    });
-</script>
+
+        function editBankAccount(id, branchId, bankName, branchName, routingNo, accountNo, remarks) {
+            document.getElementById("bankId").value = id;
+            document.getElementById("BranchId").value = branchId;
+            document.getElementById("BankName").value = bankName;
+            document.getElementById("BranchName").value = branchName;
+            document.getElementById("RoutingNo").value = routingNo;
+            document.getElementById("AccountNo").value = accountNo;
+            document.getElementById("Remarks").value = remarks;
+            document.getElementById("addBankAccountModalLabel").textContent = "Edit Bank Account";
+            document.getElementById("modalSubmitText").textContent = "Update";
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            var addBankAccountModal = document.getElementById("addBankAccountModal");
+            addBankAccountModal.addEventListener("hidden.bs.modal", function () {
+                resetBankAccountForm();
+            });
+        });
+    </script>
 }
