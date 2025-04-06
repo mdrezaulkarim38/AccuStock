@@ -1,4 +1,4 @@
-﻿@model AccuStock.Models.JournalPost;
+﻿@model IEnumerable<AccuStock.Models.ViewModels.GeneralLedger.GLedger>
 
 @{
     ViewData["title"] = "General Ledger Report";
@@ -12,9 +12,9 @@
             </div>
             <div class="card-body">
                 <form asp-action="GetGlReport" method="post">
-                   @*  <input type="hidden" asp-for="" /> *@
-                   <div class="row">
-                       <div class="col-md-2">
+                    <div class="row">
+                        <!-- Branch Dropdown -->
+                        <div class="col-md-2">
                             <label for="BranchId" class="form-label">Select Branch</label>
                             <select class="form-select" id="BranchId" name="BranchId" required>
                                 <option value="">Select Branch</option>
@@ -26,9 +26,10 @@
                                     }
                                 }
                             </select>
-                       </div>
+                        </div>
 
-                       <div class="col-md-3">
+                        <!-- Account Dropdown -->
+                        <div class="col-md-3">
                             <label for="ChartOfAccountId" class="form-label">Select Account</label>
                             <select class="form-select" id="ChartOfAccountId" name="ChartOfAccountId" required>
                                 <option value="">Select Account</option>
@@ -40,11 +41,47 @@
                                     }
                                 }
                             </select>
-                       </div>
-                   </div>
+                        </div>
+
+                        <!-- Date Range -->
+                        <div class="col-md-3">
+                            <label for="startDate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="startDate" name="startDate" required>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="endDate" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="endDate" name="endDate" required>
+                        </div>
+                    </div>
+
+                    <!-- Report Type -->
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <label for="reportType" class="form-label">Report Type</label>
+                            <select class="form-select" id="reportType" name="reportType" required>
+                                <option value="PDF">PDF</option>
+                                <option value="Excel">Excel</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <button type="submit" class="btn btn-primary">Generate Report</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
+@section Scripts {
+    <script>
+        // Print functionality - triggers browser print dialog
+        document.getElementById('printButton').addEventListener('click', function () {
+            window.print();
+        });
+    </script>
+}
