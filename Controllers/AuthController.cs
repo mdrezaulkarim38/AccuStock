@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using AccuStock.Models.ViewModels.Auth;
 using AccuStock.Interface;
-using Microsoft.AspNetCore.Identity;
-using AccuStock.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AccuStock.Controllers;
 
@@ -112,6 +111,7 @@ public class AuthController : Controller
         return View();
     }
 
+    [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
