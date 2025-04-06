@@ -10,11 +10,13 @@ public class ReportsController : Controller
 {
     private readonly IBranchService _BranchService;
     private readonly IChartOfAccount _chartOfAccount;
+    private readonly IGLedger _gLedgerService;
 
-    public ReportsController(IBranchService BranchService, IChartOfAccount chartOfAccount)
+    public ReportsController(IBranchService BranchService, IChartOfAccount chartOfAccount, IGLedger gLedger)
     {
         _BranchService = BranchService;
         _chartOfAccount = chartOfAccount;
+        _gLedgerService = gLedger;
     }
 
     [HttpGet]
