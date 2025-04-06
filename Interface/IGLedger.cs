@@ -1,9 +1,7 @@
 ﻿using AccuStock.Models.ViewModels.GeneralLedger;
 
-namespace AccuStock.Interface
+namespace AccuStock.Interface;
+public interface IGLedger
 {
-    public interface IGLedger
-    {
-        public Task<List<GLedger>> GetAllGLedger();
-    }
+    public Task<List<GLedger>> GetAllGLedger();
 }
