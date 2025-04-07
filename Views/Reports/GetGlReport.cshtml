@@ -13,26 +13,26 @@
             <div class="card-body">
                 <form id="filterForm">
                     <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <label for="fromDate" class="form-label">From Date</label>
+                        <div class="col-md-2 mb-2">
+                            <label for="fromDate" class="form-label">From Date:</label>
                             <input type="date" id="fromDate" class="form-control" />
                         </div>
-                        <div class="col-md-3 mb-3">
-                            <label for="toDate" class="form-label">To Date</label>
+                        <div class="col-md-2 mb-2">
+                            <label for="toDate" class="form-label">To Date:</label>
                             <input type="date" id="toDate" class="form-control" />
                         </div>
 
-                        <div class="col-md-3 mb-3">
-                            <label for="reportType" class="form-label">Report Type</label>
+                        <div class="col-md-2 mb-2">
+                            <label for="reportType" class="form-label">Report Type:</label>
                             <select id="reportType" class="form-select">
-                                <option>Select Option</option>
+                                <option>Select Type</option>
                                 <option value="1">Accrual</option>
                                 <option value="2">Cash</option>
                             </select>
                         </div>
 
-                        <div class="col-md-3 mb-3">
-                             <label for="BranchId" class="form-label">Select Branch</label>
+                        <div class="col-md-2 mb-2">
+                             <label for="BranchId" class="form-label">Branch:</label>
                              <select class="form-select" id="BranchId" name="BranchId" required>
                                  <option value="">Select Branch</option>
                                  @if (ViewBag.Branches != null)
@@ -44,7 +44,7 @@
                                  }
                              </select>
                         </div>                        
-                        <div class="col-md-3 mb-3">
+                        <div class="col-md-2 mb-2">
                             <label class="form-label">&nbsp;</label>
                             <button type="submit" class="btn btn-primary form-control">Apply Filters</button>
                         </div>
@@ -62,8 +62,8 @@
         <div class="card">
             <div class="card-header">
                 <div class="card-title text-center">
-                    <p>Demo Org</p>
-                    <h3>General Ledger</h3>
+                    <h6>Demo Org</h6>
+                    <h4>General Ledger</h4>
                 </div>
             </div>
             <div class="card-body">
