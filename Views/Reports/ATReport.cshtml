@@ -1,0 +1,132 @@
+@{
+    ViewData["title"] = "Account Transactions Report";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Filters</h5>
+            </div>
+            <div class="card-body">
+                <form id="filterForm">
+                    <div class="row">
+                        <div class="col-md-2 mb-2">
+                            <label for="fromDate" class="form-label">From Date:</label>
+                            <input type="date" id="fromDate" class="form-control" />
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <label for="toDate" class="form-label">To Date:</label>
+                            <input type="date" id="toDate" class="form-control" />
+                        </div>
+
+                        <div class="col-md-2 mb-2">
+                            <label for="reportType" class="form-label">Report Type:</label>
+                            <select id="reportType" class="form-select">
+                                <option>Select Type</option>
+                                <option value="1">Accrual</option>
+                                <option value="2">Cash</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2 mb-2">
+                             <label for="BranchId" class="form-label">Branch:</label>
+                             <select class="form-select" id="BranchId" name="BranchId" required>
+                                 <option value="">Select Branch</option>
+                                 @if (ViewBag.Branches != null)
+                                 { 
+                                     @foreach (var branch in ViewBag.Branches)
+                                     { 
+                                         <option value="@branch.Id">@branch.Name</option>
+                                     } 
+                                 }
+                             </select>
+                        </div>                        
+                        <div class="col-md-2 mb-2">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary form-control">Apply Filters</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow-sm border-light">
+            <div class="card-header text-center py-3">
+                <div class="card-title">
+                    <h6 class="font-weight-bold text-muted">Demo Org</h6>
+                    <h4 class="font-weight-bold">Account Transactions</h4>
+                    <h6>From Date: 01/03/2025 - To Date: 30/03/2025</h6>
+                    <h6>Basis: Accrual</h6>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Date</th>
+                            <th>Account</th>
+                            <th>Transaction Details</th>
+                            <th>Transaction Type</th>
+                            <th>Transaction</th>
+                            <th>Reference</th>
+                            <th>Debit</th>
+                            <th>Credit</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>01 April 2025</td>
+                            <td>32145895</td>
+                            <td>ChartOfAccount Name</td>
+                            <td>payment</td>
+                            <td>333</td>
+                            <td>KJI65415</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                        </tr>
+                        <tr>
+                            <td>01 April 2025</td>
+                            <td>32145895</td>
+                            <td>ChartOfAccount Name</td>
+                            <td>payment</td>
+                            <td>333</td>
+                            <td>KJI65415</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                        </tr>
+                        <tr>
+                            <td>01 April 2025</td>
+                            <td>32145895</td>
+                            <td>ChartOfAccount Name</td>
+                            <td>payment</td>
+                            <td>333</td>
+                            <td>KJI65415</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>    
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Print functionality - triggers browser print dialog
+        document.getElementById('printButton').addEventListener('click', function () {
+            window.print();
+        });
+    </script>
+}
