@@ -59,18 +59,60 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title text-center">
-                    <h6>Demo Org</h6>
-                    <h3>General Ledger</h3>
-                    <h5>From Date: 01/03/2025 - To Date: 30/03/2025</h5>
-                    <h5>Basis : Accrual</h5>
+        <div class="card shadow-sm border-light">
+            <div class="card-header text-center py-3">
+                <div class="card-title">
+                    <h6 class="font-weight-bold text-muted">Demo Org</h6>
+                    <h4 class="font-weight-bold">General Ledger</h4>
+                    <h6>From Date: 01/03/2025 - To Date: 30/03/2025</h6>
+                    <h6>Basis: Accrual</h6>
                 </div>
             </div>
             <div class="card-body">
-                
-
+                <table class="table table-bordered table-striped table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Account</th>
+                            <th>Debit</th>
+                            <th>Credit</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ChartOfAccount Name</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                        </tr>
+                        <tr>
+                            <td>ChartOfAccount Name</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                        </tr>
+                        <tr>
+                            <td>ChartOfAccount Name</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="font-weight-bold">
+                            <td>Total for GST Payable</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                        </tr>
+                        <tr class="font-weight-bold">
+                            <td>Total for CGST Payable</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                        </tr>
+                    </tfoot>
+                </table>
                 @* <form asp-action="GetGlReport" method="post"> *@
                 @*     <div class="row"> *@
                 @*         <!-- Branch Dropdown --> *@
