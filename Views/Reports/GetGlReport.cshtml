@@ -8,70 +8,128 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <div class="card-title">General Ledger</div>
+                <h5>Filters</h5>
             </div>
             <div class="card-body">
-                <form asp-action="GetGlReport" method="post">
+                <form id="filterForm">
                     <div class="row">
-                        <!-- Branch Dropdown -->
-                        <div class="col-md-2">
-                            <label for="BranchId" class="form-label">Select Branch</label>
-                            <select class="form-select" id="BranchId" name="BranchId" required>
-                                <option value="">Select Branch</option>
-                                @if (ViewBag.Branches != null)
-                                {
-                                    @foreach (var branch in ViewBag.Branches)
-                                    {
-                                        <option value="@branch.Id">@branch.Name</option>
-                                    }
-                                }
-                            </select>
+                        <div class="col-md-3 mb-3">
+                            <label for="fromDate" class="form-label">From Date</label>
+                            <input type="date" id="fromDate" class="form-control" />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="toDate" class="form-label">To Date</label>
+                            <input type="date" id="toDate" class="form-control" />
                         </div>
 
-                        <!-- Account Dropdown -->
-                        <div class="col-md-3">
-                            <label for="ChartOfAccountId" class="form-label">Select Account</label>
-                            <select class="form-select" id="ChartOfAccountId" name="ChartOfAccountId" required>
-                                <option value="">Select Account</option>
-                                @if (ViewBag.ChartOfAccounts != null)
-                                {
-                                    @foreach (var coa in ViewBag.ChartOfAccounts)
-                                    {
-                                        <option value="@coa.Id">@coa.Name</option>
-                                    }
-                                }
-                            </select>
-                        </div>
-
-                        <!-- Date Range -->
-                        <div class="col-md-3">
-                            <label for="startDate" class="form-label">Start Date</label>
-                            <input type="date" class="form-control" id="startDate" name="startDate" required>
-                        </div>
-
-                        <div class="col-md-3">
-                            <label for="endDate" class="form-label">End Date</label>
-                            <input type="date" class="form-control" id="endDate" name="endDate" required>
-                        </div>
-                    </div>
-
-                    <!-- Report Type -->
-                    <div class="row mt-3">
-                        <div class="col-md-3">
+                        <div class="col-md-3 mb-3">
                             <label for="reportType" class="form-label">Report Type</label>
-                            <select class="form-select" id="reportType" name="reportType" required>
-                                <option value="PDF">PDF</option>
-                                <option value="Excel">Excel</option>
+                            <select id="reportType" class="form-select">
+                                <option>Select Option</option>
+                                <option value="1">Accrual</option>
+                                <option value="2">Cash</option>
                             </select>
                         </div>
-                    </div>
 
-                    <div class="row mt-3">
-                        <div class="col-md-6">
-                            <button type="submit" class="btn btn-primary">Generate Report</button>
+                        <div class="col-md-3 mb-3">
+                             <label for="BranchId" class="form-label">Select Branch</label>
+                             <select class="form-select" id="BranchId" name="BranchId" required>
+                                 <option value="">Select Branch</option>
+                                 @if (ViewBag.Branches != null)
+                                 { 
+                                     @foreach (var branch in ViewBag.Branches)
+                                     { 
+                                         <option value="@branch.Id">@branch.Name</option>
+                                     } 
+                                 }
+                             </select>
+                        </div>                        
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary form-control">Apply Filters</button>
                         </div>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title text-center">
+                    <p>Demo Org</p>
+                    <h3>General Ledger</h3>
+                </div>
+            </div>
+            <div class="card-body">
+
+
+                @* <form asp-action="GetGlReport" method="post"> *@
+                @*     <div class="row"> *@
+                @*         <!-- Branch Dropdown --> *@
+                @*         <div class="col-md-2"> *@
+                @*             <label for="BranchId" class="form-label">Select Branch</label> *@
+                @*             <select class="form-select" id="BranchId" name="BranchId" required> *@
+                @*                 <option value="">Select Branch</option> *@
+                @*                 @if (ViewBag.Branches != null) *@
+                @*                 { *@
+                @*                     @foreach (var branch in ViewBag.Branches) *@
+                @*                     { *@
+                @*                         <option value="@branch.Id">@branch.Name</option> *@
+                @*                     } *@
+                @*                 } *@
+                @*             </select> *@
+                @*         </div> *@
+
+                @*         <!-- Account Dropdown --> *@
+                @*         <div class="col-md-3"> *@
+                @*             <label for="ChartOfAccountId" class="form-label">Select Account</label> *@
+                @*             <select class="form-select" id="ChartOfAccountId" name="ChartOfAccountId" required> *@
+                @*                 <option value="">Select Account</option> *@
+                @*                 @if (ViewBag.ChartOfAccounts != null) *@
+                @*                 { *@
+                @*                     @foreach (var coa in ViewBag.ChartOfAccounts) *@
+                @*                     { *@
+                @*                         <option value="@coa.Id">@coa.Name</option> *@
+                @*                     } *@
+                @*                 } *@
+                @*             </select> *@
+                @*         </div> *@
+
+                @*         <!-- Date Range --> *@
+                @*         <div class="col-md-3"> *@
+                @*             <label for="startDate" class="form-label">Start Date</label> *@
+                @*             <input type="date" class="form-control" id="startDate" name="startDate" required> *@
+                @*         </div> *@
+
+                @*         <div class="col-md-3"> *@
+                @*             <label for="endDate" class="form-label">End Date</label> *@
+                @*             <input type="date" class="form-control" id="endDate" name="endDate" required> *@
+                @*         </div> *@
+                @*     </div> *@
+
+                @*     <!-- Report Type --> *@
+                @*     <div class="row mt-3"> *@
+                @*         <div class="col-md-3"> *@
+                @*             <label for="reportType" class="form-label">Report Type</label> *@
+                @*             <select class="form-select" id="reportType" name="reportType" required> *@
+                @*                 <option value="PDF">PDF</option> *@
+                @*                 <option value="Excel">Excel</option> *@
+                @*             </select> *@
+                @*         </div> *@
+                @*     </div> *@
+
+                @*     <div class="row mt-3"> *@
+                @*         <div class="col-md-6"> *@
+                @*             <button type="submit" class="btn btn-primary">Generate Report</button> *@
+                @*         </div> *@
+                @*     </div> *@
+                @* </form> *@
             </div>
         </div>
     </div>

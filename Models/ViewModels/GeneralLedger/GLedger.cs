@@ -2,8 +2,8 @@
 {
     public class GLedger
     {
-        public ChartOfAccount ChartOfAccount { get; set; }
-        public JournalPost JournalPost { get; set; }
-        public JournalPostDetail JournalPostDetail { get; set; }
+        public ChartOfAccount? ChartOfAccount { get; set; }
+        public JournalPost? JournalPost { get; set; }
+        public JournalPostDetail? JournalPostDetail { get; set; }
     }
 }
