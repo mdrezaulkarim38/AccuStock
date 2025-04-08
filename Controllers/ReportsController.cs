@@ -54,7 +54,10 @@ public class ReportsController : Controller
             // Logic to generate the Excel report
             //return new ExcelReportResult(glEntries); // Replace with actual logic to generate Excel report
         }
-
+        var branches = await _BranchService.GetAllBranches();
+        ViewBag.Branches = branches;
+        var chartOfAccounts = await _chartOfAccount.GetAllChartOfAccount();
+        ViewBag.ChartOfAccounts = chartOfAccounts;
         return View(glEntries); // Return the data for rendering in the view
     }
 

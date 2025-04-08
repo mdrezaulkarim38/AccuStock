@@ -78,18 +78,16 @@
                     <h4 class="fw-bold">General Ledger</h4>
                     <h6>From: @fromDate - To: @toDate</h6>
                     <h6>Basis: @selectedReportType</h6>
-                </div>
+                </div>  
                 <div class="card-body">
                     <table class="table table-bordered table-hover table-striped">
-                        <thead class="table-dark">
+                        <thead class="table-primary">
                             <tr>
                                 <th>Account</th>
-                                <th>Vch No</th>
                                 <th>Vch Date</th>
-                                <th>Description</th>
+                                <th>Description</th>    
                                 <th>Debit</th>
                                 <th>Credit</th>
-                                <th>Remarks</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -97,7 +95,6 @@
                             {
                                 <tr>
                                     <td>@entry.ChartOfAccount?.Name (@entry.ChartOfAccount?.AccountCode)</td>
-                                    <td>@entry.JournalPostDetail?.VchNo</td>
                                     <td>
                                         @if (entry.JournalPostDetail?.VchDate != null)
                                         {
@@ -107,7 +104,6 @@
                                     <td>@entry.JournalPostDetail?.Description</td>
                                     <td>@String.Format("{0:N2}", entry.JournalPostDetail?.Debit)</td>
                                     <td>@String.Format("{0:N2}", entry.JournalPostDetail?.Credit)</td>
-                                    <td>@entry.JournalPostDetail?.Remarks</td>
                                 </tr>
                             }
                         </tbody>
