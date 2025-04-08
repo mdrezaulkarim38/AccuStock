@@ -36,7 +36,7 @@ namespace AccuStock.Services
 
                 journal.BusinessYearId = await GetOrCreateBusinessYearId(journal.SubscriptionId, userId);
 
-                journal.BranchId = await _baseService.GetBranchId(journal.SubscriptionId, userId); 
+                journal.BranchId = journal.BranchId; 
                 journal.Status = 1; 
 
                 if (journal.JournalPostDetails != null)
