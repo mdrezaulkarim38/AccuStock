@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using AccuStock.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace AccuStock.Services;
 
@@ -26,4 +27,9 @@ public class BaseService
         return int.TryParse(userId, out var Id) ? Id : 0;
     }
     
+    public async Task<int> GetBranchId(int subscriptionId, int userId)
+    {
+        var userBranch = await _appDbContext.Users.Where(u => u.Id == userId && u.SubscriptionId == subscriptionId).FirstOrDefaultAsync();
+        return userBranch?.BranchId ?? 0;
+    }
 }

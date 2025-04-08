@@ -41,6 +41,27 @@
                             </tr>
                             <tr>
                                 <td>
+                                    <strong>Branch:</strong>
+                                </td>
+                                <td>
+                                    <select class="form-select" name="BranchId" id="BranchId">
+                                        <option value="">Select Branch</option>
+                                        @if (ViewBag.Branches != null)
+                                        {
+                                            foreach (var branch in ViewBag.Branches)
+                                            {
+                                                <option value="@branch.Id">@branch.Name</option>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <option disabled>No branches available</option>
+                                        }
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     <strong>Journal Type:</strong>
                                 </td>
                                 <td>

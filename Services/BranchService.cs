@@ -80,9 +80,12 @@ namespace AccuStock.Services
 
         public async Task<List<Branch>> GetAllBranches()
         {
-            return await _context.Branches.Where(b => b.SubscriptionId == _baseService.GetSubscriptionId()).ToListAsync();
+            int branchId = await _baseService.GetBranchId(_baseService.GetSubscriptionId(), _baseService.GetUserId());
+            if(branchId == 0)
+            {
+                return await _context.Branches.Where(b => b.SubscriptionId == _baseService.GetSubscriptionId()).ToListAsync();
+            }
+            return await _context.Branches.Where(b => b.Id == branchId && b.SubscriptionId == _baseService.GetSubscriptionId()).ToListAsync();            
         }
-
-
     }
 }

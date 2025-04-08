@@ -25,8 +25,10 @@ public class JournalController : Controller
     }
 
     [HttpGet]
-    public IActionResult AddJournal()
+    public async Task<IActionResult> AddJournal()
     {
+        var branches = await _branch.GetAllBranches();
+        ViewBag.Branches = branches;
         return View();
     }
 
