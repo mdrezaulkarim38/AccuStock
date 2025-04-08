@@ -16,6 +16,19 @@ public class GLedgerService : IGLedger
         _baseService = baseService;
     }
 
+    public async Task<List<AGLedger>> GetAGLedgersList()
+    {
+        var groupData = await _context.JournalPostDetails.Include(jpd => jpd.ChartOfAccount).Where(jpd => jpd.SubscriptionId == _baseService.GetSubscriptionId()).GroupBy(jpd => jpd.ChartOfAccountId).Select(group => new AGLedger
+        {
+            ChartOfAccountName = group.FirstOrDefault()!.ChartOfAccount!.Name,
+            TotalDebit = group.Sum(jpd => jpd.Debit ?? 0),
+            TotalCredit = group.Sum(jpd => jpd.Credit ?? 0)
+        }).ToListAsync();
+        return groupData;
+    }
+
+
+
     public async Task<List<GLedger>> GetGLedger(DateTime? startDate, DateTime? endDate, int? branchId, int? chartOfAccountId)
     {
         var query = _context.JournalPostDetails
