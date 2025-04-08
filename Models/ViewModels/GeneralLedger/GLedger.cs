@@ -1,9 +1,10 @@
-﻿namespace AccuStock.Models.ViewModels.GeneralLedger
+namespace AccuStock.Models.ViewModels.GeneralLedger
 {
     public class GLedger
     {
-        public ChartOfAccount? ChartOfAccount { get; set; }
-        public JournalPost? JournalPost { get; set; }
-        public JournalPostDetail? JournalPostDetail { get; set; }
+        public string? ChartOfAccountName { get; set; }
+        public decimal TotalDebit { get; set; }
+        public decimal TotalCredit { get; set; }
+        public decimal Balance => TotalDebit - TotalCredit;
     }
 }

@@ -17,13 +17,13 @@ namespace AccuStock.Services
             _baseService = baseService;
         }
 
-        public async Task<List<AGLedger>> GetAGLedgersList()
+        public async Task<List<GLedger>> GetAGLedgersList()
         {
             var groupData = await _context.JournalPostDetails
                 .Include(jpd => jpd.ChartOfAccount)
                 .Where(jpd => jpd.SubscriptionId == _baseService.GetSubscriptionId())
                 .GroupBy(jpd => jpd.ChartOfAccountId)
-                .Select(group => new AGLedger
+                .Select(group => new GLedger
                 {
                     ChartOfAccountName = group.FirstOrDefault()!.ChartOfAccount!.Name,
                     TotalDebit = group.Sum(jpd => jpd.Debit ?? 0),
@@ -34,7 +34,7 @@ namespace AccuStock.Services
             return groupData;
         }
 
-        public async Task<List<AGLedger>> GetGLedger(DateTime? startDate, DateTime? endDate, int? branchId, int? chartOfAccountId)
+        public async Task<List<GLedger>> GetGLedger(DateTime? startDate, DateTime? endDate, int? branchId, int? chartOfAccountId)
         {
             var query = _context.JournalPostDetails
                 .Include(jpd => jpd.ChartOfAccount)
@@ -59,7 +59,7 @@ namespace AccuStock.Services
 
             var groupData = await query
                 .GroupBy(jpd => jpd.ChartOfAccountId)
-                .Select(group => new AGLedger
+                .Select(group => new GLedger
                 {
                     ChartOfAccountName = group.FirstOrDefault()!.ChartOfAccount!.Name,
                     TotalDebit = group.Sum(jpd => jpd.Debit ?? 0),
