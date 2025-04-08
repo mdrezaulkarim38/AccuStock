@@ -34,6 +34,7 @@ public class GLedgerService : IGLedger
         var query = _context.JournalPostDetails
             .Include(jpd => jpd.ChartOfAccount)
             .Include(jpd => jpd.JournalPost)
+            .Where(jpd => jpd.SubscriptionId == _baseService.GetSubscriptionId())
             .AsQueryable();
 
         if (startDate != null && endDate != null)
