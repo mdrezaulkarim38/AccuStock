@@ -36,7 +36,7 @@ namespace AccuStock.Services
 
                 journal.BusinessYearId = await GetOrCreateBusinessYearId(journal.SubscriptionId, userId);
 
-                journal.BranchId = await GetBranchId(journal.SubscriptionId, userId); 
+                journal.BranchId = await _baseService.GetBranchId(journal.SubscriptionId, userId); 
                 journal.Status = 1; 
 
                 if (journal.JournalPostDetails != null)
@@ -186,12 +186,7 @@ namespace AccuStock.Services
             return $"{currentYear}{lastNumber:D6}";
         }
 
-        private async Task<int> GetBranchId(int subscriptionId, int userId)
-        {
-            var userBranch = await _context.Users.Where(u => u.Id == userId && u.SubscriptionId == subscriptionId).FirstOrDefaultAsync();
-            return userBranch?.BranchId ?? 0;
-        }
-
+        
         public async Task<List<JournalPost>> GetJournal()
         {
             return await _context.JournalPosts
