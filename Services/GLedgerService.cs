@@ -16,45 +16,52 @@ public class GLedgerService : IGLedger
         _baseService = baseService;
     }
 
-    public async Task<List<GLedger>> GetAllGLedger()
+    public async Task<List<GLedger>> GetGLedger(DateTime? startDate, DateTime? endDate, int? branchId, int? chartOfAccountId)
     {
-        // Query JournalPostDetails and include related ChartOfAccount and JournalPost
-        var glEntries = await _context.JournalPostDetails
-            .Include(jpd => jpd.ChartOfAccount)    // Include ChartOfAccount
-            .Include(jpd => jpd.JournalPost)      // Include JournalPost
-            .Select(jpd => new GLedger
-            {
-                // Map the necessary data to the GLedger view model
-                ChartOfAccount = new ChartOfAccount
-                {
-                    // Assuming you want to display the Account Head Name
-                    Name = jpd.ChartOfAccount!.Name,
-                    AccountCode = jpd.ChartOfAccount.AccountCode
-                },
-                JournalPost = new JournalPost
-                {
-                    // JournalPost now includes relevant data, like created date
-                    Id = jpd.JournalPost!.Id,
-                    Created = jpd.JournalPost.Created,
-                },
-                JournalPostDetail = new JournalPostDetail
-                {
-                    // Map the details from JournalPostDetail
-                    Id = jpd.Id,
-                    Debit = jpd.Debit,
-                    Credit = jpd.Credit,
-                    VchNo = jpd.VchNo,
-                    VchDate = jpd.VchDate,
-                    Remarks = jpd.Remarks,
-                    ChqNo = jpd.ChqNo,
-                    ChqDate = jpd.ChqDate,
-                    Description = jpd.Description // Map the Description from JournalPostDetail
-                }
-            })
-            .Where(jpd => jpd.ChartOfAccount != null)   // Ensure ChartOfAccount exists
-            .ToListAsync();
+        var query = _context.JournalPostDetails
+            .Include(jpd => jpd.ChartOfAccount)
+            .Include(jpd => jpd.JournalPost)
+            .AsQueryable();
 
-        // Return the populated list of GLedger objects
-        return glEntries;
+        if (startDate != null && endDate != null)
+        {
+            query = query.Where(jpd => jpd.VchDate >= startDate && jpd.VchDate <= endDate);
+        }
+
+        if (branchId != null)
+        {
+            query = query.Where(jpd => jpd.JournalPost!.BranchId == branchId);
+        }
+
+        if (chartOfAccountId != null)
+        {
+            query = query.Where(jpd => jpd.ChartOfAccountId == chartOfAccountId);
+        }
+
+        return await query.Select(jpd => new GLedger
+        {
+            ChartOfAccount = new ChartOfAccount
+            {
+                Name = jpd.ChartOfAccount!.Name,
+                AccountCode = jpd.ChartOfAccount.AccountCode
+            },
+            JournalPost = new JournalPost
+            {
+                Id = jpd.JournalPost!.Id,
+                Created = jpd.JournalPost.Created,
+            },
+            JournalPostDetail = new JournalPostDetail
+            {
+                Id = jpd.Id,
+                Debit = jpd.Debit,
+                Credit = jpd.Credit,
+                VchNo = jpd.VchNo,
+                VchDate = jpd.VchDate,
+                Remarks = jpd.Remarks,
+                ChqNo = jpd.ChqNo,
+                ChqDate = jpd.ChqDate,
+                Description = jpd.Description
+            }
+        }).ToListAsync();
     }
 }

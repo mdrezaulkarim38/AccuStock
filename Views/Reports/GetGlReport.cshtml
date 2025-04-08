@@ -1,189 +1,131 @@
 ﻿@model IEnumerable<AccuStock.Models.ViewModels.GeneralLedger.GLedger>
 
 @{
-    ViewData["title"] = "General Ledger Report";
+    ViewData["Title"] = "General Ledger Report";
+    var fromDate = ViewBag.FromDate as string;
+    var toDate = ViewBag.ToDate as string;
+    var selectedReportType = ViewBag.ReportType as string;
 }
 
 <div class="row">
     <div class="col-md-12">
-        <div class="card">
+        <div class="card mb-4">
             <div class="card-header">
                 <h5>Filters</h5>
             </div>
             <div class="card-body">
-                <form id="filterForm">
-                    <div class="row">
-                        <div class="col-md-2 mb-2">
-                            <label for="fromDate" class="form-label">From Date:</label>
-                            <input type="date" id="fromDate" class="form-control" />
-                        </div>
-                        <div class="col-md-2 mb-2">
-                            <label for="toDate" class="form-label">To Date:</label>
-                            <input type="date" id="toDate" class="form-control" />
-                        </div>
-
-                        <div class="col-md-2 mb-2">
-                            <label for="reportType" class="form-label">Report Type:</label>
-                            <select id="reportType" class="form-select">
-                                <option>Select Type</option>
-                                <option value="1">Accrual</option>
-                                <option value="2">Cash</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-2 mb-2">
-                             <label for="BranchId" class="form-label">Branch:</label>
-                             <select class="form-select" id="BranchId" name="BranchId" required>
-                                 <option value="">Select Branch</option>
-                                 @if (ViewBag.Branches != null)
-                                 { 
-                                     @foreach (var branch in ViewBag.Branches)
-                                     { 
-                                         <option value="@branch.Id">@branch.Name</option>
-                                     } 
-                                 }
-                             </select>
-                        </div>                        
-                        <div class="col-md-2 mb-2">
-                            <label class="form-label">&nbsp;</label>
-                            <button type="submit" class="btn btn-primary form-control">Apply Filters</button>
-                        </div>
+                <form asp-action="GetGlReport" method="post" class="row g-3">
+                    <div class="col-md-2">
+                        <label for="startDate" class="form-label">From Date</label>
+                        <input type="date" name="startDate" class="form-control" value="@fromDate" required />
+                    </div>
+                    <div class="col-md-2">
+                        <label for="endDate" class="form-label">To Date</label>
+                        <input type="date" name="endDate" class="form-control" value="@toDate" required />
+                    </div>
+                    <div class="col-md-2">
+                        <label for="BranchId" class="form-label">Branch</label>
+                        <select class="form-select" name="branchId">
+                            <option value="">All</option>
+                            @if (ViewBag.Branches != null)
+                            {
+                                foreach (var branch in ViewBag.Branches)
+                                {
+                                    <option value="@branch.Id">@branch.Name</option>
+                                }
+                            }
+                            else
+                            {
+                                <option disabled>No branches available</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="chartOfAccountId" class="form-label">Account</label>
+                        <select class="form-select" name="chartOfAccountId">
+                            <option value="">All</option>
+                            @foreach (var coa in ViewBag.ChartOfAccounts)
+                            {
+                                <option value="@coa.Id">@coa.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="reportType" class="form-label">Report Type</label>
+                        <select name="reportType" class="form-select">
+                            @{
+                                var reportOptions = new[] { "PDF", "Excel" };
+                                foreach (var option in reportOptions)
+                                {
+                                    var selected = option == selectedReportType ? "selected" : "";
+                                    <option value="@option" selected>@option</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Generate</button>
                     </div>
                 </form>
             </div>
         </div>
-    </div>
-</div>
 
-
-
-<div class="row">
-    <div class="col-md-12">
-        <div class="card shadow-sm border-light">
-            <div class="card-header text-center py-3">
-                <div class="card-title">
-                    <h6 class="font-weight-bold text-muted">Demo Org</h6>
-                    <h4 class="font-weight-bold">General Ledger</h4>
-                    <h6>From Date: 01/03/2025 - To Date: 30/03/2025</h6>
-                    <h6>Basis: Accrual</h6>
+        @if (Model != null && Model.Any())
+        {
+            <div class="card shadow-sm">
+                <div class="card-header text-center">
+                    <h6 class="text-muted mb-1">Demo Org</h6>
+                    <h4 class="fw-bold">General Ledger</h4>
+                    <h6>From: @fromDate - To: @toDate</h6>
+                    <h6>Basis: @selectedReportType</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-hover table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Account</th>
+                                <th>Vch No</th>
+                                <th>Vch Date</th>
+                                <th>Description</th>
+                                <th>Debit</th>
+                                <th>Credit</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var entry in Model)
+                            {
+                                <tr>
+                                    <td>@entry.ChartOfAccount?.Name (@entry.ChartOfAccount?.AccountCode)</td>
+                                    <td>@entry.JournalPostDetail?.VchNo</td>
+                                    <td>
+                                        @if (entry.JournalPostDetail?.VchDate != null)
+                                        {
+                                            @entry.JournalPostDetail.VchDate.Value.ToString("dd/MM/yyyy")
+                                        }
+                                    </td>
+                                    <td>@entry.JournalPostDetail?.Description</td>
+                                    <td>@String.Format("{0:N2}", entry.JournalPostDetail?.Debit)</td>
+                                    <td>@String.Format("{0:N2}", entry.JournalPostDetail?.Credit)</td>
+                                    <td>@entry.JournalPostDetail?.Remarks</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot class="table-light fw-bold">
+                            <tr>
+                                <td colspan="4" class="text-end">Total</td>
+                                <td>
+                                    @String.Format("{0:N2}", Model.Sum(x => x.JournalPostDetail?.Debit ?? 0))
+                                </td>
+                                <td>
+                                    @String.Format("{0:N2}", Model.Sum(x => x.JournalPostDetail?.Credit ?? 0))
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
-            <div class="card-body">
-                <table class="table table-bordered table-striped table-hover">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>Account</th>
-                            <th>Debit</th>
-                            <th>Credit</th>
-                            <th>Balance</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>ChartOfAccount Name</td>
-                            <td>0.00</td>
-                            <td>0.00</td>
-                            <td>0.00</td>
-                        </tr>
-                        <tr>
-                            <td>ChartOfAccount Name</td>
-                            <td>0.00</td>
-                            <td>0.00</td>
-                            <td>0.00</td>
-                        </tr>
-                        <tr>
-                            <td>ChartOfAccount Name</td>
-                            <td>0.00</td>
-                            <td>0.00</td>
-                            <td>0.00</td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr class="font-weight-bold">
-                            <td>Total for GST Payable</td>
-                            <td>0.00</td>
-                            <td>0.00</td>
-                            <td>0.00</td>
-                        </tr>
-                        <tr class="font-weight-bold">
-                            <td>Total for CGST Payable</td>
-                            <td>0.00</td>
-                            <td>0.00</td>
-                            <td>0.00</td>
-                        </tr>
-                    </tfoot>
-                </table>
-                @* <form asp-action="GetGlReport" method="post"> *@
-                @*     <div class="row"> *@
-                @*         <!-- Branch Dropdown --> *@
-                @*         <div class="col-md-2"> *@
-                @*             <label for="BranchId" class="form-label">Select Branch</label> *@
-                @*             <select class="form-select" id="BranchId" name="BranchId" required> *@
-                @*                 <option value="">Select Branch</option> *@
-                @*                 @if (ViewBag.Branches != null) *@
-                @*                 { *@
-                @*                     @foreach (var branch in ViewBag.Branches) *@
-                @*                     { *@
-                @*                         <option value="@branch.Id">@branch.Name</option> *@
-                @*                     } *@
-                @*                 } *@
-                @*             </select> *@
-                @*         </div> *@
-
-                @*         <!-- Account Dropdown --> *@
-                @*         <div class="col-md-3"> *@
-                @*             <label for="ChartOfAccountId" class="form-label">Select Account</label> *@
-                @*             <select class="form-select" id="ChartOfAccountId" name="ChartOfAccountId" required> *@
-                @*                 <option value="">Select Account</option> *@
-                @*                 @if (ViewBag.ChartOfAccounts != null) *@
-                @*                 { *@
-                @*                     @foreach (var coa in ViewBag.ChartOfAccounts) *@
-                @*                     { *@
-                @*                         <option value="@coa.Id">@coa.Name</option> *@
-                @*                     } *@
-                @*                 } *@
-                @*             </select> *@
-                @*         </div> *@
-
-                @*         <!-- Date Range --> *@
-                @*         <div class="col-md-3"> *@
-                @*             <label for="startDate" class="form-label">Start Date</label> *@
-                @*             <input type="date" class="form-control" id="startDate" name="startDate" required> *@
-                @*         </div> *@
-
-                @*         <div class="col-md-3"> *@
-                @*             <label for="endDate" class="form-label">End Date</label> *@
-                @*             <input type="date" class="form-control" id="endDate" name="endDate" required> *@
-                @*         </div> *@
-                @*     </div> *@
-
-                @*     <!-- Report Type --> *@
-                @*     <div class="row mt-3"> *@
-                @*         <div class="col-md-3"> *@
-                @*             <label for="reportType" class="form-label">Report Type</label> *@
-                @*             <select class="form-select" id="reportType" name="reportType" required> *@
-                @*                 <option value="PDF">PDF</option> *@
-                @*                 <option value="Excel">Excel</option> *@
-                @*             </select> *@
-                @*         </div> *@
-                @*     </div> *@
-
-                @*     <div class="row mt-3"> *@
-                @*         <div class="col-md-6"> *@
-                @*             <button type="submit" class="btn btn-primary">Generate Report</button> *@
-                @*         </div> *@
-                @*     </div> *@
-                @* </form> *@
-            </div>
-        </div>
+        }
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        // Print functionality - triggers browser print dialog
-        document.getElementById('printButton').addEventListener('click', function () {
-            window.print();
-        });
-    </script>
-}

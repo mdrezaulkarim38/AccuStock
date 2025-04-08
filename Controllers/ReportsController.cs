@@ -40,7 +40,8 @@ public class ReportsController : Controller
         }
 
         // Get the data based on selected filters (you will need to implement the actual report fetching)
-        var glEntries = await _gLedgerService.GetAllGLedger(); // Here you can pass your filters like startDate, endDate, branchId, and chartOfAccountId
+        var glEntries = await _gLedgerService.GetGLedger(startDate, endDate, branchId, chartOfAccountId);
+        // Here you can pass your filters like startDate, endDate, branchId, and chartOfAccountId
 
         // Generate the report based on the report type (PDF or Excel)
         if (reportType == "PDF")

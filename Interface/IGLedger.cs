@@ -3,5 +3,6 @@
 namespace AccuStock.Interface;
 public interface IGLedger
 {
-    public Task<List<GLedger>> GetAllGLedger();
+    Task<List<GLedger>> GetGLedger(DateTime? startDate, DateTime? endDate, int? branchId, int? chartOfAccountId);
+
 }
