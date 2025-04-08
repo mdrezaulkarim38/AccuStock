@@ -1,4 +1,4 @@
-﻿@model IEnumerable<AccuStock.Models.ViewModels.GeneralLedger.GLedger>
+﻿@model IEnumerable<AccuStock.Models.ViewModels.GeneralLedger.AGLedger>
 
 @{
     ViewData["Title"] = "General Ledger Report";
@@ -84,39 +84,34 @@
                         <thead class="table-primary">
                             <tr>
                                 <th>Account</th>
-                                <th>Vch Date</th>
-                                <th>Description</th>    
                                 <th>Debit</th>
                                 <th>Credit</th>
+                                <th>Balance</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var entry in Model)
                             {
                                 <tr>
-                                    <td>@entry.ChartOfAccount?.Name (@entry.ChartOfAccount?.AccountCode)</td>
-                                    <td>
-                                        @if (entry.JournalPostDetail?.VchDate != null)
-                                        {
-                                            @entry.JournalPostDetail.VchDate.Value.ToString("dd/MM/yyyy")
-                                        }
-                                    </td>
-                                    <td>@entry.JournalPostDetail?.Description</td>
-                                    <td>@String.Format("{0:N2}", entry.JournalPostDetail?.Debit)</td>
-                                    <td>@String.Format("{0:N2}", entry.JournalPostDetail?.Credit)</td>
+                                    <td>@entry.ChartOfAccountName</td>
+                                    <td>@String.Format("{0:N2}", entry.TotalDebit)</td>
+                                    <td>@String.Format("{0:N2}", entry.TotalCredit)</td>
+                                    <td>@String.Format("{0:N2}", entry.TotalDebit - entry.TotalCredit)</td>
                                 </tr>
                             }
                         </tbody>
                         <tfoot class="table-light fw-bold">
                             <tr>
-                                <td colspan="4" class="text-end">Total</td>
+                                <td colspan="1" class="text-end">Total</td>
                                 <td>
-                                    @String.Format("{0:N2}", Model.Sum(x => x.JournalPostDetail?.Debit ?? 0))
+                                    @String.Format("{0:N2}", Model.Sum(x => x.TotalDebit))
                                 </td>
                                 <td>
-                                    @String.Format("{0:N2}", Model.Sum(x => x.JournalPostDetail?.Credit ?? 0))
+                                    @String.Format("{0:N2}", Model.Sum(x => x.TotalCredit))
                                 </td>
-                                <td></td>
+                                <td>
+                                    @String.Format("{0:N2}", Model.Sum(x => x.TotalDebit - x.TotalCredit))
+                                </td>
                             </tr>
                         </tfoot>
                     </table>

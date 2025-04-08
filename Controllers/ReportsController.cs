@@ -26,7 +26,8 @@ public class ReportsController : Controller
         ViewBag.Branches = branches;
         var chartOfAccounts = await _chartOfAccount.GetAllChartOfAccount();
         ViewBag.ChartOfAccounts = chartOfAccounts;
-        return View();
+        var getData = await _gLedgerService.GetAGLedgersList();
+        return View(getData);
     }
 
     [HttpPost]
