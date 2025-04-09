@@ -76,8 +76,10 @@
                 <div class="card-header text-center">
                     <h6 class="text-muted mb-1">@ViewBag.CompanyName</h6>
                     <h4 class="fw-bold">General Ledger</h4>
+                    @if(ViewBag.FromDate != null){
                     <h6>From: @ViewBag.FromDate - To: @ViewBag.ToDate</h6>
                     <h6>Report Type: @ViewBag.SelectedReportType</h6>
+                    }
                 </div>
                 <div class="card-body">
                     <table class="table table-bordered table-hover table-striped">
