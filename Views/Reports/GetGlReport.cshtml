@@ -74,11 +74,11 @@
         {
             <div class="card shadow-sm">
                 <div class="card-header text-center">
-                    <h6 class="text-muted mb-1">Demo Org</h6>
+                    <h6 class="text-muted mb-1">@ViewBag.CompanyName</h6>
                     <h4 class="fw-bold">General Ledger</h4>
-                    <h6>From: @fromDate - To: @toDate</h6>
-                    <h6>Basis: @selectedReportType</h6>
-                </div>  
+                    <h6>From: @ViewBag.FromDate - To: @ViewBag.ToDate</h6>
+                    <h6>Report Type: @ViewBag.SelectedReportType</h6>
+                </div>
                 <div class="card-body">
                     <table class="table table-bordered table-hover table-striped">
                         <thead class="table-primary">
