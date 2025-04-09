@@ -11,12 +11,14 @@ public class ReportsController : Controller
     private readonly IBranchService _BranchService;
     private readonly IChartOfAccount _chartOfAccount;
     private readonly IGLedger _gLedgerService;  
+    private readonly ITransactionService _transactionService;
 
-    public ReportsController(IBranchService BranchService, IChartOfAccount chartOfAccount, IGLedger gLedger)
+    public ReportsController(IBranchService BranchService, IChartOfAccount chartOfAccount, IGLedger gLedger, ITransactionService transactionService)
     {
         _BranchService = BranchService;
         _chartOfAccount = chartOfAccount;
         _gLedgerService = gLedger;
+        _transactionService = transactionService;
     }
 
     [HttpGet]
@@ -60,6 +62,31 @@ public class ReportsController : Controller
         var chartOfAccounts = await _chartOfAccount.GetAllChartOfAccount();
         ViewBag.ChartOfAccounts = chartOfAccounts;
         return View();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAlltransAction()
+    {
+        var branches = await _BranchService.GetAllBranches();
+        ViewBag.Branches = branches;
+        var chartOfAccounts = await _chartOfAccount.GetAllChartOfAccount();
+        ViewBag.ChartOfAccounts = chartOfAccounts;
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> GetAlltransAction(DateTime? startDate, DateTime? endDate, int? branchId)
+    {
+        if (startDate == null || endDate == null)
+        {
+            ModelState.AddModelError(string.Empty, "Please select a valid date range.");
+            return View();
+        }
+
+        var allEntries = await _transactionService.GetAllTransAction(startDate, endDate, branchId);
+        var branches = await _BranchService.GetAllBranches();
+        ViewBag.Branches = branches;
+        return View(allEntries);
     }
 }
 

@@ -29,6 +29,7 @@ builder.Services.AddScoped<IChartOfAccount, ChartOfAccountService>();
 builder.Services.AddScoped<IOpeningBalanceService, OpeningBalanceService>();
 builder.Services.AddScoped<IJournalService, JournalService>();
 builder.Services.AddScoped<IGLedger, GLedgerService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddHttpContextAccessor();
 
 // Configure DbContext with resilience

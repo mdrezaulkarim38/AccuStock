@@ -1,0 +1,176 @@
+﻿@model IEnumerable<AccuStock.Models.ViewModels.All_TransAction.AllTransAction>
+
+@{
+    ViewData["Title"] = "All Transaction Report";
+    var fromDate = ViewBag.FromDate as string;
+    var toDate = ViewBag.ToDate as string;
+    var selectedReportType = ViewBag.ReportType as string;
+}
+<link href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap5.css" />
+<link href="https://cdn.datatables.net/buttons/3.2.2/css/buttons.bootstrap5.css" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Filters</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="GetAlltransAction" method="post" class="row g-3">
+                    <div class="col-md-2">
+                        <label for="startDate" class="form-label">From Date</label>
+                        <input type="date" name="startDate" class="form-control" value="@fromDate" required />
+                    </div>
+                    <div class="col-md-2">
+                        <label for="endDate" class="form-label">To Date</label>
+                        <input type="date" name="endDate" class="form-control" value="@toDate" required />
+                    </div>
+                    <div class="col-md-2">
+                        <label for="BranchId" class="form-label">Branch</label>
+                        <select class="form-select" name="branchId">
+                            <option value="">All</option>
+                            @if (ViewBag.Branches != null)
+                            {
+                                foreach (var branch in ViewBag.Branches)
+                                {
+                                    <option value="@branch.Id">@branch.Name</option>
+                                }
+                            }
+                            else
+                            {
+                                <option disabled>No branches available</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="reportType" class="form-label">Report Type</label>
+                        <select name="reportType" class="form-select">
+                            @{
+                                var reportOptions = new[] { "PDF", "Excel" };
+                                foreach (var option in reportOptions)
+                                {
+                                    var selected = option == selectedReportType ? "selected" : "";
+                                    <option value="@option" selected>@option</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Generate</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <table id="example" class="table" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Voucher Date</th>
+                                <th>Voucher No</th>
+                                <th>Voucher Type</th>
+                                <th>Branch Name</th>
+                                <th>Amount</th>
+                                <th>Description</th>
+                                <th>Referance</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var entry in Model)
+                            {
+                                <tr>
+                                    <td>@DateTime.Parse(entry.VchDate!).ToString("yyyy-MM-dd")</td>
+                                    <td>@entry.VchNo</td>
+                                    <td>@entry.VchType</td>
+                                    <td>@entry.BranchName</td>
+                                    <td class="text-end">@entry.Amount</td>
+                                    <td>@entry.Description</td>
+                                    <td>@entry.Referance</td>
+                                    <td>@entry.Notes</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap5.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.2/js/dataTables.buttons.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.bootstrap5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.colVis.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            new DataTable('#example', {
+                layout: {
+                    topStart: {
+                        buttons: [
+                            {
+                                extend: 'pdfHtml5',
+                                text: 'PDF', // Custom button text
+                                orientation: 'portrait',
+                                pageSize: 'A4',
+                                customize: function (doc) {
+                                    doc.content[0].alignment = 'center'; // Center the title
+                                    doc.content[0].fontSize = 16; // Larger font size
+                                    doc.content[0].bold = true;
+                                    // Customize PDF styles
+                                    doc.styles = {
+                                        tableHeader: {
+                                            bold: true,
+                                            fontSize: 12,
+                                            alignment: 'center',
+                                            fillColor: '#f2f2f2' // Light gray background for headers
+                                        },
+                                        tableBody: {
+                                            fontSize: 10,
+                                            alignment: 'right' // Default right alignment for numbers
+                                        },
+                                        tableFooter: {
+                                            bold: true,
+                                            fontSize: 11,
+                                            alignment: 'left'
+                                        }
+                                    };
+
+                                    // Adjust specific column alignments
+                                    doc.content[1].table.body.forEach(function (row) {
+                                        row[0].alignment = 'left'; // Account column aligned left
+                                        row[1].alignment = 'right'; // Debit column aligned right
+                                        row[2].alignment = 'right'; // Credit column aligned right
+                                        row[3].alignment = 'right'; // Balance column aligned right
+                                    });
+
+                                    // Ensure full-page width
+                                    doc.content[1].table.widths = ['40%', '20%', '20%', '20%']; // Adjust column widths
+                                    doc.pageMargins = [20, 20, 20, 20]; // Set margins
+                                },
+                                exportOptions: {
+                                    modifier: {
+                                        page: 'all'
+                                    }
+                                }
+                            },
+                            {
+                                extend: 'excelHtml5',
+                                text: 'Excel'
+                            }
+                        ]
+                    }
+                }
+            });
+        })
+    </script>
+}
