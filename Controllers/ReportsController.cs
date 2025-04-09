@@ -10,15 +10,13 @@ public class ReportsController : Controller
 {
     private readonly IBranchService _BranchService;
     private readonly IChartOfAccount _chartOfAccount;
-    private readonly IGLedger _gLedgerService;
-    private readonly ICompanyService _companyService;  
+    private readonly IGLedger _gLedgerService;  
 
-    public ReportsController(IBranchService BranchService, IChartOfAccount chartOfAccount, IGLedger gLedger, ICompanyService companyService)
+    public ReportsController(IBranchService BranchService, IChartOfAccount chartOfAccount, IGLedger gLedger)
     {
         _BranchService = BranchService;
         _chartOfAccount = chartOfAccount;
         _gLedgerService = gLedger;
-        _companyService = companyService;
     }
 
     [HttpGet]
@@ -28,7 +26,6 @@ public class ReportsController : Controller
         ViewBag.Branches = branches;
         var chartOfAccounts = await _chartOfAccount.GetAllChartOfAccount();
         ViewBag.ChartOfAccounts = chartOfAccounts;
-        ViewBag.CompanyName = (await _companyService.GetCompanyBySubscriptionId())?.Name;
         var getData = await _gLedgerService.GetAGLedgersList();
         return View(getData);
     }
@@ -53,10 +50,6 @@ public class ReportsController : Controller
         ViewBag.Branches = branches;
         var chartOfAccounts = await _chartOfAccount.GetAllChartOfAccount();
         ViewBag.ChartOfAccounts = chartOfAccounts;
-        ViewBag.CompanyName = (await _companyService.GetCompanyBySubscriptionId())?.Name;
-        ViewBag.FromDate = startDate?.ToString("dd-MMM-yyyy");
-        ViewBag.ToDate = endDate?.ToString("dd-MMM-yyyy");
-        ViewBag.SelectedReportType = reportType;
         return View(glEntries);
     }
 
