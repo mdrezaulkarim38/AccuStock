@@ -12,9 +12,7 @@
 
     <link rel="stylesheet" href="~/assets/css/animate.css" />
 
-    @* <link rel="stylesheet" href="~/assets/css/dataTables.bootstrap4.min.css"/> *@
-    <link href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap5.css" />
-    <link href="https://cdn.datatables.net/buttons/3.2.2/css/buttons.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/css/dataTables.bootstrap4.min.css"/>
     <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css" />
     <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css" />
 
@@ -238,19 +236,8 @@
     <script src="~/assets/js/jquery-3.6.0.min.js"></script>
     <script src="~/assets/js/feather.min.js"></script>
     <script src="~/assets/js/jquery.slimscroll.min.js"></script>
-    @* <script src="~/assets/js/jquery.dataTables.min.js"></script>
-<script src="~/assets/js/dataTables.bootstrap4.min.js"></script> *@
-    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
-    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap5.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.2/js/dataTables.buttons.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.bootstrap5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.print.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.colVis.min.js"></script>
-
+    <script src="~/assets/js/jquery.dataTables.min.js"></script>
+    <script src="~/assets/js/dataTables.bootstrap4.min.js"></script>
     <script src="~/assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/plugins/apexchart/apexcharts.min.js"></script>
     <script src="assets/plugins/apexchart/chart-data.js"></script>
@@ -265,66 +252,6 @@
     <script>
         $(document).ready(function () {
             // $("#basic-datatables").DataTable({});
-
-            new DataTable('#example', {
-                layout: {
-                    topStart: {
-                        buttons: [
-                            {
-                                extend: 'pdfHtml5',
-                                text: 'PDF', // Custom button text
-                                orientation: 'portrait',
-                                pageSize: 'A4',
-                                customize: function (doc) {
-                                    doc.content[0].alignment = 'center'; // Center the title
-                                    doc.content[0].fontSize = 16; // Larger font size
-                                    doc.content[0].bold = true;
-                                    // Customize PDF styles
-                                    doc.styles = {
-                                        tableHeader: {
-                                            bold: true,
-                                            fontSize: 12,
-                                            alignment: 'center',
-                                            fillColor: '#f2f2f2' // Light gray background for headers
-                                        },
-                                        tableBody: {
-                                            fontSize: 10,
-                                            alignment: 'right' // Default right alignment for numbers
-                                        },
-                                        tableFooter: {
-                                            bold: true,
-                                            fontSize: 11,
-                                            alignment: 'left'
-                                        }
-                                    };
-
-                                    // Adjust specific column alignments
-                                    doc.content[1].table.body.forEach(function (row) {
-                                        row[0].alignment = 'left'; // Account column aligned left
-                                        row[1].alignment = 'right'; // Debit column aligned right
-                                        row[2].alignment = 'right'; // Credit column aligned right
-                                        row[3].alignment = 'right'; // Balance column aligned right
-                                    });
-
-                                    // Ensure full-page width
-                                    doc.content[1].table.widths = ['40%', '20%', '20%', '20%']; // Adjust column widths
-                                    doc.pageMargins = [20, 20, 20, 20]; // Set margins
-                                },
-                                exportOptions: {
-                                    modifier: {
-                                        page: 'all'
-                                    }
-                                }
-                            },
-                            {
-                                extend: 'excelHtml5',
-                                text: 'Excel'
-                            }
-                        ]
-                    }
-                }
-            });
-
             @if (TempData["SuccessMessage"] != null)
                 {
                     <text>
