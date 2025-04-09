@@ -3,196 +3,199 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
-    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico"/>
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
 
-    <link rel="stylesheet" href="~/assets/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/assets/css/bootstrap.min.css" />
 
-    <link rel="stylesheet" href="~/assets/css/animate.css"/>
+    <link rel="stylesheet" href="~/assets/css/animate.css" />
 
     @* <link rel="stylesheet" href="~/assets/css/dataTables.bootstrap4.min.css"/> *@
     <link href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap5.css" />
     <link href="https://cdn.datatables.net/buttons/3.2.2/css/buttons.bootstrap5.css" />
-    <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css"/>
-    <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css"/>
+    <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css" />
 
-    <link rel="stylesheet" href="~/assets/css/style.css"/>
-    <link rel="stylesheet" href="~/dist/themes/default/style.min.css"/>
-    <link href="~/css/toastr.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="~/assets/css/style.css" />
+    <link rel="stylesheet" href="~/dist/themes/default/style.min.css" />
+    <link href="~/css/toastr.min.css" rel="stylesheet" />
 </head>
 
 <body>
-<div id="global-loader">
-    <div class="whirly-loader"></div>
-</div>
-
-<div class="main-wrapper">
-    <div class="header">
-        <div class="header-left active">
-            <a asp-controller="Home" asp-action="Dashboard" class="logo">
-                <img src="~/assets/img/logo.png" alt=""/>
-            </a>
-            <a asp-controller="Home" asp-action="Dashboard" class="logo-small">
-                <img src="~/assets/img/logo-small.png" alt=""/>
-            </a>
-            <a id="toggle_btn" href="javascript:void(0);"> </a>
-        </div>
-
-        <a id="mobile_btn" class="mobile_btn" href="#sidebar">
-            <span class="bar-icon">
-                <span></span>
-                <span></span>
-                <span></span>
-            </span>
-        </a>
-
-        <ul class="nav user-menu">
-            <li class="nav-item dropdown">
-                <a href="javascript:void(0);" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
-                    <img src="~/assets/img/icons/notification-bing.svg" alt="img"/>
-                    <span class="badge rounded-pill">1</span>
-                </a>
-                <div class="dropdown-menu notifications">
-                    <div class="topnav-dropdown-header">
-                        <span class="notification-title">Notifications</span>
-                        <a href="javascript:void(0)" class="clear-noti"> Clear All </a>
-                    </div>
-                    <div class="noti-content">
-                        <ul class="notification-list">
-
-                            <li class="notification-message">
-                                <a href="#">
-                                    <div class="media d-flex">
-                                        <span class="avatar flex-shrink-0">
-                                            <i data-feather="user" class="user-icon"></i>
-                                        </span>
-                                        <div class="media-body flex-grow-1">
-                                            <p class="noti-details">
-                                                <span class="noti-title">Rezaul Karim</span> added new
-                                                task
-                                                <span class="noti-title">Message for add New Product</span>
-                                            </p>
-                                            <p class="noti-time">
-                                                <span class="notification-time">4 mins ago</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="topnav-dropdown-footer">
-                        <a href="#">View all Notifications</a>
-                    </div>
-                </div>
-            </li>
-
-            <li class="nav-item dropdown has-arrow main-drop">
-                @if (User.Identity!.IsAuthenticated)
-                {
-                    <a href="javascript:void(0);" class="dropdown-toggle nav-link userset" data-bs-toggle="dropdown">
-                        <i data-feather="user" class="user-icon"></i>
-                    </a>
-                    <div class="dropdown-menu menu-drop-user">
-                        <div class="profilename">
-                            <div class="profileset">
-                                <i data-feather="user" class="user-icon"></i>
-                                <div class="profilesets">
-                                    <h6>@User.Identity.Name</h6>
-                                    <h5>@User.FindFirstValue(ClaimTypes.Role)</h5>
-                                </div>
-                            </div>
-                            <hr class="m-0"/>
-                            <a class="dropdown-item" href="#">
-                                <i class="me-2" data-feather="user"></i> My Profile
-                            </a>
-                                <a asp-controller="Auth" asp-action="ResetPassword" class="dropdown-item"><i class="me-2" data-feather="settings"></i>Reset Password</a>
-                            <hr class="m-0"/>
-                            <a class="dropdown-item logout pb-0" asp-controller="Auth" asp-action="Logout">
-                                <img src="~/assets/img/icons/log-out.svg" class="me-2" alt="img"/>Logout
-                            </a>
-                        </div>
-                    </div>
-                }
-            </li>
-        </ul>
-
-        <div class="dropdown mobile-user-menu">
-            <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
-               aria-expanded="false">
-                <i class="fa fa-ellipsis-v"></i>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item" href="#">My Profile</a>
-                <a class="dropdown-item" href="#">Settings</a>
-                <a class="dropdown-item" asp-controller="Auth" asp-action="Logout">Logout</a>
-            </div>
-        </div>
+    <div id="global-loader">
+        <div class="whirly-loader"></div>
     </div>
 
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-inner slimscroll">
-            <div id="sidebar-menu" class="sidebar-menu">
-                <ul>
-                    <li>
-                        <a asp-controller="Home" asp-action="Dashboard">
-                            <img src="~/assets/img/icons/dashboard.svg"
-                                 alt="img"/>
-                            <span>
-                                Dashboard
-                            </span>
-                        </a>
-                    </li>
-                    <li class="submenu">
-                        <a href="javascript:void(0);">
-                            <img src="~/assets/img/icons/settings.svg" alt="img"/>
-                            <span>
-                                Settings
-                            </span>
-                            <span class="menu-arrow"></span>
-                        </a>
-                        <ul>
-                            <li>
-                                <a asp-controller="Company" asp-action="Company">Company Settings</a>
-                            </li>
-                            <li>
-                                <a asp-controller="Branch" asp-action="Branch">Add Branch</a>
-                            </li>
-                            <li>
-                                <a asp-controller="User" asp-action="UserList">Add User</a>
-                            </li>
-                            <li>
-                                <a asp-controller="BusinessYear" asp-action="BusinessYearList">Add Business Year</a>
-                            </li>
-                            <li><a asp-controller="BankAccounts" asp-action="BankAccountsList">Add Bank Account</a><li>
-                        </ul>
-                    </li>
+    <div class="main-wrapper">
+        <div class="header">
+            <div class="header-left active">
+                <a asp-controller="Home" asp-action="Dashboard" class="logo">
+                    <img src="~/assets/img/logo.png" alt="" />
+                </a>
+                <a asp-controller="Home" asp-action="Dashboard" class="logo-small">
+                    <img src="~/assets/img/logo-small.png" alt="" />
+                </a>
+                <a id="toggle_btn" href="javascript:void(0);"> </a>
+            </div>
 
-                    <li class="submenu">
-                        <a href="javascript:void(0);">
-                            <img src="~/assets/img/icons/users1.svg" alt="img"/>
-                            <span>
-                                Accountant
-                            </span>
-                            <span class="menu-arrow"></span>
+            <a id="mobile_btn" class="mobile_btn" href="#sidebar">
+                <span class="bar-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </a>
+
+            <ul class="nav user-menu">
+                <li class="nav-item dropdown">
+                    <a href="javascript:void(0);" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+                        <img src="~/assets/img/icons/notification-bing.svg" alt="img" />
+                        <span class="badge rounded-pill">1</span>
+                    </a>
+                    <div class="dropdown-menu notifications">
+                        <div class="topnav-dropdown-header">
+                            <span class="notification-title">Notifications</span>
+                            <a href="javascript:void(0)" class="clear-noti"> Clear All </a>
+                        </div>
+                        <div class="noti-content">
+                            <ul class="notification-list">
+
+                                <li class="notification-message">
+                                    <a href="#">
+                                        <div class="media d-flex">
+                                            <span class="avatar flex-shrink-0">
+                                                <i data-feather="user" class="user-icon"></i>
+                                            </span>
+                                            <div class="media-body flex-grow-1">
+                                                <p class="noti-details">
+                                                    <span class="noti-title">Rezaul Karim</span> added new
+                                                    task
+                                                    <span class="noti-title">Message for add New Product</span>
+                                                </p>
+                                                <p class="noti-time">
+                                                    <span class="notification-time">4 mins ago</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="topnav-dropdown-footer">
+                            <a href="#">View all Notifications</a>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown has-arrow main-drop">
+                    @if (User.Identity!.IsAuthenticated)
+                    {
+                        <a href="javascript:void(0);" class="dropdown-toggle nav-link userset" data-bs-toggle="dropdown">
+                            <i data-feather="user" class="user-icon"></i>
                         </a>
-                        <ul>
-                            <li>
-                                <a asp-controller="Journal" asp-action="JournalList">Journal List</a>
-                            </li>
-                            <li>
-                                <a asp-controller="ChartOfAccount" asp-action="ChartOfAccountList">Add Chart Of Account</a>
-                            </li>
-                            <li>
-                                <a asp-controller="OpeningBalance" asp-action="OpeningBalanceList">Add OpeningBalance</a>
-                            </li>
-                        </ul>
-                    </li>
+                        <div class="dropdown-menu menu-drop-user">
+                            <div class="profilename">
+                                <div class="profileset">
+                                    <i data-feather="user" class="user-icon"></i>
+                                    <div class="profilesets">
+                                        <h6>@User.Identity.Name</h6>
+                                        <h5>@User.FindFirstValue(ClaimTypes.Role)</h5>
+                                    </div>
+                                </div>
+                                <hr class="m-0" />
+                                <a class="dropdown-item" href="#">
+                                    <i class="me-2" data-feather="user"></i> My Profile
+                                </a>
+                                <a asp-controller="Auth" asp-action="ResetPassword" class="dropdown-item"><i class="me-2"
+                                        data-feather="settings"></i>Reset Password</a>
+                                <hr class="m-0" />
+                                <a class="dropdown-item logout pb-0" asp-controller="Auth" asp-action="Logout">
+                                    <img src="~/assets/img/icons/log-out.svg" class="me-2" alt="img" />Logout
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </li>
+            </ul>
+
+            <div class="dropdown mobile-user-menu">
+                <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    <i class="fa fa-ellipsis-v"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="#">My Profile</a>
+                    <a class="dropdown-item" href="#">Settings</a>
+                    <a class="dropdown-item" asp-controller="Auth" asp-action="Logout">Logout</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-inner slimscroll">
+                <div id="sidebar-menu" class="sidebar-menu">
+                    <ul>
+                        <li>
+                            <a asp-controller="Home" asp-action="Dashboard">
+                                <img src="~/assets/img/icons/dashboard.svg" alt="img" />
+                                <span>
+                                    Dashboard
+                                </span>
+                            </a>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);">
+                                <img src="~/assets/img/icons/settings.svg" alt="img" />
+                                <span>
+                                    Settings
+                                </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <ul>
+                                <li>
+                                    <a asp-controller="Company" asp-action="Company">Company Settings</a>
+                                </li>
+                                <li>
+                                    <a asp-controller="Branch" asp-action="Branch">Add Branch</a>
+                                </li>
+                                <li>
+                                    <a asp-controller="User" asp-action="UserList">Add User</a>
+                                </li>
+                                <li>
+                                    <a asp-controller="BusinessYear" asp-action="BusinessYearList">Add Business Year</a>
+                                </li>
+                                <li><a asp-controller="BankAccounts" asp-action="BankAccountsList">Add Bank Account</a>
+                                <li>
+                            </ul>
+                        </li>
 
                         <li class="submenu">
-                            <a href="javascript:void(0);">                                
+                            <a href="javascript:void(0);">
+                                <img src="~/assets/img/icons/users1.svg" alt="img" />
+                                <span>
+                                    Accountant
+                                </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <ul>
+                                <li>
+                                    <a asp-controller="Journal" asp-action="JournalList">Journal List</a>
+                                </li>
+                                <li>
+                                    <a asp-controller="ChartOfAccount" asp-action="ChartOfAccountList">Add Chart Of
+                                        Account</a>
+                                </li>
+                                <li>
+                                    <a asp-controller="OpeningBalance" asp-action="OpeningBalanceList">Add
+                                        OpeningBalance</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="submenu">
+                            <a href="javascript:void(0);">
                                 <img src="~/assets/img/icons/time.svg" alt="img">
                                 <span>
                                     Reports
@@ -220,22 +223,22 @@
                                 </li>
                             </ul>
                         </li>
-                </ul>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="page-wrapper pagehead">
+            <div class="content">
+                @RenderBody()
             </div>
         </div>
     </div>
-    <div class="page-wrapper pagehead">
-        <div class="content">
-            @RenderBody()
-        </div>
-    </div>
-</div>
 
 
-<script src="~/assets/js/jquery-3.6.0.min.js"></script>
-<script src="~/assets/js/feather.min.js"></script>
-<script src="~/assets/js/jquery.slimscroll.min.js"></script>
-@* <script src="~/assets/js/jquery.dataTables.min.js"></script>
+    <script src="~/assets/js/jquery-3.6.0.min.js"></script>
+    <script src="~/assets/js/feather.min.js"></script>
+    <script src="~/assets/js/jquery.slimscroll.min.js"></script>
+    @* <script src="~/assets/js/jquery.dataTables.min.js"></script>
 <script src="~/assets/js/dataTables.bootstrap4.min.js"></script> *@
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap5.js"></script>
@@ -248,45 +251,96 @@
     <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.print.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.colVis.min.js"></script>
 
-<script src="~/assets/js/bootstrap.bundle.min.js"></script>
-<script src="assets/plugins/apexchart/apexcharts.min.js"></script>
-<script src="assets/plugins/apexchart/chart-data.js"></script>
- <script src="assets/plugins/sweetalert/sweetalert2.all.min.js"></script>
- <script src="assets/plugins/sweetalert/sweetalerts.min.js"></script>
-<script src="~/assets/js/script.js"></script>
-<script src="~/js/toastr.min.js"></script>
-<script src="~/dist/jstree.min.js"></script>
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/plugins/apexchart/apexcharts.min.js"></script>
+    <script src="assets/plugins/apexchart/chart-data.js"></script>
+    <script src="assets/plugins/sweetalert/sweetalert2.all.min.js"></script>
+    <script src="assets/plugins/sweetalert/sweetalerts.min.js"></script>
+    <script src="~/assets/js/script.js"></script>
+    <script src="~/js/toastr.min.js"></script>
+    <script src="~/dist/jstree.min.js"></script>
 
 
 
-<script>
+    <script>
         $(document).ready(function () {
-          // $("#basic-datatables").DataTable({});
+            // $("#basic-datatables").DataTable({});
 
-                  new DataTable('#example', {
-            layout: {
-                topStart: {
-                    buttons: ['copy', 'excel', 'pdf']
+            new DataTable('#example', {
+                layout: {
+                    topStart: {
+                        buttons: [
+                            {
+                                extend: 'pdfHtml5',
+                                text: 'PDF', // Custom button text
+                                orientation: 'portrait',
+                                pageSize: 'A4',
+                                customize: function (doc) {
+                                    doc.content[0].alignment = 'center'; // Center the title
+                                    doc.content[0].fontSize = 16; // Larger font size
+                                    doc.content[0].bold = true;
+                                    // Customize PDF styles
+                                    doc.styles = {
+                                        tableHeader: {
+                                            bold: true,
+                                            fontSize: 12,
+                                            alignment: 'center',
+                                            fillColor: '#f2f2f2' // Light gray background for headers
+                                        },
+                                        tableBody: {
+                                            fontSize: 10,
+                                            alignment: 'right' // Default right alignment for numbers
+                                        },
+                                        tableFooter: {
+                                            bold: true,
+                                            fontSize: 11,
+                                            alignment: 'left'
+                                        }
+                                    };
+
+                                    // Adjust specific column alignments
+                                    doc.content[1].table.body.forEach(function (row) {
+                                        row[0].alignment = 'left'; // Account column aligned left
+                                        row[1].alignment = 'right'; // Debit column aligned right
+                                        row[2].alignment = 'right'; // Credit column aligned right
+                                        row[3].alignment = 'right'; // Balance column aligned right
+                                    });
+
+                                    // Ensure full-page width
+                                    doc.content[1].table.widths = ['40%', '20%', '20%', '20%']; // Adjust column widths
+                                    doc.pageMargins = [20, 20, 20, 20]; // Set margins
+                                },
+                                exportOptions: {
+                                    modifier: {
+                                        page: 'all'
+                                    }
+                                }
+                            },
+                            {
+                                extend: 'excelHtml5',
+                                text: 'Excel'
+                            }
+                        ]
+                    }
                 }
+            });
+
+            @if (TempData["SuccessMessage"] != null)
+                {
+                    <text>
+                        toastr.success("@TempData["SuccessMessage"]");
+                    </text>
             }
-        });
 
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <text>
-                    toastr.success("@TempData["SuccessMessage"]");
-            </text>
-        }
-
-        @if (TempData["ErrorMessage"] != null)
-        {
-            <text>
-                    toastr.error("@TempData["ErrorMessage"]");
-            </text>
-        }
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <text>
+                        toastr.error("@TempData["ErrorMessage"]");
+                    </text>
+            }
           });
     </script>
-@await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 
 </html>

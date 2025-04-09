@@ -76,44 +76,45 @@
                 <div class="card-header text-center">
                     <h6 class="text-muted mb-1">@ViewBag.CompanyName</h6>
                     <h4 class="fw-bold">General Ledger</h4>
-                    @if(ViewBag.FromDate != null){
-                    <h6>From: @ViewBag.FromDate - To: @ViewBag.ToDate</h6>
-                    <h6>Report Type: @ViewBag.SelectedReportType</h6>
+                    @if (ViewBag.FromDate != null)
+                    {
+                        <h6>From: @ViewBag.FromDate - To: @ViewBag.ToDate</h6>
+                        <h6>Report Type: @ViewBag.SelectedReportType</h6>
                     }
                 </div>
                 <div class="card-body">
-                    <table id="example" class="table table-striped" style="width:100%">
-                        <thead class="table-primary">
+                    <table id="example" class="table" style="width:100%">
+                        <thead>
                             <tr>
-                                <th>Account</th>
-                                <th>Debit</th>
-                                <th>Credit</th>
-                                <th>Balance</th>
+                                <th class="text-start">Account</th> <!-- Align Account to the left -->
+                                <th class="text-end">Debit</th> <!-- Align Debit to the right -->
+                                <th class="text-end">Credit</th> <!-- Align Credit to the right -->
+                                <th class="text-end">Balance</th> <!-- Align Balance to the right -->
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var entry in Model)
                             {
                                 <tr>
-                                    <td>@entry.ChartOfAccountName</td>
-                                    <td>@String.Format("{0:N2}", entry.TotalDebit)</td>
-                                    <td>@String.Format("{0:N2}", entry.TotalCredit)</td>
-                                    <td>@String.Format("{0:N2}", entry.TotalDebit - entry.TotalCredit)</td>
+                                    <td class="text-start">@entry.ChartOfAccountName</td> <!-- Align Account to the left -->
+                                    <td class="text-end">@String.Format("{0:N2}", entry.TotalDebit)</td>
+                                    <!-- Align Debit to the right -->
+                                    <td class="text-end">@String.Format("{0:N2}", entry.TotalCredit)</td>
+                                    <!-- Align Credit to the right -->
+                                    <td class="text-end">@String.Format("{0:N2}", entry.TotalDebit - entry.TotalCredit)</td>
+                                    <!-- Align Balance to the right -->
                                 </tr>
                             }
                         </tbody>
-                        <tfoot class="table-light fw-bold">
+                        <tfoot>
                             <tr>
-                                <td colspan="1" class="text-end">Total</td>
-                                <td>
-                                    @String.Format("{0:N2}", Model.Sum(x => x.TotalDebit))
-                                </td>
-                                <td>
-                                    @String.Format("{0:N2}", Model.Sum(x => x.TotalCredit))
-                                </td>
-                                <td>
-                                    @String.Format("{0:N2}", Model.Sum(x => x.TotalDebit - x.TotalCredit))
-                                </td>
+                                <td class="text-end" colspan="1">Total</td> <!-- Align Total text to the right -->
+                                <td class="text-end">@String.Format("{0:N2}", Model.Sum(x => x.TotalDebit))</td>
+                                <!-- Align total debit to the right -->
+                                <td class="text-end">@String.Format("{0:N2}", Model.Sum(x => x.TotalCredit))</td>
+                                <!-- Align total credit to the right -->
+                                <td class="text-end">@String.Format("{0:N2}", Model.Sum(x => x.TotalDebit - x.TotalCredit))
+                                </td> <!-- Align total balance to the right -->
                             </tr>
                         </tfoot>
                     </table>
