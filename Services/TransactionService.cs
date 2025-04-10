@@ -22,7 +22,7 @@ public class TransactionService : ITransactionService
 
     public async Task<List<AllTransAction>> GetAllTransAction(DateTime? startDate, DateTime? endDate, int? branchId)
     {
-        var query  = _context.JournalPosts
+        var query = _context.JournalPosts
             .Include(j => j.JournalPostDetails)
             .Include(j => j.Branch)
             .Where(j => j.SubscriptionId == _baseService.GetSubscriptionId())
@@ -53,4 +53,29 @@ public class TransactionService : ITransactionService
         .ToListAsync();
         return groupData;
     }
+
+    public async Task<List<AllTransAction>> GetAllTransaction()
+    {
+        var data = await _context.JournalPosts
+            .Include(j => j.JournalPostDetails)
+            .Include(j => j.Branch)
+            .Where(j => j.SubscriptionId == _baseService.GetSubscriptionId())
+            .OrderByDescending(j => j.VchDate)
+            .Take(50)
+            .SelectMany(j => j.JournalPostDetails.Select(d => new AllTransAction
+            {
+                VchNo = j.VchNo,
+                VchDate = j.VchDate.ToString(),
+                BranchName = j.Branch!.Name,
+                VchType = j.VchType!.Value.ToString(),
+                Amount = Convert.ToDecimal(d.Debit ?? d.Credit),
+                Description = d.Description,
+                Referance = j.RefNo,
+                Notes = j.Notes
+            }))
+            .ToListAsync();
+
+        return data;
+    }
+
 }

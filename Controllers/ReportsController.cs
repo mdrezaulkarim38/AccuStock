@@ -62,7 +62,8 @@ public class ReportsController : Controller
         ViewBag.Branches = branches;
         var chartOfAccounts = await _chartOfAccount.GetAllChartOfAccount();
         ViewBag.ChartOfAccounts = chartOfAccounts;
-        return View();
+        var allEntries = await _transactionService.GetAllTransaction();
+        return View(allEntries);
     }
 
     [HttpPost]
