@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AccuStock.Models
-{
-    public class Branch
+namespace AccuStock.Models;
+public class Branch
 {
     public int Id { get; set; }
     public int BranchType { get; set; }
@@ -16,6 +15,6 @@ namespace AccuStock.Models
 
     public int SubscriptionId { get; set; }
     public Subscription? Subscription { get; set; }
-}
-
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime? UpdatedAt { get; set; }
 }

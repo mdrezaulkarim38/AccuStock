@@ -55,6 +55,7 @@ public class BankAccountsService : IBankAccountService
             existingBank.Remarks = bankAccount.Remarks;
             existingBank.BranchId = bankAccount.BranchId;
             existingBank.UserId = _baseService.GetUserId();
+            existingBank.UpdatedAt = DateTime.Now;
             _context.BankAccounts.Update(existingBank);
             await _context.SaveChangesAsync();
             return true;

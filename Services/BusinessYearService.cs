@@ -51,6 +51,7 @@ public class BusinessYearService : IBusinessYear
             existingBusinessYear.FromDate = businessYear.FromDate;
             existingBusinessYear.ToDate = businessYear.ToDate;
             existingBusinessYear.UserId = _baseService.GetUserId();
+            existingBusinessYear.UpdatedAt = DateTime.Now;
             _context.BusinessYears.Update(existingBusinessYear);
             await _context.SaveChangesAsync();
             return true;

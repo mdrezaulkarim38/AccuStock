@@ -65,7 +65,7 @@ public class ChartOfAccountService : IChartOfAccount
             existingCoa.Name = chartOfAccount.Name;
             existingCoa.ParentId = chartOfAccount.ParentId;
             existingCoa.ChartOfAccountTypeId = chartOfAccount.ChartOfAccountTypeId;
-            existingCoa.UpdatedAt = DateTime.UtcNow;
+            existingCoa.UpdatedAt = DateTime.Now;
 
             _context.ChartOfAccounts.Update(existingCoa);
             await _context.SaveChangesAsync();

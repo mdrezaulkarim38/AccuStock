@@ -59,6 +59,7 @@ namespace AccuStock.Services
                 existingUser.Address = user.Address;
                 existingUser.RoleId = user.RoleId;
                 existingUser.BranchId = user.BranchId;
+                existingUser.UpdatedAt = DateTime.Now;
 
                 _context.Users.Update(existingUser);
                 await _context.SaveChangesAsync();
@@ -76,6 +77,7 @@ namespace AccuStock.Services
                 return false;
 
             user.Status = !user.Status;
+            user.UpdatedAt = DateTime.Now;
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
 

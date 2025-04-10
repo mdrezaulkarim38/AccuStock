@@ -108,6 +108,7 @@ namespace AccuStock.Services
                 existingCompany.ContactNumber = company.ContactNumber;
                 existingCompany.Address = company.Address;
                 existingCompany.Remarks = company.Remarks;
+                existingCompany.UpdatedAt = DateTime.Now;
                 _context.Update(existingCompany);
                 await _context.SaveChangesAsync();
                 return true;

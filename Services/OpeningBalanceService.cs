@@ -46,6 +46,7 @@ namespace AccuStock.Services
                 existingOpBl.Debit = opbl.Debit;
                 existingOpBl.Credit = opbl.Credit;                
                 existingOpBl.UserId = _baseService.GetUserId();
+                existingOpBl.UpdatedAt = DateTime.Now;
                 _context.OpeningBalances.Update(existingOpBl);
                 await _context.SaveChangesAsync();
                 return true;

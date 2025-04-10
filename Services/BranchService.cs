@@ -51,6 +51,7 @@ namespace AccuStock.Services
                 existingBranch.Name = branch.Name;
                 existingBranch.Contact = branch.Contact;
                 existingBranch.Address = branch.Address;
+                existingBranch.UpdatedAt = DateTime.Now;
 
                 _context.Branches.Update(existingBranch);
                 await _context.SaveChangesAsync();

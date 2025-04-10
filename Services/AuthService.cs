@@ -77,6 +77,7 @@ namespace AccuStock.Services
             }
 
             user.Password = newPassword;
+            user.UpdatedAt = DateTime.Now;
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
             return true;

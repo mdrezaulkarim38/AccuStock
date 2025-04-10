@@ -109,6 +109,7 @@ namespace AccuStock.Services
                         detail.JournalPostId = existingJournal.Id;
                         detail.BusinessYearId = existingJournal.BusinessYearId;
                         detail.Status = 1;
+                        detail.UpdatedAt = existingJournal.Updated;
                         _context.JournalPostDetails.Add(detail);
                     }
                 }
