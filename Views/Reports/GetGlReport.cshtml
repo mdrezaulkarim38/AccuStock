@@ -50,19 +50,6 @@
                             }
                         </select>
                     </div>
-                    <div class="col-md-2">
-                        <label for="reportType" class="form-label">Report Type</label>
-                        <select name="reportType" class="form-select">
-                            @{
-                                var reportOptions = new[] { "PDF", "Excel" };
-                                foreach (var option in reportOptions)
-                                {
-                                    var selected = option == selectedReportType ? "selected" : "";
-                                    <option value="@option" selected>@option</option>
-                                }
-                            }
-                        </select>
-                    </div>
                     <div class="col-md-2 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary w-100">Generate</button>
                     </div>

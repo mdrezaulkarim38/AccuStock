@@ -55,15 +55,6 @@ public class ReportsController : Controller
         return View(glEntries);
     }
 
-    public async Task<IActionResult> ATReport()
-    {
-        var branches = await _BranchService.GetAllBranches();
-        ViewBag.Branches = branches;
-        var chartOfAccounts = await _chartOfAccount.GetAllChartOfAccount();
-        ViewBag.ChartOfAccounts = chartOfAccounts;
-        return View();
-    }
-
     [HttpGet]
     public async Task<IActionResult> GetAlltransAction()
     {

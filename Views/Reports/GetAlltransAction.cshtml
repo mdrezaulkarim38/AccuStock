@@ -5,9 +5,8 @@
     var fromDate = ViewBag.FromDate as string;
     var toDate = ViewBag.ToDate as string;
     var selectedReportType = ViewBag.ReportType as string;
+    Layout = "~/Views/Shared/_LayoutReport.cshtml";
 }
-<link href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap5.css" />
-<link href="https://cdn.datatables.net/buttons/3.2.2/css/buttons.bootstrap5.css" />
 <div class="row">
     <div class="col-md-12">
         <div class="card mb-4">
@@ -38,19 +37,6 @@
                             else
                             {
                                 <option disabled>No branches available</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="reportType" class="form-label">Report Type</label>
-                        <select name="reportType" class="form-select">
-                            @{
-                                var reportOptions = new[] { "PDF", "Excel" };
-                                foreach (var option in reportOptions)
-                                {
-                                    var selected = option == selectedReportType ? "selected" : "";
-                                    <option value="@option" selected>@option</option>
-                                }
                             }
                         </select>
                     </div>
@@ -101,16 +87,6 @@
 </div>
 
 @section Scripts {
-    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
-    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap5.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.2/js/dataTables.buttons.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.bootstrap5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.print.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.colVis.min.js"></script>
     <script>
         $(document).ready(function(){
             new DataTable('#example', {
@@ -119,24 +95,23 @@
                         buttons: [
                             {
                                 extend: 'pdfHtml5',
-                                text: 'PDF', // Custom button text
-                                orientation: 'portrait',
+                                text: 'PDF',
+                                orientation: 'landscape',
                                 pageSize: 'A4',
                                 customize: function (doc) {
-                                    doc.content[0].alignment = 'center'; // Center the title
-                                    doc.content[0].fontSize = 16; // Larger font size
+                                    doc.content[0].alignment = 'center';
+                                    doc.content[0].fontSize = 16;
                                     doc.content[0].bold = true;
-                                    // Customize PDF styles
                                     doc.styles = {
                                         tableHeader: {
                                             bold: true,
                                             fontSize: 12,
                                             alignment: 'center',
-                                            fillColor: '#f2f2f2' // Light gray background for headers
+                                            fillColor: '#f2f2f2'
                                         },
                                         tableBody: {
                                             fontSize: 10,
-                                            alignment: 'right' // Default right alignment for numbers
+                                            alignment: 'right'
                                         },
                                         tableFooter: {
                                             bold: true,
@@ -144,18 +119,20 @@
                                             alignment: 'left'
                                         }
                                     };
-
-                                    // Adjust specific column alignments
+                                    // Match the 8 columns with appropriate widths
+                                    doc.content[1].table.widths = ['15%', '10%', '10%', '15%', '10%', '20%', '10%', '10%'];
+                                    // Adjust alignments for all 8 columns
                                     doc.content[1].table.body.forEach(function (row) {
-                                        row[0].alignment = 'left'; // Account column aligned left
-                                        row[1].alignment = 'right'; // Debit column aligned right
-                                        row[2].alignment = 'right'; // Credit column aligned right
-                                        row[3].alignment = 'right'; // Balance column aligned right
+                                        row[0].alignment = 'left';  // Voucher Date
+                                        row[1].alignment = 'left';  // Voucher No
+                                        row[2].alignment = 'left';  // Voucher Type
+                                        row[3].alignment = 'left';  // Branch Name
+                                        row[4].alignment = 'right'; // Amount (numeric)
+                                        row[5].alignment = 'left';  // Description
+                                        row[6].alignment = 'left';  // Reference
+                                        row[7].alignment = 'left';  // Notes
                                     });
-
-                                    // Ensure full-page width
-                                    doc.content[1].table.widths = ['40%', '20%', '20%', '20%']; // Adjust column widths
-                                    doc.pageMargins = [20, 20, 20, 20]; // Set margins
+                                    doc.pageMargins = [20, 20, 20, 20];
                                 },
                                 exportOptions: {
                                     modifier: {
@@ -171,6 +148,6 @@
                     }
                 }
             });
-        })
+        });
     </script>
 }
