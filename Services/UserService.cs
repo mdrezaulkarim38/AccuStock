@@ -18,7 +18,7 @@ namespace AccuStock.Services
         public async Task<bool> CreateUser(User user)
         {
             try {
-                var OldUserInfo = await _context.Users.Where(u => u.Email == user.Email).FirstOrDefaultAsync();
+                var OldUserInfo = await _context.Users.Where(u => u.Email == user.Email && u.SubscriptionId == _baseService.GetSubscriptionId()).FirstOrDefaultAsync();
                 if(OldUserInfo != null)
                 {
                     return false;
@@ -40,7 +40,7 @@ namespace AccuStock.Services
             try
             {
                 var subscriptionIdClaim = _baseService.GetSubscriptionId();
-                var existingEmail = await _context.Users.Where(u => u.Id != user.Id && u.Email == user.Email).FirstOrDefaultAsync();
+                var existingEmail = await _context.Users.Where(u => u.Id != user.Id && u.Email == user.Email && u.SubscriptionId == subscriptionIdClaim).FirstOrDefaultAsync();
                 if(existingEmail != null)
                 {
                     return false;
