@@ -3,26 +3,33 @@
     ViewBag.Title = "Chat";
 }
 
-<div class="chat-container">
-    <div id="userList" class="user-list">
-        <h3>Users</h3>
-        <ul>
-            @foreach (var user in Model)
-            {
-                <li onclick="startChat('@user.Id', '@user.FullName')">@user.FullName (@user.Email)</li>
-            }
-        </ul>
-    </div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow">
+            <div class="chat-container"></div>
+            <div id="userList" class="user-list">
+                <h3>Users</h3>
+                <ul>
+                    @foreach (var user in Model)
+                    {
+                        <li onclick="startChat('@user.Id', '@user.FullName')">@user.FullName (@user.Email)</li>
+                    }
+                </ul>
+            </div>
 
-    <div id="chatBox" class="chat-box" style="display:none;">
-        <h4 id="chatWith"></h4>
-        <div id="messages" class="message-container"></div>
-        <div class="message-input">
-            <input type="text" id="messageInput" placeholder="Type message..." />
-            <button onclick="sendMessage()">Send</button>
+            <div id="chatBox" class="chat-box" style="display:none;">
+                <h4 id="chatWith"></h4>
+                <div id="messages" class="message-container"></div>
+                <div class="message-input">
+                    <input type="text" id="messageInput" placeholder="Type message..." />
+                    <button onclick="sendMessage()" class="btn btn-sm btn-primary">Send</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+
 
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
@@ -79,13 +86,44 @@
             .catch(err => console.error(err.toString()));
     </script>
     <style>
-        .chat-container { display: flex; gap: 20px; }
-        .user-list { width: 30%; max-height: 400px; overflow-y: auto; }
-        .chat-box { width: 70%; }
-        .message-container { height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; }
-        .message-self { text-align: right; color: blue; }
-        .message-other { text-align: left; color: black; }
-        .message-input { margin-top: 10px; }
-        .message-input input { width: 80%; }
+        .chat-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .user-list {
+            width: 30%;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .chat-box {
+            width: 70%;
+        }
+
+        .message-container {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .message-self {
+            text-align: right;
+            color: blue;
+        }
+
+        .message-other {
+            text-align: left;
+            color: black;
+        }
+
+        .message-input {
+            margin-top: 10px;
+        }
+
+        .message-input input {
+            width: 80%;
+        }
     </style>
 }
