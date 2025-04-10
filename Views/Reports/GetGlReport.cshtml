@@ -5,9 +5,8 @@
     var fromDate = ViewBag.FromDate as string;
     var toDate = ViewBag.ToDate as string;
     var selectedReportType = ViewBag.ReportType as string;
+    Layout = "~/Views/Shared/_LayoutReport.cshtml";
 }
-<link href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap5.css" />
-<link href="https://cdn.datatables.net/buttons/3.2.2/css/buttons.bootstrap5.css" />
 <div class="row">
     <div class="col-md-12">
         <div class="card mb-4">
@@ -117,16 +116,6 @@
 </div>
 
 @section Scripts {
-    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
-    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap5.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.2/js/dataTables.buttons.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.bootstrap5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.print.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.colVis.min.js"></script>
     <script>
         $(document).ready(function(){
             new DataTable('#example', {
