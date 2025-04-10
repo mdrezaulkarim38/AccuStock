@@ -1,10 +1,12 @@
 using AccuStock.Data;
 using AccuStock.Models;
 using AccuStock.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AccuStock.Controllers;
+[Authorize]
 public class ChatController : Controller
 {
     private readonly BaseService _service;
@@ -25,7 +27,7 @@ public class ChatController : Controller
         }
 
         var users = await _context.Users
-            .Where(u => u.Id.ToString() != currentUserId)
+            .Where(u => u.Id.ToString() != currentUserId && u.SubscriptionId == _service.GetSubscriptionId())
             .Select(u => new User
             {
                 Id = u.Id,
