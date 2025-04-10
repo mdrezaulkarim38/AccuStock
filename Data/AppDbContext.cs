@@ -20,6 +20,7 @@ namespace AccuStock.Data
         public DbSet<OpeningBalances> OpeningBalances { get; set; }
         public DbSet<JournalPost> JournalPosts { get; set; }
         public DbSet<JournalPostDetail> JournalPostDetails { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

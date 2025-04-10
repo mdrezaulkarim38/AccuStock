@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using AccuStock.Data;
 using AccuStock.Interface;
 using AccuStock.Services;
+using AccuStock.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,8 @@ builder.Services.AddLogging(logging =>
 });
 
 // Register services
+builder.Services.AddSignalR();
+builder.Services.AddAuthentication();
 builder.Services.AddScoped<BaseService>();
 builder.Services.AddScoped<HashedPassword>();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -66,5 +69,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Dashboard}/{id?}");
-
+    
+app.MapHub<ChatHub>("/chathub");
 app.Run();
