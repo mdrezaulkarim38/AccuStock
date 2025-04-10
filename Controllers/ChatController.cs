@@ -14,8 +14,8 @@ public class ChatController : Controller
 
     public ChatController(BaseService service, AppDbContext context)
     {
-        _service = service ?? throw new ArgumentNullException(nameof(service));
-        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _service = service;
+        _context = context;
     }
 
     public async Task<IActionResult> Index()
