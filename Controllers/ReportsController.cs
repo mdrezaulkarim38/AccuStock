@@ -1,5 +1,6 @@
 ﻿using AccuStock.Interface;
 using AccuStock.Models;
+using AccuStock.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,13 +13,15 @@ public class ReportsController : Controller
     private readonly IChartOfAccount _chartOfAccount;
     private readonly IGLedger _gLedgerService;  
     private readonly ITransactionService _transactionService;
+    private readonly ITrialBalanceService _trialbalanceService;
 
-    public ReportsController(IBranchService BranchService, IChartOfAccount chartOfAccount, IGLedger gLedger, ITransactionService transactionService)
+    public ReportsController(IBranchService BranchService, IChartOfAccount chartOfAccount, IGLedger gLedger, ITransactionService transactionService, ITrialBalanceService trialBalanceService)
     {
         _BranchService = BranchService;
         _chartOfAccount = chartOfAccount;
         _gLedgerService = gLedger;
         _transactionService = transactionService;
+        _trialbalanceService = trialBalanceService;
     }
 
     [HttpGet]
@@ -62,8 +65,8 @@ public class ReportsController : Controller
         ViewBag.Branches = branches;
         var chartOfAccounts = await _chartOfAccount.GetAllChartOfAccount();
         ViewBag.ChartOfAccounts = chartOfAccounts;
-        var allEntries = await _transactionService.GetAllTransaction();
-        return View(allEntries);
+        //var allEntries = await _transactionService.GetAllTransaction();
+        return View();
     }
 
     [HttpPost]
@@ -79,6 +82,23 @@ public class ReportsController : Controller
         var branches = await _BranchService.GetAllBranches();
         ViewBag.Branches = branches;
         return View(allEntries);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetTrialBbalance()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> GetTrialBbalance(DateTime? startDate, DateTime? endDate, int? branchId)
+    {
+        if (startDate == null || endDate == null)
+        {
+            ModelState.AddModelError(string.Empty, "Please select a valid date range.");
+        }
+        var result = await _trialbalanceService.GetTrialBalanceAsync(startDate, endDate, branchId);
+        return View(result);
     }
 }
 

@@ -1,0 +1,146 @@
+﻿@model IEnumerable<AccuStock.Models.ViewModels.TrialBalance.TrialBalanceReport>
+
+@{
+    ViewData["Title"] = "Trial Balance Report";
+    var fromDate = ViewBag.FromDate as string;
+    var toDate = ViewBag.ToDate as string;
+    var selectedReportType = ViewBag.ReportType as string;
+    Layout = "~/Views/Shared/_LayoutReport.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Filters</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="GetTrialBbalance" method="post" class="row g-3">
+                    <div class="col-md-2">
+                        <label for="startDate" class="form-label">From Date</label>
+                        <input type="date" name="startDate" class="form-control" value="@fromDate" required />
+                    </div>
+                    <div class="col-md-2">
+                        <label for="endDate" class="form-label">To Date</label>
+                        <input type="date" name="endDate" class="form-control" value="@toDate" required />
+                    </div>
+                    <div class="col-md-2">
+                        <label for="BranchId" class="form-label">Branch</label>
+                        <select class="form-select" name="branchId">
+                            <option value="">All</option>
+                            @if (ViewBag.Branches != null)
+                            {
+                                foreach (var branch in ViewBag.Branches)
+                                {
+                                            <option value="@branch.Id">@branch.Name</option>
+                                }
+                            }
+                            else
+                            {
+                                    <option disabled>No branches available</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Generate</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+                <div class="card shadow-sm">
+                    <div class="card-body" style="overflow-x:auto;">
+                        <table id="example" class="table" style="width:100%">
+                            <thead>
+                                <tr>
+                                <th class="text-start">Account Name</th>
+                                <th class="text-start">Account Code</th>
+                                <th class="text-end">Debit</th>
+                                <th class="text-end">Credit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var entry in Model)
+                            {
+                                        <tr>                                            
+                                            <td class="text-start">@entry.AccountName</td>
+                                            <td class="text-start">@entry.AccountCode</td>
+                                            <td class="text-end">@entry.Debit.ToString("N2")</td>
+                                            <td class="text-end">@entry.Credit.ToString("N2")</td>
+                                        </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+        <script>
+            $(document).ready(function(){
+                new DataTable('#example', {
+                    layout: {
+                        topStart: {
+                            buttons: [
+                                {
+                                    extend: 'pdfHtml5',
+                                    text: 'PDF',
+                                    orientation: 'landscape',
+                                    pageSize: 'A4',
+                                    customize: function (doc) {
+                                        doc.content[0].alignment = 'center';
+                                        doc.content[0].fontSize = 16;
+                                        doc.content[0].bold = true;
+                                        doc.styles = {
+                                            tableHeader: {
+                                                bold: true,
+                                                fontSize: 12,
+                                                alignment: 'center',
+                                                fillColor: '#f2f2f2'
+                                            },
+                                            tableBody: {
+                                                fontSize: 10,
+                                                alignment: 'right'
+                                            },
+                                            tableFooter: {
+                                                bold: true,
+                                                fontSize: 11,
+                                                alignment: 'left'
+                                            }
+                                        };
+                                        // Match the 8 columns with appropriate widths
+                                        doc.content[1].table.widths = ['15%', '10%', '10%', '15%', '10%', '20%', '10%', '10%'];
+                                        // Adjust alignments for all 8 columns
+                                        doc.content[1].table.body.forEach(function (row) {
+                                            row[0].alignment = 'left';  // Voucher Date
+                                            row[1].alignment = 'left';  // Voucher No
+                                            row[2].alignment = 'left';  // Voucher Type
+                                            row[3].alignment = 'left';  // Branch Name
+                                            row[4].alignment = 'right'; // Amount (numeric)
+                                            row[5].alignment = 'left';  // Description
+                                            row[6].alignment = 'left';  // Reference
+                                            row[7].alignment = 'left';  // Notes
+                                        });
+                                        doc.pageMargins = [20, 20, 20, 20];
+                                    },
+                                    exportOptions: {
+                                        modifier: {
+                                            page: 'all'
+                                        }
+                                    }
+                                },
+                                {
+                                    extend: 'excelHtml5',
+                                    text: 'Excel'
+                                }
+                            ]
+                        }
+                    }
+                });
+            });
+        </script>
+}

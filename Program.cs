@@ -33,6 +33,7 @@ builder.Services.AddScoped<IOpeningBalanceService, OpeningBalanceService>();
 builder.Services.AddScoped<IJournalService, JournalService>();
 builder.Services.AddScoped<IGLedger, GLedgerService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<ITrialBalanceService, TrialBalanceService>();
 builder.Services.AddHttpContextAccessor();
 
 // Configure DbContext with resilience

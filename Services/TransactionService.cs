@@ -38,57 +38,56 @@ public class TransactionService : ITransactionService
             query = query.Where(j => j.BranchId == branchId);
         }
 
-        var result = await query
-            .Select(j => new AllTransAction
-            {
-                VchNo = j.VchNo,
-                VchDate = j.VchDate.ToString(),
-                BranchName = j.Branch!.Name,
-                VchType = j.VchType!.Value.ToString(),
-                Amount = j.Debit ?? j.Credit ?? 0, // Since debit == credit in JournalPosts
-                Description = j.JournalPostDetails.Select(d => d.Description).FirstOrDefault(), // Only one description
-                Referance = j.RefNo,
-                Notes = j.Notes
-            })
-            .ToListAsync();
-
-        return result;
+        var groupData = await query
+         .SelectMany(j => j.JournalPostDetails.Select(d => new AllTransAction
+         {
+             VchNo = j.VchNo,
+             VchDate = j.VchDate.ToString(),
+             BranchName = j.Branch!.Name,
+             VchType = j.VchType!.Value.ToString(),
+             Amount = Convert.ToDecimal(d.Debit ?? d.Credit),
+             Description = d.Description,
+             Referance = j.RefNo,
+             Notes = j.Notes
+         }))
+         .ToListAsync();
+        return groupData;
     }
 
 
-    public Task<List<AllTransAction>> GetAllTransaction()
-    {
-        var subscriptionId = _baseService.GetSubscriptionId();
+    //public Task<List<AllTransAction>> GetAllTransaction()
+    //{
+    //    var subscriptionId = _baseService.GetSubscriptionId();
 
-        var data = _context.JournalPosts
-            .Where(j => j.SubscriptionId == subscriptionId)
-            .OrderByDescending(j => j.VchDate)
-            .Take(50)
-            .Select(j => new
-            {
-                j.VchNo,
-                j.VchDate,
-                BranchName = j.Branch!.Name,
-                VchType = j.VchType!.Value.ToString(),
-                j.RefNo,
-                j.Notes,
-                Details = j.JournalPostDetails
-            })
-            .AsEnumerable()
-            .Select(j => new AllTransAction
-            {
-                VchNo = j.VchNo,
-                VchDate = j.VchDate.ToString(),
-                BranchName = j.BranchName,
-                VchType = j.VchType,
-                Amount = j.Details.Sum(d => Convert.ToDecimal(d.Debit ?? d.Credit)),
-                Description = j.Details.FirstOrDefault()?.Description ?? "",
-                Referance = j.RefNo,
-                Notes = j.Notes
-            })
-            .ToList();
+    //    var data = _context.JournalPosts
+    //        .Where(j => j.SubscriptionId == subscriptionId)
+    //        .OrderByDescending(j => j.VchDate)
+    //        .Take(50)
+    //        .Select(j => new
+    //        {
+    //            j.VchNo,
+    //            j.VchDate,
+    //            BranchName = j.Branch!.Name,
+    //            VchType = j.VchType!.Value.ToString(),
+    //            j.RefNo,
+    //            j.Notes,
+    //            Details = j.JournalPostDetails
+    //        })
+    //        .AsEnumerable()
+    //        .Select(j => new AllTransAction
+    //        {
+    //            VchNo = j.VchNo,
+    //            VchDate = j.VchDate.ToString(),
+    //            BranchName = j.BranchName,
+    //            VchType = j.VchType,
+    //            Amount = j.Details.Sum(d => Convert.ToDecimal(d.Debit ?? d.Credit)),
+    //            Description = j.Details.FirstOrDefault()?.Description ?? "",
+    //            Referance = j.RefNo,
+    //            Notes = j.Notes
+    //        })
+    //        .ToList();
 
-        return Task.FromResult(data);
-    }
+    //    return Task.FromResult(data);
+    //}
 
 }
