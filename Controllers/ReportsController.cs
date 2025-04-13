@@ -109,6 +109,8 @@ public class ReportsController : Controller
 
     public IActionResult ProfitAndLoss()
     {
+        var branches = _BranchService.GetAllBranches();
+        ViewBag.Branches = branches;
         return View();
     }
 
@@ -116,6 +118,8 @@ public class ReportsController : Controller
     public async Task<IActionResult> ProfitAndLoss(DateTime fromDate, DateTime toDate, int branchId)
     {
         var model = await _profitAndLossService.GetTrialBalanceAsync(fromDate, toDate, branchId);
+        var branches = _BranchService.GetAllBranches();
+        ViewBag.Branches = branches;
         return View(model);
     }
 }

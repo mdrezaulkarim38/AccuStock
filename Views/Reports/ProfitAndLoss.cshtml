@@ -1,0 +1,159 @@
+﻿@model AccuStock.Models.ViewModels.Profit_Loss.ProfitAndLossViewModel
+
+@{
+    ViewData["Title"] = "Profit and Loss Report";
+    var fromDate = ViewBag.FromDate as string;
+    var toDate = ViewBag.ToDate as string;
+    Layout = "~/Views/Shared/_LayoutReport.cshtml";
+}
+
+<style>
+    table.table-bordered td {
+        border: 1px solid #dee2e6 !important;
+    }
+
+    table.table-bordered {
+        border-collapse: collapse !important;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Filters</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="ProfitAndLoss" method="post" class="row g-3">
+                    <div class="col-md-2">
+                        <label class="form-label">From Date</label>
+                        <input type="date" name="fromDate" class="form-control" value="@fromDate" required />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">To Date</label>
+                        <input type="date" name="toDate" class="form-control" value="@toDate" required />
+                    </div>
+                    @* Uncomment if you want to filter by branch
+                    <div class="col-md-2">
+                        <label class="form-label">Branch</label>
+                        <select class="form-select" name="branchId">
+                            <option value="">All</option>
+                            @if (ViewBag.Branches != null)
+                            {
+                                foreach (var branch in ViewBag.Branches)
+                                {
+                                    <option value="@branch.Id">@branch.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    *@
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Generate</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        @if (Model != null)
+        {
+            <div class="card shadow-sm">
+                <div class="card-body" style="overflow-x:auto;">
+                    <table id="plReportTable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-start">Account Type</th>
+                                <th class="text-start">Account Name</th>
+                                <th class="text-end">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var income in Model.IncomeAccounts)
+                            {
+                                <tr>
+                                    <td class="text-start">Income</td>
+                                    <td class="text-start">@income.AccountName</td>
+                                    <td class="text-end">@income.Amount.ToString("N2")</td>
+                                </tr>
+                            }
+
+                            <tr class="table-success fw-bold">
+                                <td colspan="2">Total Income</td>
+                                <td class="text-end">@Model.TotalIncome.ToString("N2")</td>
+                            </tr>
+
+                            @foreach (var expense in Model.ExpenseAccounts)
+                            {
+                                <tr>
+                                    <td class="text-start">Expense</td>
+                                    <td class="text-start">@expense.AccountName</td>
+                                    <td class="text-end">@expense.Amount.ToString("N2")</td>
+                                </tr>
+                            }
+
+                            <tr class="table-danger fw-bold">
+                                <td colspan="2">Total Expense</td>
+                                <td class="text-end">@Model.TotalExpense.ToString("N2")</td>
+                            </tr>
+
+                            <tr class="fw-bold @(Model.NetProfitOrLoss >= 0 ? "text-success" : "text-danger")">
+                                <td colspan="2">Net @(Model.NetProfitOrLoss >= 0 ? "Profit" : "Loss")</td>
+                                <td class="text-end">@Model.NetProfitOrLoss.ToString("N2")</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            new DataTable('#plReportTable', {
+                layout: {
+                    topStart: {
+                        buttons: [
+                            {
+                                extend: 'pdfHtml5',
+                                text: 'PDF',
+                                orientation: 'landscape',
+                                pageSize: 'A4',
+                                customize: function (doc) {
+                                    doc.content[0].alignment = 'center';
+                                    doc.content[0].fontSize = 16;
+                                    doc.content[0].bold = true;
+                                    doc.pageMargins = [20, 20, 20, 20];
+                                    doc.styles = {
+                                        tableHeader: {
+                                            bold: true,
+                                            fontSize: 12,
+                                            alignment: 'center',
+                                            fillColor: '#f2f2f2'
+                                        }
+                                    };
+                                    doc.content[1].table.widths = ['30%', '40%', '30%'];
+                                    doc.content[1].table.body.forEach(function (row) {
+                                        row[0].alignment = 'left';
+                                        row[1].alignment = 'left';
+                                        row[2].alignment = 'right';
+                                    });
+                                },
+                                exportOptions: {
+                                    modifier: {
+                                        page: 'all'
+                                    }
+                                }
+                            },
+                            {
+                                extend: 'excelHtml5',
+                                text: 'Excel'
+                            }
+                        ]
+                    }
+                }
+            });
+        });
+    </script>
+}
