@@ -7,6 +7,15 @@
     var selectedReportType = ViewBag.ReportType as string;
     Layout = "~/Views/Shared/_LayoutReport.cshtml";
 }
+<style>
+    table.table-bordered td {
+        border: 1px solid #dee2e6 !important;
+    }
+
+    table.table-bordered {
+        border-collapse: collapse !important;
+    }
+</style>
 
 <div class="row">
     <div class="col-md-12">
@@ -52,7 +61,7 @@
         {
                 <div class="card shadow-sm">
                     <div class="card-body" style="overflow-x:auto;">
-                        <table id="example" class="table" style="width:100%">
+                    <table id="example" class="table table-bordered" style="width:100%">
                             <thead>
                                 <tr>
                                 <th class="text-start">Account Name</th>
@@ -113,17 +122,13 @@
                                             }
                                         };
                                         // Match the 8 columns with appropriate widths
-                                        doc.content[1].table.widths = ['15%', '10%', '10%', '15%', '10%', '20%', '10%', '10%'];
+                                doc.content[1].table.widths = ['40%', '20%', '20%', '20%'];
                                         // Adjust alignments for all 8 columns
                                         doc.content[1].table.body.forEach(function (row) {
                                             row[0].alignment = 'left';  // Voucher Date
                                             row[1].alignment = 'left';  // Voucher No
-                                            row[2].alignment = 'left';  // Voucher Type
-                                            row[3].alignment = 'left';  // Branch Name
-                                            row[4].alignment = 'right'; // Amount (numeric)
-                                            row[5].alignment = 'left';  // Description
-                                            row[6].alignment = 'left';  // Reference
-                                            row[7].alignment = 'left';  // Notes
+                                            row[2].alignment = 'right';  // Voucher Type
+                                        row[3].alignment = 'right';  // Branch Name
                                         });
                                         doc.pageMargins = [20, 20, 20, 20];
                                     },
