@@ -7,6 +7,7 @@
     var selectedReportType = ViewBag.ReportType as string;
     Layout = "~/Views/Shared/_LayoutReport.cshtml";
 }
+
 <div class="row">
     <div class="col-md-12">
         <div class="card mb-4">
@@ -50,7 +51,7 @@
         @if (Model != null && Model.Any())
         {
             <div class="card shadow-sm">
-                <div class="card-body">
+                <div class="card-body" style="overflow-x:auto;">
                     <table id="example" class="table" style="width:100%">
                         <thead>
                             <tr>
@@ -68,13 +69,13 @@
                             @foreach (var entry in Model)
                             {
                                 <tr>
-                                    <td>@DateTime.Parse(entry.VchDate!).ToString("yyyy-MM-dd")</td>
-                                    <td>@entry.VchNo</td>
-                                    <td>@entry.VchType</td>
-                                    <td>@entry.BranchName</td>
+                                    <td class="text-start">@DateTime.Parse(entry.VchDate!).ToString("yyyy-MM-dd")</td>
+                                    <td class="text-start">@entry.VchNo</td>
+                                    <td class="text-start">@entry.VchType</td>
+                                    <td class="text-start">@entry.BranchName</td>
                                     <td class="text-end">@entry.Amount</td>
-                                    <td>@entry.Description</td>
-                                    <td>@entry.Referance</td>
+                                    <td class="text-start">@entry.Description</td>
+                                    <td class="text-start">@entry.Referance</td>
                                     <td>@entry.Notes</td>
                                 </tr>
                             }

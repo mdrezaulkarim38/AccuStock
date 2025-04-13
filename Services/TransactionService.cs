@@ -30,29 +30,31 @@ public class TransactionService : ITransactionService
 
         if (startDate != null && endDate != null)
         {
-            query = query.Where(jpd => jpd.VchDate >= startDate && jpd.VchDate <= endDate);
+            query = query.Where(j => j.VchDate >= startDate && j.VchDate <= endDate);
         }
 
         if (branchId != null)
         {
-            query = query.Where(jpd => jpd.BranchId == branchId);
+            query = query.Where(j => j.BranchId == branchId);
         }
 
-        var groupData = await query
-        .SelectMany(j => j.JournalPostDetails.Select(d => new AllTransAction
-        {
-            VchNo = j.VchNo,
-            VchDate = j.VchDate.ToString(),
-            BranchName = j.Branch!.Name,
-            VchType = j.VchType!.Value.ToString(),
-            Amount = Convert.ToDecimal(d.Debit ?? d.Credit),
-            Description = d.Description,
-            Referance = j.RefNo,
-            Notes = j.Notes
-        }))
-        .ToListAsync();
-        return groupData;
+        var result = await query
+            .Select(j => new AllTransAction
+            {
+                VchNo = j.VchNo,
+                VchDate = j.VchDate.ToString(),
+                BranchName = j.Branch!.Name,
+                VchType = j.VchType!.Value.ToString(),
+                Amount = j.Debit ?? j.Credit ?? 0, // Since debit == credit in JournalPosts
+                Description = j.JournalPostDetails.Select(d => d.Description).FirstOrDefault(), // Only one description
+                Referance = j.RefNo,
+                Notes = j.Notes
+            })
+            .ToListAsync();
+
+        return result;
     }
+
 
     public Task<List<AllTransAction>> GetAllTransaction()
     {
