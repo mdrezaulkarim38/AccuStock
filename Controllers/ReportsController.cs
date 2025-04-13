@@ -14,14 +14,16 @@ public class ReportsController : Controller
     private readonly IGLedger _gLedgerService;  
     private readonly ITransactionService _transactionService;
     private readonly ITrialBalanceService _trialbalanceService;
+    private readonly IProfitAndLossService _profitAndLossService;
 
-    public ReportsController(IBranchService BranchService, IChartOfAccount chartOfAccount, IGLedger gLedger, ITransactionService transactionService, ITrialBalanceService trialBalanceService)
+    public ReportsController(IBranchService BranchService, IChartOfAccount chartOfAccount, IGLedger gLedger, ITransactionService transactionService, ITrialBalanceService trialBalanceService, IProfitAndLossService profitAndLossService)
     {
         _BranchService = BranchService;
         _chartOfAccount = chartOfAccount;
         _gLedgerService = gLedger;
         _transactionService = transactionService;
         _trialbalanceService = trialBalanceService;
+        _profitAndLossService = profitAndLossService;
     }
 
     [HttpGet]
@@ -87,6 +89,8 @@ public class ReportsController : Controller
     [HttpGet]
     public async Task<IActionResult> GetTrialBbalance()
     {
+        var branches = await _BranchService.GetAllBranches();
+        ViewBag.Branches = branches;
         return View();
     }
 
@@ -98,7 +102,21 @@ public class ReportsController : Controller
             ModelState.AddModelError(string.Empty, "Please select a valid date range.");
         }
         var result = await _trialbalanceService.GetTrialBalanceAsync(startDate, endDate, branchId);
+        var branches = await _BranchService.GetAllBranches();
+        ViewBag.Branches = branches;
         return View(result);
+    }
+
+    public IActionResult ProfitAndLoss()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ProfitAndLoss(DateTime fromDate, DateTime toDate, int branchId)
+    {
+        var model = await _profitAndLossService.GetTrialBalanceAsync(fromDate, toDate, branchId);
+        return View(model);
     }
 }
 
