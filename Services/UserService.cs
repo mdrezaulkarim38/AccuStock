@@ -17,59 +17,79 @@ namespace AccuStock.Services
 
         public async Task<bool> CreateUser(User user)
         {
-            var oldUserInfo = await _context.Users.Where(u => u.Email == user.Email && u.SubscriptionId == _baseService.GetSubscriptionId()).FirstOrDefaultAsync();
-            if(oldUserInfo != null)
+            try
+            {
+                var subscriptionId = _baseService.GetSubscriptionId();
+                var oldUserInfo = await _context.Users.Where(u => u.Email == user.Email && u.SubscriptionId == subscriptionId).FirstOrDefaultAsync();
+                if(oldUserInfo != null)
+                {
+                    return false;
+                }
+                user.SubscriptionId = subscriptionId;
+                user.Password = "1234";
+                user.Status = true;
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
             {
                 return false;
             }
-            var subscriptionIdClaim = _baseService.GetSubscriptionId();
-            user.SubscriptionId = subscriptionIdClaim;
-            user.Password = "1234";
-            user.Status = true;
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-            return true;
         }
         public async Task<bool> UpdateUser(User user)
         {
-            var subscriptionIdClaim = _baseService.GetSubscriptionId();
-            var existingEmail = await _context.Users.Where(u => u.Id != user.Id && u.Email == user.Email && u.SubscriptionId == subscriptionIdClaim).FirstOrDefaultAsync();
-            if(existingEmail != null)
+            try
+            {
+                var subscriptionId = _baseService.GetSubscriptionId();
+                var existingEmail = await _context.Users.Where(u => u.Id != user.Id && u.Email == user.Email && u.SubscriptionId == subscriptionId).FirstOrDefaultAsync();
+                if(existingEmail != null)
+                {
+                    return false;
+                }
+                var existingUser = await _context.Users
+                    .FirstOrDefaultAsync(u => u.SubscriptionId == subscriptionId && u.Id == user.Id);
+
+                if (existingUser == null)
+                {
+                    return false;
+                }
+
+                existingUser.FullName = user.FullName;
+                existingUser.Email = user.Email;
+                existingUser.Mobile = user.Mobile;
+                existingUser.Address = user.Address;
+                existingUser.RoleId = user.RoleId;
+                existingUser.BranchId = user.BranchId;
+                existingUser.UpdatedAt = DateTime.Now;
+
+                _context.Users.Update(existingUser);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
             {
                 return false;
             }
-            var existingUser = await _context.Users
-                .FirstOrDefaultAsync(u => u.SubscriptionId == subscriptionIdClaim && u.Id == user.Id);
-
-            if (existingUser == null)
-            {
-                return false;
-            }
-
-            existingUser.FullName = user.FullName;
-            existingUser.Email = user.Email;
-            existingUser.Mobile = user.Mobile;
-            existingUser.Address = user.Address;
-            existingUser.RoleId = user.RoleId;
-            existingUser.BranchId = user.BranchId;
-            existingUser.UpdatedAt = DateTime.Now;
-
-            _context.Users.Update(existingUser);
-            await _context.SaveChangesAsync();
-            return true;
         }
         public async Task<bool> ToggleUserStatusAsync(int userId)
         {
-            var user = await _context.Users.FindAsync(userId);
-            if (user == null)
+            try
+            {
+                var user = await _context.Users.FindAsync(userId);
+                if (user == null)
+                    return false;
+
+                user.Status = !user.Status;
+                user.UpdatedAt = DateTime.Now;
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
                 return false;
-
-            user.Status = !user.Status;
-            user.UpdatedAt = DateTime.Now;
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
-
-            return true;
+            }
         }
 
         public async Task<List<User>> GetAllUsers()

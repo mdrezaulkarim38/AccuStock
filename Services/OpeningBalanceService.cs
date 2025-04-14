@@ -29,7 +29,7 @@ namespace AccuStock.Services
             }
             catch (Exception)
             {
-                throw;
+                return false;
             }
         }
         public async Task<bool> UpdateOpBl(OpeningBalances opbl)
