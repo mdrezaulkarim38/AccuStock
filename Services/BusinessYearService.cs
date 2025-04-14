@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using AccuStock.Data;
 using AccuStock.Interface;
 using AccuStock.Models;
-using System.Security.Claims;
 
 namespace AccuStock.Services;
 public class BusinessYearService : IBusinessYear
@@ -25,8 +24,9 @@ public class BusinessYearService : IBusinessYear
             await _context.SaveChangesAsync();
             return true;
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            Console.WriteLine(e);
             throw;
         }
     }
@@ -56,22 +56,31 @@ public class BusinessYearService : IBusinessYear
             await _context.SaveChangesAsync();
             return true;
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            Console.WriteLine(e);
             throw;
         }
     }
 
     public async Task<bool> ToggleBusinessYearStatusAsync(int busineesyearId)
     {
-        var businessYear = await _context.BusinessYears.FindAsync(busineesyearId);
-        if (businessYear == null)
-            return false;
+        try
+        {
+            var businessYear = await _context.BusinessYears.FindAsync(busineesyearId);
+            if (businessYear == null)
+                return false;
 
-        businessYear.Status = !businessYear.Status;
-        _context.BusinessYears.Update(businessYear);
-        await _context.SaveChangesAsync();
-        return true;
+            businessYear.Status = !businessYear.Status;
+            _context.BusinessYears.Update(businessYear);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
 

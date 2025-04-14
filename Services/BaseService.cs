@@ -24,7 +24,7 @@ public class BaseService
     public int GetUserId()
     {
         var userId = _httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
-        return int.TryParse(userId, out var Id) ? Id : 0;
+        return int.TryParse(userId, out var id) ? id : 0;
     }
     
     public async Task<int> GetBranchId(int subscriptionId, int userId)

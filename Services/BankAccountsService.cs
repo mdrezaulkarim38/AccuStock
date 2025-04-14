@@ -2,10 +2,8 @@
 using AccuStock.Interface;
 using AccuStock.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace AccuStock.Services;
-
 public class BankAccountsService : IBankAccountService
 {
     private readonly AppDbContext _context;
@@ -26,8 +24,9 @@ public class BankAccountsService : IBankAccountService
             await _context.SaveChangesAsync();
             return true;
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            Console.WriteLine(e);
             throw;
         }
     }
@@ -60,21 +59,30 @@ public class BankAccountsService : IBankAccountService
             await _context.SaveChangesAsync();
             return true;
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            Console.WriteLine(e);
             throw;
         }
     }
     public async Task<bool> ToggleBankStatus(int bankId)
     {
-        var bank = await _context.BankAccounts.FindAsync(bankId);
-        if (bank == null)
-            return false;
+        try
+        {
+            var bank = await _context.BankAccounts.FindAsync(bankId);
+            if (bank == null)
+                return false;
 
-        bank.Status = !bank.Status;
-        _context.BankAccounts.Update(bank);
-        await _context.SaveChangesAsync();
-        return true;
+            bank.Status = !bank.Status;
+            _context.BankAccounts.Update(bank);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     public async Task<List<BankAccount>> GetAllBankAccount()

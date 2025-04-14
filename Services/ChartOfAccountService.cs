@@ -2,7 +2,6 @@
 using AccuStock.Interface;
 using AccuStock.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace AccuStock.Services;
 
@@ -18,7 +17,7 @@ public class ChartOfAccountService : IChartOfAccount
     }
     public async Task<List<ChartOfAccount>> GetAllChartOfAccount()
     {
-        int subscriptionId = _baseService.GetSubscriptionId();
+        var subscriptionId = _baseService.GetSubscriptionId();
         return await _context.ChartOfAccounts
             .Include(c => c.ChartOfAccountType)
             .Where(c => c.SubScriptionId == subscriptionId)
@@ -42,10 +41,10 @@ public class ChartOfAccountService : IChartOfAccount
             await _context.SaveChangesAsync();
             return true;
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            Console.WriteLine($"Error: {ex.Message}");
-            return false;
+            Console.WriteLine(e);
+            throw;
         }
     }
 
@@ -54,7 +53,7 @@ public class ChartOfAccountService : IChartOfAccount
         if (chartOfAccount == null) throw new ArgumentNullException(nameof(chartOfAccount));
         try
         {
-            int subscriptionId = _baseService.GetSubscriptionId();
+            var subscriptionId = _baseService.GetSubscriptionId();
             var existingCoa = await _context.ChartOfAccounts
                 .FirstOrDefaultAsync(coa => coa.SubScriptionId == subscriptionId && coa.Id == chartOfAccount.Id);
 
@@ -71,10 +70,10 @@ public class ChartOfAccountService : IChartOfAccount
             await _context.SaveChangesAsync();
             return true;
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            Console.WriteLine($"Error: {ex.Message}");
-            return false;
+            Console.WriteLine(e);
+            throw;
         }
     }
 }
