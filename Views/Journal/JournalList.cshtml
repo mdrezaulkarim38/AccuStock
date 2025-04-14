@@ -35,7 +35,7 @@
                             index++;
                             <tr>
                                 <td>@index</td>
-                                <td>@journal.VchDate</td>
+                                <td>@journal.VchDate!.Value.ToString("dd/MM/yyyy")</td>
                                 <td>@journal.VchNo</td>
                                 <td>@journal.RefNo</td>
                                 <td>@journal.Notes</td>

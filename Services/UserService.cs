@@ -34,7 +34,8 @@ namespace AccuStock.Services
             }
             catch (Exception e)
             {
-                return false;
+                Console.WriteLine(e);
+                throw;
             }
         }
         public async Task<bool> UpdateUser(User user)
@@ -69,7 +70,8 @@ namespace AccuStock.Services
             }
             catch (Exception e)
             {
-                return false;
+                Console.WriteLine(e);
+                throw;
             }
         }
         public async Task<bool> ToggleUserStatusAsync(int userId)
@@ -88,7 +90,8 @@ namespace AccuStock.Services
             }
             catch (Exception e)
             {
-                return false;
+                Console.WriteLine(e);
+                throw;
             }
         }
 
