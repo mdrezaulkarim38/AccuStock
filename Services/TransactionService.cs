@@ -4,7 +4,6 @@ using AccuStock.Models.ViewModels.All_TransAction;
 using Microsoft.EntityFrameworkCore;
 
 namespace AccuStock.Services;
-
 public class TransactionService : ITransactionService
 {
     private readonly BaseService _baseService;
