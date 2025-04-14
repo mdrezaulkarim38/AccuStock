@@ -4,7 +4,7 @@ using AccuStock.Models.ViewModels.TrialBalance;
 using Microsoft.EntityFrameworkCore;
 
 namespace AccuStock.Services;
-    public class TrialBalanceService : ITrialBalanceService
+public class TrialBalanceService : ITrialBalanceService
 {
     private readonly AppDbContext _context;
     private readonly BaseService _baseService;
