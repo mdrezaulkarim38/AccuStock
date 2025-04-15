@@ -4,6 +4,7 @@ using AccuStock.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 
 namespace AccuStock.Controllers;
 [Authorize]
@@ -108,9 +109,9 @@ public class ReportsController : Controller
         return View(result);
     }
 
-    public IActionResult ProfitAndLoss()
+    public async Task<IActionResult> ProfitAndLoss()
     {
-        var branches = _BranchService.GetAllBranches();
+        var branches = await _BranchService.GetAllBranches();
         ViewBag.Branches = branches;
         return View();
     }
@@ -119,9 +120,10 @@ public class ReportsController : Controller
     public async Task<IActionResult> ProfitAndLoss(DateTime fromDate, DateTime toDate, int branchId)
     {
         var model = await _profitAndLossService.GetProfitLossAsync(fromDate, toDate, branchId);
-        var branches = _BranchService.GetAllBranches();
+        var branches = await _BranchService.GetAllBranches();
         ViewBag.Branches = branches;
         return View(model);
     }
+
 }
 

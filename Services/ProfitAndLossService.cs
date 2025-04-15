@@ -16,7 +16,7 @@ public class ProfitAndLossService : IProfitAndLossService
     public async Task<ProfitAndLossViewModel> GetProfitLossAsync(DateTime fromDate, DateTime toDate, int branchId)
     {
         var incomeTypeIds = new[] { 21, 22 };
-        var expenseTypeIds = new[] { 23, 24, 25 }; 
+        var expenseTypeIds = new[] { 23, 24, 25 };
 
         var incomeAccounts = await _context.JournalPostDetails
             .Where(j => incomeTypeIds.Contains(j.ChartOfAccount!.ChartOfAccountTypeId) &&
@@ -43,7 +43,7 @@ public class ProfitAndLossService : IProfitAndLossService
             FromDate = fromDate,
             ToDate = toDate,
             IncomeAccounts = incomeAccounts,
-            ExpenseAccounts = expenseAccounts               
+            ExpenseAccounts = expenseAccounts
         };
     }
 }
