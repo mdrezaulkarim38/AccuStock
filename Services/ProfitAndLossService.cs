@@ -13,7 +13,7 @@ public class ProfitAndLossService : IProfitAndLossService
         _context = context;
     }
 
-    public async Task<ProfitAndLossViewModel> GetTrialBalanceAsync(DateTime fromDate, DateTime toDate, int branchId)
+    public async Task<ProfitAndLossViewModel> GetProfitLossAsync(DateTime fromDate, DateTime toDate, int branchId)
     {
         var incomeTypeIds = new[] { 21, 22 };
         var expenseTypeIds = new[] { 23, 24, 25 }; 

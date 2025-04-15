@@ -4,6 +4,6 @@ namespace AccuStock.Interface
 {
     public interface IProfitAndLossService
     {
-        Task<ProfitAndLossViewModel> GetTrialBalanceAsync(DateTime fromDate, DateTime toDate, int branchId);
+        Task<ProfitAndLossViewModel> GetProfitLossAsync(DateTime fromDate, DateTime toDate, int branchId);
     }
 }

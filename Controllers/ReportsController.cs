@@ -117,7 +117,7 @@ public class ReportsController : Controller
     [HttpPost]
     public async Task<IActionResult> ProfitAndLoss(DateTime fromDate, DateTime toDate, int branchId)
     {
-        var model = await _profitAndLossService.GetTrialBalanceAsync(fromDate, toDate, branchId);
+        var model = await _profitAndLossService.GetProfitLossAsync(fromDate, toDate, branchId);
         var branches = _BranchService.GetAllBranches();
         ViewBag.Branches = branches;
         return View(model);
