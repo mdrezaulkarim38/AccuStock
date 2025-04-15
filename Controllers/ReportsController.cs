@@ -67,12 +67,11 @@ public class ReportsController : Controller
         ViewBag.Branches = branches;
         var chartOfAccounts = await _chartOfAccount.GetAllChartOfAccount();
         ViewBag.ChartOfAccounts = chartOfAccounts;
-        //var allEntries = await _transactionService.GetAllTransaction();
         return View();
     }
 
     [HttpPost]
-    public async Task<IActionResult> GetAlltransAction(DateTime? startDate, DateTime? endDate, int? branchId)
+    public async Task<IActionResult> GetAlltransAction(DateTime? startDate, DateTime? endDate, int? branchId, int? chartOfAccountId)
     {
         if (startDate == null || endDate == null)
         {
@@ -80,9 +79,11 @@ public class ReportsController : Controller
             return View();
         }
 
-        var allEntries = await _transactionService.GetAllTransAction(startDate, endDate, branchId);
+        var allEntries = await _transactionService.GetAllTransAction(startDate, endDate, branchId, chartOfAccountId);
         var branches = await _BranchService.GetAllBranches();
         ViewBag.Branches = branches;
+        var chartOfAccounts = await _chartOfAccount.GetAllChartOfAccount();
+        ViewBag.ChartOfAccounts = chartOfAccounts;
         return View(allEntries);
     }
 

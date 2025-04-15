@@ -15,7 +15,7 @@ public class TransactionService : ITransactionService
         _baseService = baseService;
     }
 
-    public async Task<List<AllTransAction>> GetAllTransAction(DateTime? startDate, DateTime? endDate, int? branchId)
+    public async Task<List<AllTransAction>> GetAllTransAction(DateTime? startDate, DateTime? endDate, int? branchId, int? chartOfAccountId)
     {
         var query = _context.JournalPosts
             .Include(j => j.JournalPostDetails)
@@ -31,6 +31,11 @@ public class TransactionService : ITransactionService
         if (branchId != null)
         {
             query = query.Where(j => j.BranchId == branchId);
+        }
+
+        if(chartOfAccountId != null)
+        {
+            query = query.Where(j => j.JournalPostDetails.Any(d => d.ChartOfAccountId == chartOfAccountId));
         }
 
         var groupData = await query

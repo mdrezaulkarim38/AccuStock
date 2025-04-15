@@ -41,6 +41,16 @@
                             }
                         </select>
                     </div>
+                    <div class="col-md-2">
+                        <label for="chartOfAccountId" class="form-label">Chart Of Account</label>
+                        <select class="form-select" name="chartOfAccountId">
+                            <option value="">Select</option>
+                            @foreach (var coa in ViewBag.ChartOfAccounts)
+                            {
+                                <option value="@coa.Id">@coa.Name</option>
+                            }
+                        </select>
+                    </div>
                     <div class="col-md-2 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary w-100">Generate</button>
                     </div>
