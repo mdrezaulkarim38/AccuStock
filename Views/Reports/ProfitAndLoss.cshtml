@@ -63,8 +63,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="table-light fw-bold">
-                                <td>Income</td>
+                            <tr class="table-light">
+                                <td class="fw-bold">Income:</td>
                             </tr>
                             @foreach (var income in Model.IncomeAccounts)
                             {
@@ -78,8 +78,8 @@
                                 <td class="text-end">@Model.TotalIncome.ToString("N2")</td>
                             </tr>
 
-                            <tr class="table-light fw-bold">
-                                <td>Expense</td>
+                            <tr class="table-light">
+                                <td class="fw-bold">Expense:</td>
                             </tr>
                             @foreach (var expense in Model.ExpenseAccounts)
                             {
