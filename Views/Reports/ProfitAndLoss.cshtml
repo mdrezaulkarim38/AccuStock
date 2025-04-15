@@ -19,7 +19,7 @@
     <div class="col-md-12">
         <div class="card mb-4">
             <div class="card-header">
-                <h5>Filters</h5>
+                <h5>Profit And Loss</h5>
             </div>
             <div class="card-body">
                 <form asp-action="ProfitAndLoss" method="post" class="row g-3">
@@ -93,8 +93,8 @@
                                 <td class="text-end">@Model.TotalExpense.ToString("N2")</td>
                             </tr>
 
-                            <tr class="fw-bold @(Model.NetProfitOrLoss >= 0 ? "text-success" : "text-danger")">
-                                <td>Net @(Model.NetProfitOrLoss >= 0 ? "Profit" : "Loss")</td>
+                            <tr class="@(Model.NetProfitOrLoss >= 0 ? "text-success" : "text-danger")">
+                                <td class="fw-bold ">Net @(Model.NetProfitOrLoss >= 0 ? "Profit" : "Loss")</td>
                                 <td class="text-end">@Math.Abs(Model.NetProfitOrLoss).ToString("N2")</td>
                             </tr>
                         </tbody>

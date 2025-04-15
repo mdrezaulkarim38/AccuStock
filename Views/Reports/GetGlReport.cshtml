@@ -11,7 +11,7 @@
     <div class="col-md-12">
         <div class="card mb-4">
             <div class="card-header">
-                <h5>Filters</h5>
+                <h5>General Ledger</h5>
             </div>
             <div class="card-body">
                 <form asp-action="GetGlReport" method="post" class="row g-3">
@@ -41,9 +41,9 @@
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <label for="chartOfAccountId" class="form-label">Account</label>
+                        <label for="chartOfAccountId" class="form-label">Chart Of Account</label>
                         <select class="form-select" name="chartOfAccountId">
-                            <option value="">All</option>
+                            <option value="">Select</option>
                             @foreach (var coa in ViewBag.ChartOfAccounts)
                             {
                                 <option value="@coa.Id">@coa.Name</option>
