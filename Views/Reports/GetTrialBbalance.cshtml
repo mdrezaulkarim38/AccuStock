@@ -71,9 +71,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @{
-                                int count = Model.Count();
-                            }
                             @foreach (var entry in Model)
                             {
                                 <tr>
@@ -82,25 +79,20 @@
                                     <td class="text-end">@entry.Debit.ToString("N2")</td>
                                     <td class="text-end">@entry.Credit.ToString("N2")</td>
                                 </tr>
-                                count--;
-                                @if (count == 0)
-                                {
-                                    <tr>
-                                        <th class="text-start">Total</th>
-                                        <th></th>
-                                        <th class="text-end">
-                                            @Model.Sum(x => x.Debit).ToString("N2")
-                                        </th>
-                                        <th class="text-end">
-                                            @Model.Sum(x => x.Credit).ToString("N2")
-                                        </th>
-                                    </tr>
-                                }
                             }
                         </tbody>
-                        @* <tfoot>
-                            
-                        </tfoot> *@
+                        <tfoot>
+                            <tr>
+                                <th class="text-start">Total</th>
+                                <th></th>
+                                <th class="text-end">
+                                    @Model.Sum(x => x.Debit).ToString("N2")
+                                </th>
+                                <th class="text-end">
+                                    @Model.Sum(x => x.Credit).ToString("N2")
+                                </th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
