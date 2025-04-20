@@ -163,23 +163,28 @@
                         .column(2, { page: 'all' }) // Debit column index
                         .data()
                         .reduce(function (a, b) {
-                            return parseFloat(a) + parseFloat(b);
+                            // Remove any commas or non-numeric characters and convert to float
+                            var valA = parseFloat(a.toString().replace(/[^0-9.-]+/g, '')) || 0;
+                            var valB = parseFloat(b.toString().replace(/[^0-9.-]+/g, '')) || 0;
+                            return valA + valB;
                         }, 0);
 
                     var creditTotal = api
                         .column(3, { page: 'all' }) // Credit column index
                         .data()
                         .reduce(function (a, b) {
-                            return parseFloat(a) + parseFloat(b);
+                            // Remove any commas or non-numeric characters and convert to float
+                            var valA = parseFloat(a.toString().replace(/[^0-9.-]+/g, '')) || 0;
+                            var valB = parseFloat(b.toString().replace(/[^0-9.-]+/g, '')) || 0;
+                            return valA + valB;
                         }, 0);
 
-                    // Update footer cells
+                    // Update footer cells with formatted totals
                     $(api.table().footer()).find('th').eq(0).html('Total');
                     $(api.table().footer()).find('th').eq(1).html('');
                     $(api.table().footer()).find('th').eq(2).html(debitTotal.toFixed(2));
                     $(api.table().footer()).find('th').eq(3).html(creditTotal.toFixed(2));
 
-                    // Ensure footer is only visible on the last page
                     var pageInfo = api.page.info();
                     if (pageInfo.page !== pageInfo.pages - 1) {
                         $(api.table().footer()).hide();
