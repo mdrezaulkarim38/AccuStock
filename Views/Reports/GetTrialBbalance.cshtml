@@ -133,14 +133,12 @@
                                             alignment: 'left'
                                         }
                                     };
-                                    // Match the 8 columns with appropriate widths
                                     doc.content[1].table.widths = ['40%', '20%', '20%', '20%'];
-                                    // Adjust alignments for all 8 columns
                                     doc.content[1].table.body.forEach(function (row) {
-                                        row[0].alignment = 'left';  // Voucher Date
-                                        row[1].alignment = 'left';  // Voucher No
-                                        row[2].alignment = 'right';  // Voucher Type
-                                        row[3].alignment = 'right';  // Branch Name
+                                        row[0].alignment = 'left';  // Account Name
+                                        row[1].alignment = 'left';  // Account Code
+                                        row[2].alignment = 'right'; // Debit
+                                        row[3].alignment = 'right'; // Credit
                                     });
                                     doc.pageMargins = [20, 20, 20, 20];
                                 },
@@ -155,6 +153,38 @@
                                 text: 'Excel'
                             }
                         ]
+                    }
+                },
+                footerCallback: function (row, data, start, end, display) {
+                    var api = this.api();
+
+                    // Calculate totals for Debit and Credit columns
+                    var debitTotal = api
+                        .column(2, { page: 'all' }) // Debit column index
+                        .data()
+                        .reduce(function (a, b) {
+                            return parseFloat(a) + parseFloat(b);
+                        }, 0);
+
+                    var creditTotal = api
+                        .column(3, { page: 'all' }) // Credit column index
+                        .data()
+                        .reduce(function (a, b) {
+                            return parseFloat(a) + parseFloat(b);
+                        }, 0);
+
+                    // Update footer cells
+                    $(api.table().footer()).find('th').eq(0).html('Total');
+                    $(api.table().footer()).find('th').eq(1).html('');
+                    $(api.table().footer()).find('th').eq(2).html(debitTotal.toFixed(2));
+                    $(api.table().footer()).find('th').eq(3).html(creditTotal.toFixed(2));
+
+                    // Ensure footer is only visible on the last page
+                    var pageInfo = api.page.info();
+                    if (pageInfo.page !== pageInfo.pages - 1) {
+                        $(api.table().footer()).hide();
+                    } else {
+                        $(api.table().footer()).show();
                     }
                 }
             });
