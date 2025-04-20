@@ -9,4 +9,4 @@ namespace AccuStock.Interface
         Task<bool> UpdateBranch(Branch branch);
         Task<string> DeleteBranch(int branchId);
     }
-}
+}   
