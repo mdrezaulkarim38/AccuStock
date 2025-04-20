@@ -83,19 +83,19 @@
                                     <td class="text-end">@entry.Credit.ToString("N2")</td>
                                 </tr>
                                 count--;
-                            }
-                            @if (count == 0)
-                            {
-                                <tr>
-                                    <th class="text-start">Total</th>
-                                    <th></th>
-                                    <th class="text-end">
-                                        @Model.Sum(x => x.Debit).ToString("N2")
-                                    </th>
-                                    <th class="text-end">
-                                        @Model.Sum(x => x.Credit).ToString("N2")
-                                    </th>
-                                </tr>
+                                @if (count == 0)
+                                {
+                                    <tr>
+                                        <th class="text-start">Total</th>
+                                        <th></th>
+                                        <th class="text-end">
+                                            @Model.Sum(x => x.Debit).ToString("N2")
+                                        </th>
+                                        <th class="text-end">
+                                            @Model.Sum(x => x.Credit).ToString("N2")
+                                        </th>
+                                    </tr>
+                                }
                             }
                         </tbody>
                         @* <tfoot>
