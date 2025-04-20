@@ -41,12 +41,12 @@
                             {
                                 foreach (var branch in ViewBag.Branches)
                                 {
-                                            <option value="@branch.Id">@branch.Name</option>
+                                    <option value="@branch.Id">@branch.Name</option>
                                 }
                             }
                             else
                             {
-                                    <option disabled>No branches available</option>
+                                <option disabled>No branches available</option>
                             }
                         </select>
                     </div>
@@ -59,93 +59,105 @@
 
         @if (Model != null && Model.Any())
         {
-                <div class="card shadow-sm">
-                    <div class="card-body" style="overflow-x:auto;">
+            <div class="card shadow-sm">
+                <div class="card-body" style="overflow-x:auto;">
                     <table id="example" class="table table-bordered" style="width:100%">
-                            <thead>
-                                <tr>
+                        <thead>
+                            <tr>
                                 <th class="text-start">Account Name</th>
                                 <th class="text-start">Account Code</th>
                                 <th class="text-end">Debit</th>
                                 <th class="text-end">Credit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                            </tr>
+                        </thead>
+                        <tbody>
                             @foreach (var entry in Model)
                             {
-                                        <tr>                                            
-                                            <td class="text-start">@entry.AccountName</td>
-                                            <td class="text-start">@entry.AccountCode</td>
-                                            <td class="text-end">@entry.Debit.ToString("N2")</td>
-                                            <td class="text-end">@entry.Credit.ToString("N2")</td>
-                                        </tr>
-                            }
-                            </tbody>
-                        </table>
-                    </div>
+                                <tr>
+                                    <td class="text-start">@entry.AccountName</td>
+                                    <td class="text-start">@entry.AccountCode</td>
+                                    <td class="text-end">@entry.Debit.ToString("N2")</td>
+                                    <td class="text-end">@entry.Credit.ToString("N2")</td>
+                                </tr>
+                            }                           
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th class="text-start">Total</th>
+                                <th></th>
+                                <th class="text-end">
+                                    @Model.Sum(x => x.Debit).ToString("N2")
+                                </th>
+                                <th class="text-end">
+                                    @Model.Sum(x => x.Credit).ToString("N2")
+                                </th>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
+            </div>
         }
     </div>
 </div>
 
 @section Scripts {
-        <script>
-            $(document).ready(function(){
-                new DataTable('#example', {
-                    layout: {
-                        topStart: {
-                            buttons: [
-                                {
-                                    extend: 'pdfHtml5',
-                                    text: 'PDF',
-                                    orientation: 'landscape',
-                                    pageSize: 'A4',
-                                    customize: function (doc) {
-                                        doc.content[0].alignment = 'center';
-                                        doc.content[0].fontSize = 16;
-                                        doc.content[0].bold = true;
-                                        doc.styles = {
-                                            tableHeader: {
-                                                bold: true,
-                                                fontSize: 12,
-                                                alignment: 'center',
-                                                fillColor: '#f2f2f2'
-                                            },
-                                            tableBody: {
-                                                fontSize: 10,
-                                                alignment: 'right'
-                                            },
-                                            tableFooter: {
-                                                bold: true,
-                                                fontSize: 11,
-                                                alignment: 'left'
-                                            }
-                                        };
-                                        // Match the 8 columns with appropriate widths
-                                doc.content[1].table.widths = ['40%', '20%', '20%', '20%'];
-                                        // Adjust alignments for all 8 columns
-                                        doc.content[1].table.body.forEach(function (row) {
-                                            row[0].alignment = 'left';  // Voucher Date
-                                            row[1].alignment = 'left';  // Voucher No
-                                            row[2].alignment = 'right';  // Voucher Type
-                                        row[3].alignment = 'right';  // Branch Name
-                                        });
-                                        doc.pageMargins = [20, 20, 20, 20];
-                                    },  
-                                    exportOptions: {
-                                        modifier: {
-                                            page: 'all'
+    <script>
+        $(document).ready(function(){
+            new DataTable('#example', {
+                layout: {
+                    topStart: {
+                        buttons: [
+                            {
+                                extend: 'pdfHtml5',
+                                text: 'PDF',
+                                orientation: 'landscape',
+                                pageSize: 'A4',
+                                customize: function (doc) {
+                                    doc.content[0].alignment = 'center';
+                                    doc.content[0].fontSize = 16;
+                                    doc.content[0].bold = true;
+                                    doc.styles = {
+                                        tableHeader: {
+                                            bold: true,
+                                            fontSize: 12,
+                                            alignment: 'center',
+                                            fillColor: '#f2f2f2'
+                                        },
+                                        tableBody: {
+                                            fontSize: 10,
+                                            alignment: 'right'
+                                        },
+                                        tableFooter: {
+                                            bold: true,
+                                            fontSize: 11,
+                                            alignment: 'left'
                                         }
-                                    }
+                                    };
+                                    // Match the 8 columns with appropriate widths
+                            doc.content[1].table.widths = ['40%', '20%', '20%', '20%'];
+                                    // Adjust alignments for all 8 columns
+                                    doc.content[1].table.body.forEach(function (row) {
+                                        row[0].alignment = 'left';  // Voucher Date
+                                        row[1].alignment = 'left';  // Voucher No
+                                        row[2].alignment = 'right';  // Voucher Type
+                                    row[3].alignment = 'right';  // Branch Name
+                                    });
+                                    doc.pageMargins = [20, 20, 20, 20];
                                 },
-                                {
-                                    extend: 'excelHtml5',
-                                    text: 'Excel'
+                                exportOptions: {
+                                    modifier: {
+                                        page: 'all'
+                                    }
                                 }
-                            ]
-                        }
+                            },
+                            {
+                                extend: 'excelHtml5',
+                                text: 'Excel'
+                            }
+                        ]
                     }
-                });
+                }
             });
-        </script>
+        });
+    </script>
 }
