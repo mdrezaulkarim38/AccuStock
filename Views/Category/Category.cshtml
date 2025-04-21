@@ -31,8 +31,6 @@
                             {
                                 index++;
                                 <tr>
-
-
                                     <td>@index</td>
                                     <td>@category.Name</td>
                                     <td>@category.ParentCategory?.Name</td>
@@ -87,7 +85,7 @@
                                 }
                             </select>
                             <button type="button" class="btn btn-warning btn-sm" id="editParentButton" disabled
-                                    onclick="editSelectedParentCategory()">
+                                    onclick="editSelectedParentCategory()" data-bs-toggle="modal" data-bs-target="#parentCategoryModal">
                                 <i class="fas fa-edit"></i> Edit
                             </button>
                         </div>
@@ -111,7 +109,7 @@
     </div>
 </div>
 
-<!-- Modal for Add Parent Category -->
+<!-- Modal for Add/Edit Parent Category -->
 <div class="modal fade" id="parentCategoryModal" tabindex="-1" aria-labelledby="parentCategoryModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -121,6 +119,7 @@
             </div>
             <div class="modal-body">
                 <form id="parentCategoryForm" asp-action="CreateOrUpdateCat" method="post">
+                    <input type="hidden" id="ParentCategoryIdInput" name="Id" />
                     <div class="mb-3">
                         <label for="ParentName" class="form-label">Parent Category Name</label>
                         <input type="text" class="form-control" id="ParentName" name="Name" required />
@@ -128,9 +127,9 @@
                     <input type="hidden" name="ParentCategoryId" value="" />
                     <div class="d-flex justify-content-start gap-2">
                         <button type="submit" class="btn btn-success btn-sm">
-                            <i class="bi bi-check-circle"></i> Save
+                            <i class="bi bi-check-circle"></i> <span id="parentModalSubmitText">Save</span>
                         </button>
-                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" onclick="reopenCategoryModal()">
                             <i class="bi bi-x-circle"></i> Cancel
                         </button>
                     </div>
@@ -142,6 +141,9 @@
 
 @section Scripts {
     <script>
+        let isTransitioningToParentModal = false;
+        let categoryModalState = {};
+
         function resetCategoryModal() {
             document.getElementById("CategoryId").value = "";
             document.getElementById("Name").value = "";
@@ -150,14 +152,51 @@
             document.getElementById("modalSubmitText").textContent = "Submit";
             document.getElementById("parentCategorySection").style.display = "block";
             document.getElementById("editParentButton").disabled = true;
+            categoryModalState = {}; // Clear stored state
+        }
+
+        function saveCategoryModalState() {
+            categoryModalState = {
+                CategoryId: document.getElementById("CategoryId").value,
+                Name: document.getElementById("Name").value,
+                ParentCategoryId: document.getElementById("ParentCategoryId").value,
+                ModalLabel: document.getElementById("categoryModalLabel").textContent,
+                SubmitText: document.getElementById("modalSubmitText").textContent,
+                ParentSectionDisplay: document.getElementById("parentCategorySection").style.display
+            };
+            console.log("Saved category modal state:", categoryModalState);
+        }
+
+        function restoreCategoryModalState() {
+            if (Object.keys(categoryModalState).length > 0) {
+                document.getElementById("CategoryId").value = categoryModalState.CategoryId || "";
+                document.getElementById("Name").value = categoryModalState.Name || "";
+                document.getElementById("ParentCategoryId").value = categoryModalState.ParentCategoryId || "";
+                document.getElementById("categoryModalLabel").textContent = categoryModalState.ModalLabel || "Add Category";
+                document.getElementById("modalSubmitText").textContent = categoryModalState.SubmitText || "Submit";
+                document.getElementById("parentCategorySection").style.display = categoryModalState.ParentSectionDisplay || "block";
+                document.getElementById("editParentButton").disabled = !categoryModalState.ParentCategoryId;
+                console.log("Restored category modal state:", categoryModalState);
+            }
         }
 
         function resetParentModal() {
+            document.getElementById("ParentCategoryIdInput").value = "";
             document.getElementById("ParentName").value = "";
+            document.getElementById("parentCategoryModalLabel").textContent = "Add Parent Category";
+            document.getElementById("parentModalSubmitText").textContent = "Save";
         }
 
         function openParentModal() {
+            saveCategoryModalState();
+            isTransitioningToParentModal = true;
             resetParentModal();
+            $('#categoryModal').modal('hide');
+            $('#parentCategoryModal').modal('show');
+        }
+
+        function reopenCategoryModal() {
+            $('#parentCategoryModal').modal('hide');
             $('#categoryModal').modal('show');
         }
 
@@ -171,6 +210,7 @@
                 document.getElementById("modalSubmitText").textContent = "Update";
                 document.getElementById("parentCategorySection").style.display = isParent ? "none" : "block";
                 document.getElementById("editParentButton").disabled = !document.getElementById("ParentCategoryId").value;
+                $('#categoryModal').modal('show');
             } catch (error) {
                 console.error("Error in editCategory:", error);
                 alert("An error occurred while preparing the edit form.");
@@ -183,9 +223,14 @@
                 var selectedOption = select.options[select.selectedIndex];
                 if (selectedOption && selectedOption.value) {
                     console.log("Editing selected parent:", { value: selectedOption.value, name: selectedOption.getAttribute("data-name") });
-                    var id = selectedOption.value;
-                    var name = selectedOption.getAttribute("data-name");
-                    editCategory(id, name, "", true);
+                    saveCategoryModalState();
+                    isTransitioningToParentModal = true;
+                    document.getElementById("ParentCategoryIdInput").value = selectedOption.value;
+                    document.getElementById("ParentName").value = selectedOption.getAttribute("data-name");
+                    document.getElementById("parentCategoryModalLabel").textContent = "Edit Parent Category";
+                    document.getElementById("parentModalSubmitText").textContent = "Update";
+                    $('#categoryModal').modal('hide');
+                    $('#parentCategoryModal').modal('show');
                 } else {
                     console.warn("No parent category selected for editing.");
                     alert("Please select a parent category to edit.");
@@ -198,11 +243,17 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             var categoryModal = document.getElementById("categoryModal");
-            categoryModal.addEventListener("hidden.bs.modal", resetCategoryModal);
+            categoryModal.addEventListener("hidden.bs.modal", function () {
+                if (!isTransitioningToParentModal) {
+                    resetCategoryModal();
+                }
+                isTransitioningToParentModal = false; // Reset flag after handling
+            });
 
             var parentCategoryModal = document.getElementById("parentCategoryModal");
             parentCategoryModal.addEventListener("hidden.bs.modal", function () {
                 resetParentModal();
+                restoreCategoryModalState();
                 $('#categoryModal').modal('show');
             });
 
@@ -224,23 +275,31 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        console.log("Parent category added:", data);
+                        console.log("Parent category updated:", data);
                         $('#parentCategoryModal').modal('hide');
                         var select = document.getElementById("ParentCategoryId");
-                        var newOption = document.createElement("option");
-                        newOption.value = data.categoryId;
-                        newOption.text = data.categoryName;
-                        newOption.setAttribute("data-name", data.categoryName);
-                        select.appendChild(newOption);
+                        let option = Array.from(select.options).find(opt => opt.value === data.categoryId);
+                        if (option) {
+                            option.text = data.categoryName;
+                            option.setAttribute("data-name", data.categoryName);
+                        } else {
+                            var newOption = document.createElement("option");
+                            newOption.value = data.categoryId;
+                            newOption.text = data.categoryName;
+                            newOption.setAttribute("data-name", data.categoryName);
+                            select.appendChild(newOption);
+                        }
                         select.value = data.categoryId;
+                        restoreCategoryModalState();
+                        $('#categoryModal').modal('show');
                     } else {
-                        console.error("Error adding parent category:", data.message);
-                        alert("Error adding parent category: " + (data.message || "Unknown error"));
+                        console.error("Error updating parent category:", data.message);
+                        alert("Error updating parent category: " + (data.message || "Unknown error"));
                     }
                 })
                 .catch(error => {
                     console.error("Error in parent category submission:", error);
-                    alert("An error occurred while adding the parent category.");
+                    alert("An error occurred while updating the parent category.");
                 });
             });
 
@@ -259,7 +318,6 @@
                     if (data.success) {
                         console.log("Category updated:", data);
                         $('#categoryModal').modal('hide');
-                        // Update dropdown if a parent category was edited
                         if (document.getElementById("parentCategorySection").style.display === "none") {
                             var select = document.getElementById("ParentCategoryId");
                             Array.from(select.options).forEach(option => {
@@ -269,7 +327,6 @@
                                 }
                             });
                         }
-                        // Reload page to refresh table
                         location.reload();
                     } else {
                         console.error("Error updating category:", data.message);
