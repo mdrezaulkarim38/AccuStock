@@ -31,12 +31,14 @@
                             {
                                 index++;
                                 <tr>
+
+
                                     <td>@index</td>
                                     <td>@category.Name</td>
                                     <td>@category.ParentCategory?.Name</td>
                                     <td class="d-flex gap-2">
                                         <button class="btn btn-warning btn-sm"
-                                                onclick="editCategory('@category.Id', '@category.Name', '@category.ParentCategoryId')"
+                                                onclick="editCategory('@category.Id', '@category.Name', '@category.ParentCategoryId', @(category.ParentCategoryId == null ? "true" : "false"))"
                                                 data-bs-toggle="modal" data-bs-target="#categoryModal">
                                             <i class="fas fa-edit"></i> Edit
                                         </button>
@@ -63,9 +65,10 @@
         <div class="modal-content">
             <div class="modal-header bg-light">
                 <h5 class="modal-title" id="categoryModalLabel">Add Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form asp-action="CreateOrUpdateCat" method="post">
+                <form asp-action="CreateOrUpdateCat" method="post" id="categoryForm">
                     <input type="hidden" id="CategoryId" name="Id" />
 
                     <div class="mb-3">
@@ -73,15 +76,21 @@
                         <input type="text" class="form-control" id="Name" name="Name" required />
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-3" id="parentCategorySection">
                         <label for="ParentCategoryId" class="form-label">Parent Category</label>
-                        <select class="form-select" id="ParentCategoryId" name="ParentCategoryId">
-                            <option value="">-- Select --</option>
-                            @foreach (var parent in Model.Where(c => c.ParentCategoryId == null))
-                            {
-                                <option value="@parent.Id">@parent.Name</option>
-                            }
-                        </select>
+                        <div class="input-group">
+                            <select class="form-select" id="ParentCategoryId" name="ParentCategoryId">
+                                <option value="">-- Select --</option>
+                                @foreach (var parent in Model.Where(c => c.ParentCategoryId == null))
+                                {
+                                    <option value="@parent.Id" data-name="@parent.Name">@parent.Name</option>
+                                }
+                            </select>
+                            <button type="button" class="btn btn-warning btn-sm" id="editParentButton" disabled
+                                    onclick="editSelectedParentCategory()">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -139,6 +148,8 @@
             document.getElementById("ParentCategoryId").value = "";
             document.getElementById("categoryModalLabel").textContent = "Add Category";
             document.getElementById("modalSubmitText").textContent = "Submit";
+            document.getElementById("parentCategorySection").style.display = "block";
+            document.getElementById("editParentButton").disabled = true;
         }
 
         function resetParentModal() {
@@ -147,20 +158,42 @@
 
         function openParentModal() {
             resetParentModal();
-            // Ensure category modal remains open when parent modal is closed
             $('#categoryModal').modal('show');
         }
 
-        document.getElementById("addNewCategory").addEventListener("click", function () {
-            resetCategoryModal();
-        });
+        function editCategory(id, name, parentId, isParent) {
+            try {
+                console.log("Editing category:", { id, name, parentId, isParent });
+                document.getElementById("CategoryId").value = id;
+                document.getElementById("Name").value = name;
+                document.getElementById("ParentCategoryId").value = parentId || "";
+                document.getElementById("categoryModalLabel").textContent = isParent ? "Edit Parent Category" : "Edit Category";
+                document.getElementById("modalSubmitText").textContent = "Update";
+                document.getElementById("parentCategorySection").style.display = isParent ? "none" : "block";
+                document.getElementById("editParentButton").disabled = !document.getElementById("ParentCategoryId").value;
+            } catch (error) {
+                console.error("Error in editCategory:", error);
+                alert("An error occurred while preparing the edit form.");
+            }
+        }
 
-        function editCategory(id, name, parentId) {
-            document.getElementById("CategoryId").value = id;
-            document.getElementById("Name").value = name;
-            document.getElementById("ParentCategoryId").value = parentId || "";
-            document.getElementById("categoryModalLabel").textContent = "Edit Category";
-            document.getElementById("modalSubmitText").textContent = "Update";
+        function editSelectedParentCategory() {
+            try {
+                var select = document.getElementById("ParentCategoryId");
+                var selectedOption = select.options[select.selectedIndex];
+                if (selectedOption && selectedOption.value) {
+                    console.log("Editing selected parent:", { value: selectedOption.value, name: selectedOption.getAttribute("data-name") });
+                    var id = selectedOption.value;
+                    var name = selectedOption.getAttribute("data-name");
+                    editCategory(id, name, "", true);
+                } else {
+                    console.warn("No parent category selected for editing.");
+                    alert("Please select a parent category to edit.");
+                }
+            } catch (error) {
+                console.error("Error in editSelectedParentCategory:", error);
+                alert("An error occurred while trying to edit the parent category.");
+            }
         }
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -170,8 +203,12 @@
             var parentCategoryModal = document.getElementById("parentCategoryModal");
             parentCategoryModal.addEventListener("hidden.bs.modal", function () {
                 resetParentModal();
-                // Reopen category modal after parent modal closes
                 $('#categoryModal').modal('show');
+            });
+
+            // Enable/disable edit button based on dropdown selection
+            document.getElementById("ParentCategoryId").addEventListener("change", function () {
+                document.getElementById("editParentButton").disabled = !this.value;
             });
 
             // Handle parent category form submission
@@ -187,23 +224,61 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Close parent modal
+                        console.log("Parent category added:", data);
                         $('#parentCategoryModal').modal('hide');
-                        // Update parent category dropdown
                         var select = document.getElementById("ParentCategoryId");
                         var newOption = document.createElement("option");
                         newOption.value = data.categoryId;
                         newOption.text = data.categoryName;
+                        newOption.setAttribute("data-name", data.categoryName);
                         select.appendChild(newOption);
-                        // Select the newly added parent category
                         select.value = data.categoryId;
                     } else {
+                        console.error("Error adding parent category:", data.message);
                         alert("Error adding parent category: " + (data.message || "Unknown error"));
                     }
                 })
                 .catch(error => {
-                    console.error("Error:", error);
+                    console.error("Error in parent category submission:", error);
                     alert("An error occurred while adding the parent category.");
+                });
+            });
+
+            // Handle category form submission
+            document.getElementById("categoryForm").addEventListener("submit", function (e) {
+                e.preventDefault();
+                var form = this;
+                var formData = new FormData(form);
+
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log("Category updated:", data);
+                        $('#categoryModal').modal('hide');
+                        // Update dropdown if a parent category was edited
+                        if (document.getElementById("parentCategorySection").style.display === "none") {
+                            var select = document.getElementById("ParentCategoryId");
+                            Array.from(select.options).forEach(option => {
+                                if (option.value === data.categoryId) {
+                                    option.text = data.categoryName;
+                                    option.setAttribute("data-name", data.categoryName);
+                                }
+                            });
+                        }
+                        // Reload page to refresh table
+                        location.reload();
+                    } else {
+                        console.error("Error updating category:", data.message);
+                        alert("Error: " + (data.message || "Unknown error"));
+                    }
+                })
+                .catch(error => {
+                    console.error("Error in category submission:", error);
+                    alert("An error occurred while updating the category.");
                 });
             });
         });
