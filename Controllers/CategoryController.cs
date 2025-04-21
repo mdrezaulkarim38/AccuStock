@@ -15,6 +15,13 @@ namespace AccuStock.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> AddCategory()
+        {
+            var categories = await _categoryService.GetAllCategory();
+            return View(categories);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Category()
         {
             var categories = await _categoryService.GetAllCategory();
