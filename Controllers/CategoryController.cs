@@ -23,6 +23,10 @@ namespace AccuStock.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrUpdateCat(Category category)
         {
+            if(category.ParentCategoryId == 0)
+            {
+                category.ParentCategoryId = null;
+            }
             if(category.Id == 0)
             {
                 bool isCreated = await _categoryService.CreateCategory(category);

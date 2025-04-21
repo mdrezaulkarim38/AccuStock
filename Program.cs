@@ -35,6 +35,7 @@ builder.Services.AddScoped<IGLedger, GLedgerService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<ITrialBalanceService, TrialBalanceService>();
 builder.Services.AddScoped<IProfitAndLossService, ProfitAndLossService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddHttpContextAccessor();
 
 // Configure DbContext with resilience
@@ -48,7 +49,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         config.LoginPath = "/Auth/Login";
         config.LogoutPath = "/Auth/Logout";
         config.AccessDeniedPath = "/Auth/AccessDenied";
-        config.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+        config.ExpireTimeSpan = TimeSpan.FromMinutes(30);
         config.SlidingExpiration = true;
     });
 var app = builder.Build();

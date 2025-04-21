@@ -74,6 +74,7 @@ namespace AccuStock.Services
         {
             var subscriptionIdClaim = _baseService.GetSubscriptionId();
             var categories = await _context.Categories
+                .Include(c => c.ParentCategory)
                 .Where(c => c.SubscriptionId == subscriptionIdClaim)
                 .ToListAsync();
             return categories;
