@@ -1,10 +1,11 @@
 ﻿using AccuStock.Data;
+using AccuStock.Interface;
 using AccuStock.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AccuStock.Services
 {
-    public class CategoryService
+    public class CategoryService : ICategoryService
     {
         private readonly AppDbContext _context;
         private readonly BaseService _baseService;
@@ -56,6 +57,26 @@ namespace AccuStock.Services
                 Console.WriteLine(ex);
                 throw;
             }
+        }
+
+        public async Task<string> DeleteCategory(int catId)
+        {
+            var category = await _context.Categories.FindAsync(catId);
+            if (category == null)
+            {
+                return "Category not found.";
+            }
+            _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
+            return "Category deleted successfully.";
+        }
+        public async Task<List<Category>> GetAllCategory()
+        {
+            var subscriptionIdClaim = _baseService.GetSubscriptionId();
+            var categories = await _context.Categories
+                .Where(c => c.SubscriptionId == subscriptionIdClaim)
+                .ToListAsync();
+            return categories;
         }
     }
 }
