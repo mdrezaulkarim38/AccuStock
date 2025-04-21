@@ -84,6 +84,9 @@
                         </select>
                     </div>
 
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#parentCategoryModal" onclick="openParentModal()">Add New Parent</button>
+                    </div>
 
                     <div class="d-flex justify-content-start gap-2">
                         <button type="submit" class="btn btn-success btn-sm">
@@ -99,14 +102,53 @@
     </div>
 </div>
 
+<!-- Modal for Add Parent Category -->
+<div class="modal fade" id="parentCategoryModal" tabindex="-1" aria-labelledby="parentCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title" id="parentCategoryModalLabel">Add Parent Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="parentCategoryForm" asp-action="CreateOrUpdateCat" method="post">
+                    <div class="mb-3">
+                        <label for="ParentName" class="form-label">Parent Category Name</label>
+                        <input type="text" class="form-control" id="ParentName" name="Name" required />
+                    </div>
+                    <input type="hidden" name="ParentCategoryId" value="" />
+                    <div class="d-flex justify-content-start gap-2">
+                        <button type="submit" class="btn btn-success btn-sm">
+                            <i class="bi bi-check-circle"></i> Save
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         function resetCategoryModal() {
             document.getElementById("CategoryId").value = "";
             document.getElementById("Name").value = "";
-            document.getElementById("ParentCategoryId").value = "0";
+            document.getElementById("ParentCategoryId").value = "";
             document.getElementById("categoryModalLabel").textContent = "Add Category";
             document.getElementById("modalSubmitText").textContent = "Submit";
+        }
+
+        function resetParentModal() {
+            document.getElementById("ParentName").value = "";
+        }
+
+        function openParentModal() {
+            resetParentModal();
+            // Ensure category modal remains open when parent modal is closed
+            $('#categoryModal').modal('show');
         }
 
         document.getElementById("addNewCategory").addEventListener("click", function () {
@@ -116,7 +158,7 @@
         function editCategory(id, name, parentId) {
             document.getElementById("CategoryId").value = id;
             document.getElementById("Name").value = name;
-            document.getElementById("ParentCategoryId").value = parentId || "0";
+            document.getElementById("ParentCategoryId").value = parentId || "";
             document.getElementById("categoryModalLabel").textContent = "Edit Category";
             document.getElementById("modalSubmitText").textContent = "Update";
         }
@@ -124,6 +166,46 @@
         document.addEventListener("DOMContentLoaded", function () {
             var categoryModal = document.getElementById("categoryModal");
             categoryModal.addEventListener("hidden.bs.modal", resetCategoryModal);
+
+            var parentCategoryModal = document.getElementById("parentCategoryModal");
+            parentCategoryModal.addEventListener("hidden.bs.modal", function () {
+                resetParentModal();
+                // Reopen category modal after parent modal closes
+                $('#categoryModal').modal('show');
+            });
+
+            // Handle parent category form submission
+            document.getElementById("parentCategoryForm").addEventListener("submit", function (e) {
+                e.preventDefault();
+                var form = this;
+                var formData = new FormData(form);
+
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Close parent modal
+                        $('#parentCategoryModal').modal('hide');
+                        // Update parent category dropdown
+                        var select = document.getElementById("ParentCategoryId");
+                        var newOption = document.createElement("option");
+                        newOption.value = data.categoryId;
+                        newOption.text = data.categoryName;
+                        select.appendChild(newOption);
+                        // Select the newly added parent category
+                        select.value = data.categoryId;
+                    } else {
+                        alert("Error adding parent category: " + (data.message || "Unknown error"));
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("An error occurred while adding the parent category.");
+                });
+            });
         });
     </script>
 }
