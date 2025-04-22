@@ -23,6 +23,7 @@ namespace AccuStock.Data
         public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Brand> Brands { get; set; }
+        public DbSet<Unit> Units { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -37,6 +38,21 @@ namespace AccuStock.Data
                 new Role { Id = 2, Name = "Admin" },
                 new Role { Id = 3, Name = "Operator" }
             );
+
+            // Seeding the Units
+
+            modelBuilder.Entity<Unit>().HasData(
+
+                new Unit { Id = 1, Name = "Piece" },
+                new Unit { Id = 2, Name = "Box" },
+                new Unit { Id = 3, Name = "Gram " },
+                new Unit { Id = 4, Name = "Liter" },
+                new Unit { Id = 5, Name = "Meter " },
+                new Unit { Id = 6, Name = "Foot " },
+                new Unit { Id = 7, Name = "Inch " },
+                new Unit { Id = 8, Name = "Unit" },
+                new Unit { Id = 9, Name = "Kg" }
+                );
 
             modelBuilder.Entity<ChartOfAccountType>().HasData(
     // Top-Level Account Types (ParentId = 0)
