@@ -44,11 +44,6 @@ namespace AccuStock.Controllers
                 category.ParentCategoryId = null;
             }
 
-            if (!ModelState.IsValid)
-            {
-                return Json(new { success = false, message = "Invalid input data." });
-            }
-
             if (category.Id == 0)
             {
                 bool isCreated = await _categoryService.CreateCategory(category);
