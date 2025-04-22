@@ -56,7 +56,6 @@ namespace AccuStock.Services
                     return false;
                 }
 
-                // Check for duplicate name under the same parent and subscription
                 var duplicateExists = await _context.Categories
                     .AnyAsync(c => c.Name == category.Name 
                                 && c.SubscriptionId == subscriptionIdClaim 
@@ -110,7 +109,7 @@ namespace AccuStock.Services
                 .ToListAsync();
         }
 
-        public async Task<Category> GetCategoryById(int id)
+        public async Task<Category?> GetCategoryById(int id)
         {
             var subscriptionIdClaim = _baseService.GetSubscriptionId();
             return await _context.Categories

@@ -36,6 +36,7 @@ builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<ITrialBalanceService, TrialBalanceService>();
 builder.Services.AddScoped<IProfitAndLossService, ProfitAndLossService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddHttpContextAccessor();
 
 // Configure DbContext with resilience
