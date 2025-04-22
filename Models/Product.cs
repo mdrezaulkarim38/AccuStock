@@ -12,7 +12,7 @@ public class Product
     public Brand? Brand { get; set; }
     public int? CategoryId { get; set; }
     public Category? Category { get; set; }
-    public int ProductUnitId { get; set; }
+    public int? UnitId { get; set; }
     public Unit? Unit { get; set; }
     public string? ImagePath { get; set; }
     [NotMapped]
