@@ -35,7 +35,7 @@
                             @{
                                 int index = 0;
                             }
-                            @foreach (var category in Model)
+                            @foreach (var category in Model.Where(c => c.ParentCategoryId != null))
                             {
                                 index++;
                                 <tr>
@@ -84,13 +84,18 @@
 
                     <div class="mb-3">
                         <label for="ParentCategoryId" class="form-label">Parent Category</label>
-                        <select class="form-select" id="ParentCategoryId" name="ParentCategoryId">
-                            <option value="">-- Select --</option>
-                            @foreach (var parent in Model)
-                            {
-                                <option value="@parent.Id">@parent.Name</option>
-                            }
-                        </select>
+                        <div class="input-group">
+                            <select class="form-select" id="ParentCategoryId" name="ParentCategoryId">
+                                <option value="">-- Select --</option>
+                                @foreach (var parent in Model.Where(p => p.ParentCategoryId == null)) // Only parent categories
+                                {
+                                    <option value="@parent.Id">@parent.Name</option>
+                                }
+                            </select>
+                            <button type="button" class="btn btn-warning btn-sm" id="editParentButton" onclick="editSelectedParent()" disabled>
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -120,6 +125,7 @@
             document.getElementById("ParentCategoryId").value = "";
             document.getElementById("categoryModalLabel").textContent = "Add Category";
             document.getElementById("modalSubmitText").textContent = "Submit";
+            document.getElementById("editParentButton").disabled = true;
         }
 
         function editCategory(id, name, parentId) {
@@ -128,6 +134,14 @@
             document.getElementById("ParentCategoryId").value = parentId || "";
             document.getElementById("categoryModalLabel").textContent = "Edit Category";
             document.getElementById("modalSubmitText").textContent = "Update";
+            document.getElementById("editParentButton").disabled = document.getElementById("ParentCategoryId").value === "";
+        }
+
+        function editSelectedParent() {
+            var parentId = document.getElementById("ParentCategoryId").value;
+            if (parentId) {
+                window.location.href = "@Url.Action("AddCategory", "Category")/" + parentId;
+            }
         }
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -136,6 +150,11 @@
 
             document.getElementById("addNewCategory").addEventListener("click", function () {
                 resetCategoryModal();
+            });
+
+            // Enable/disable edit parent button based on selection
+            document.getElementById("ParentCategoryId").addEventListener("change", function () {
+                document.getElementById("editParentButton").disabled = this.value === "";
             });
 
             // Handle form submission via AJAX

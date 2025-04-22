@@ -1,38 +1,23 @@
 ﻿@model AccuStock.Models.Category
 @{
-    ViewData["Title"] = "Add New Category";
-    var categories = ViewData["Categories"] as IEnumerable<AccuStock.Models.Category>;
+    ViewData["Title"] = Model?.Id == 0 ? "Add New Parent Category" : "Edit Parent Category";
 }
 
 <div class="row">
     <div class="col-md-12">
         <div class="card shadow">
             <div class="card-header">
-                <h5 class="card-title mb-0">@(Model?.Id == 0 ? "Add New Category" : "Edit Category")</h5>
+                <h5 class="card-title mb-0">@(Model?.Id == 0 ? "Add New Parent Category" : "Edit Parent Category")</h5>
             </div>
             <div class="card-body">
                 <form asp-action="CreateOrUpdateCat" method="post" id="categoryForm">
                     <input type="hidden" id="CategoryId" name="Id" value="@Model?.Id" />
+                    <input type="hidden" name="ParentCategoryId" value="" /> <!-- Ensure ParentCategoryId is null -->
 
                     <div class="mb-3">
                         <label for="Name" class="form-label">Category Name</label>
                         <input type="text" class="form-control" id="Name" name="Name" value="@Model?.Name" required />
                     </div>
-
-                    <div class="mb-3">
-                        <label for="ParentCategoryId" class="form-label">Parent Category (Optional)</label>
-                        <select class="form-select" id="ParentCategoryId" name="ParentCategoryId">
-                            <option value="">-- Select --</option>
-                            @if (categories != null)
-                            {
-                                foreach (var parent in categories)
-                                {
-                                    <option value="@parent.Id" selected="@(Model?.ParentCategoryId == parent.Id)">@parent.Name</option>
-                                }
-                            }
-                        </select>
-                    </div>
-
                     <div class="d-flex justify-content-start gap-2">
                         <button type="submit" class="btn btn-success btn-sm">
                             <i class="bi bi-check-circle"></i> @(Model?.Id == 0 ? "Submit" : "Update")

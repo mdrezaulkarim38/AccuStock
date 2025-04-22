@@ -23,9 +23,6 @@ namespace AccuStock.Controllers
         [HttpGet]
         public async Task<IActionResult> AddCategory(int? id)
         {
-            var categories = await _categoryService.GetAllCategory();
-            ViewData["Categories"] = categories;
-
             if (id.HasValue)
             {
                 var category = await _categoryService.GetCategoryById(id.Value);
