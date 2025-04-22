@@ -22,13 +22,24 @@ namespace AccuStock.Services
             {
                 var subscriptionIdClaim = _baseService.GetSubscriptionId();
                 category.SubscriptionId = subscriptionIdClaim;
+
+                // Check for duplicate category name under the same parent and subscription
+                var exists = await _context.Categories
+                    .AnyAsync(c => c.Name == category.Name 
+                                && c.SubscriptionId == subscriptionIdClaim 
+                                && c.ParentCategoryId == category.ParentCategoryId);
+                if (exists)
+                {
+                    return false;
+                }
+
                 _context.Categories.Add(category);
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw;
+                return false;
             }
         }
 
@@ -37,25 +48,36 @@ namespace AccuStock.Services
             try
             {
                 var subscriptionIdClaim = _baseService.GetSubscriptionId();
-                var existingCat = await _context.Categories.FirstOrDefaultAsync(b => b.SubscriptionId == subscriptionIdClaim);
+                var existingCat = await _context.Categories
+                    .FirstOrDefaultAsync(b => b.Id == category.Id && b.SubscriptionId == subscriptionIdClaim);
 
                 if (existingCat == null)
                 {
                     return false;
                 }
 
+                // Check for duplicate name under the same parent and subscription
+                var duplicateExists = await _context.Categories
+                    .AnyAsync(c => c.Name == category.Name 
+                                && c.SubscriptionId == subscriptionIdClaim 
+                                && c.ParentCategoryId == category.ParentCategoryId 
+                                && c.Id != category.Id);
+                if (duplicateExists)
+                {
+                    return false;
+                }
+
                 existingCat.Name = category.Name;
-                existingCat.ParentCategoryId = category.ParentCategoryId;                
+                existingCat.ParentCategoryId = category.ParentCategoryId;
                 existingCat.UpdatedAt = DateTime.Now;
 
                 _context.Categories.Update(existingCat);
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine(ex);
-                throw;
+                return false;
             }
         }
 
@@ -66,18 +88,34 @@ namespace AccuStock.Services
             {
                 return "Category not found.";
             }
+
+            // Check if the category has children
+            var hasChildren = await _context.Categories.AnyAsync(c => c.ParentCategoryId == catId);
+            if (hasChildren)
+            {
+                return "Cannot delete category with subcategories.";
+            }
+
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
             return "Category deleted successfully.";
         }
+
         public async Task<List<Category>> GetAllCategory()
         {
             var subscriptionIdClaim = _baseService.GetSubscriptionId();
-            var categories = await _context.Categories
+            return await _context.Categories
                 .Include(c => c.ParentCategory)
                 .Where(c => c.SubscriptionId == subscriptionIdClaim)
                 .ToListAsync();
-            return categories;
+        }
+
+        public async Task<Category> GetCategoryById(int id)
+        {
+            var subscriptionIdClaim = _baseService.GetSubscriptionId();
+            return await _context.Categories
+                .Include(c => c.ParentCategory)
+                .FirstOrDefaultAsync(c => c.Id == id && c.SubscriptionId == subscriptionIdClaim);
         }
     }
 }

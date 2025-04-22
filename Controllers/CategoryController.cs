@@ -1,24 +1,16 @@
 ﻿using AccuStock.Interface;
 using AccuStock.Models;
-using AccuStock.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccuStock.Controllers
 {
     public class CategoryController : Controller
     {
-       private readonly ICategoryService _categoryService;
+        private readonly ICategoryService _categoryService;
 
         public CategoryController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> AddCategory()
-        {
-            var categories = await _categoryService.GetAllCategory();
-            return View(categories);
         }
 
         [HttpGet]
@@ -27,43 +19,72 @@ namespace AccuStock.Controllers
             var categories = await _categoryService.GetAllCategory();
             return View(categories);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> AddCategory(int? id)
+        {
+            var categories = await _categoryService.GetAllCategory();
+            ViewData["Categories"] = categories;
+
+            if (id.HasValue)
+            {
+                var category = await _categoryService.GetCategoryById(id.Value);
+                if (category == null)
+                {
+                    return NotFound();
+                }
+                return View(category);
+            }
+
+            return View(new Category());
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateOrUpdateCat(Category category)
         {
-            if(category.ParentCategoryId == 0)
+            if (category.ParentCategoryId == 0)
             {
                 category.ParentCategoryId = null;
             }
-            if(category.Id == 0)
+
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Invalid input data." });
+            }
+
+            if (category.Id == 0)
             {
                 bool isCreated = await _categoryService.CreateCategory(category);
                 if (!isCreated)
                 {
-                    TempData["ErrorMessage"] = "A Category already exists for this SubscriptionId.";
-                    return RedirectToAction("Category");
+                    return Json(new { success = false, message = "A Category already exists for this SubscriptionId." });
                 }
-                TempData["SuccessMessage"] = "Category Created Successfully";
+                return Json(new { success = true, message = "Category Created Successfully" });
             }
             else
             {
                 bool isUpdated = await _categoryService.UpdateCategory(category);
                 if (!isUpdated)
                 {
-                    TempData["ErrorMessage"] = "Category name already exists or update failed";
-                    return RedirectToAction("Category");
+                    return Json(new { success = false, message = "Category name already exists or update failed" });
                 }
-                TempData["SuccessMessage"] = "Category Updated Successfully";
+                return Json(new { success = true, message = "Category Updated Successfully" });
             }
-            return RedirectToAction("Category");
         }
 
         [HttpPost]
         public async Task<IActionResult> DeleteCat(int id)
         {
             var result = await _categoryService.DeleteCategory(id);
-            TempData["SuccessMessage"] = "Category deleted successfully.";
+            if (result.Contains("not found"))
+            {
+                TempData["ErrorMessage"] = result;
+            }
+            else
+            {
+                TempData["SuccessMessage"] = result;
+            }
             return RedirectToAction("Category");
         }
-
     }
 }
