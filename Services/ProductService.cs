@@ -26,6 +26,9 @@ namespace AccuStock.Services
             var subscriptionIdClaim = _baseService.GetSubscriptionId();
             return await _context.Products
                 .Where(c => c.SubscriptionId == subscriptionIdClaim)
+                .Include(c => c.Category)
+                .Include(c => c.Brand)
+                .Include(c => c.Unit)
                 .ToListAsync();
         }
 
@@ -144,7 +147,7 @@ namespace AccuStock.Services
                 if (product == null)
                     return false;
 
-                product.Status = product.Status;
+                product.Status = !product.Status;
                 _context.Products.Update(product);
                 await _context.SaveChangesAsync();
                 return true;
