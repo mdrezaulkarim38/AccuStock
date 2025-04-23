@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using AccuStock.Data;
+using AccuStock.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AccuStock.Services;
@@ -32,4 +33,8 @@ public class BaseService
         var userBranch = await _appDbContext.Users.Where(u => u.Id == userId && u.SubscriptionId == subscriptionId).FirstOrDefaultAsync();
         return userBranch?.BranchId ?? 0;
     }
+    public async Task<List<Unit>> GetAllUnit()
+    {
+        return await _appDbContext.Units.ToListAsync();
+    } 
 }

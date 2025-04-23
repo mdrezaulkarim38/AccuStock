@@ -4,6 +4,7 @@ using AccuStock.Data;
 using AccuStock.Interface;
 using AccuStock.Services;
 using AccuStock.Hubs;
+using Microsoft.AspNetCore.WebSockets;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +38,7 @@ builder.Services.AddScoped<ITrialBalanceService, TrialBalanceService>();
 builder.Services.AddScoped<IProfitAndLossService, ProfitAndLossService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddHttpContextAccessor();
 
 // Configure DbContext with resilience

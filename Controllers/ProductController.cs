@@ -2,15 +2,22 @@ using AccuStock.Interface;
 using AccuStock.Models;
 using AccuStock.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace AccuStock.Controllers;
 
 public class ProductController : Controller
 {
     private readonly IProductService _productService;
-    public ProductController(IProductService productService)
+    private readonly IBrandService _brandService;
+    private readonly ICategoryService _categoryService;
+    private readonly BaseService _baseService;
+    public ProductController(IProductService productService, IBrandService brandService, ICategoryService categoryService,BaseService baseService )
     {
         _productService = productService;
+        _brandService = brandService;
+        _categoryService = categoryService;
+        _baseService = baseService;
     }
     [HttpGet]
     public async Task<IActionResult> Product()
@@ -21,9 +28,11 @@ public class ProductController : Controller
 
     [HttpGet]
     public async Task<IActionResult> AddOrEditProduct(int id = 0)
-    {       
-
-        if(id == 0)
+    {
+        ViewBag.Brands = new SelectList(await _brandService.GetAllBrand(), "Id", "Name");
+        ViewBag.Categories = new SelectList(await _categoryService.GetAllCategory(), "Id", "Name");
+        ViewBag.Units = new SelectList(await _baseService.GetAllUnit(), "Id", "Name");
+        if (id == 0)
         {
             return View(new Product());
         }
