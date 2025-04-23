@@ -1,0 +1,73 @@
+﻿@model IEnumerable<AccuStock.Models.Product>
+@{
+    ViewData["title"] = "Product Page";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1>Products</h1>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Sl</th>                    
+                    <th>Name</th>                    
+                    <th>Description</th>                    
+                    <th>Code</th>                    
+                    <th>Category</th>                    
+                    <th>Brand</th>                    
+                    <th>Unit</th>                    
+                    <th>Image</th>      
+                    <th>Status</th>
+                    <th>
+                        <a asp-action="AddOrEditProduct" class="btn btn-sm btn-success">
+                            <i class="fa-solid fa-plus"></i> New Product
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td> @item.Name</td>
+                        <td> @item.Description</td>
+                        <td> @item.Code</td>
+                        <td> @item.Category</td>
+                        <td> @item.Brand</td>
+                        <td> @item.Unit</td>
+                        <td> @item.ProductImage</td>
+                        <td>
+                            <form method="post" action="@Url.Action("ToggleStatus", "Product")">
+                                <input type="hidden" name="productId" value="@item.Id" />
+                                <button type="submit" class="btn @(item.Status ? "btn-success" : "btn-danger") btn-sm">
+                                    @if (item.Status)
+                                    {
+                                        <i class="fas fa-check"></i> <span>Active</span>
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-times"></i> <span>Inactive</span>
+                                    }
+                                </button>
+                            </form>
+                        </td>
+                        <td>
+                            <form asp-action="Delete" asp-route-id="@item.Id">
+                                <div class="btn-group btn-group-sm">
+                                    <a asp-action="AddOrEditProduct" asp-route-id="@item.Id" class="btn btn-warning">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <button type="submit" class="btn btn-danger"
+                                        onclick="return confirm('Are you sure to delete this record?')">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
