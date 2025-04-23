@@ -22,6 +22,7 @@ public class ProductController : Controller
     [HttpGet]
     public async Task<IActionResult> AddOrEditProduct(int id = 0)
     {       
+
         if(id == 0)
         {
             return View(new Product());
