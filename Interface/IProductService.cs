@@ -8,6 +8,7 @@ namespace AccuStock.Interface
         Task<Product> GetProductbyId(int id);
         Task<bool> CreateProduct(Product product);
         Task<bool> UpdateProduct(Product product);
-        Task<string> DeleteProduct(int productId);
+       // Task<string> DeleteProduct(int productId);
+        Task<bool> ToggleStatus(int productId);
     }
 }

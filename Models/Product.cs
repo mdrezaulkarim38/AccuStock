@@ -19,6 +19,7 @@ public class Product
     public IFormFile? ProductImage { get; set; }
     public int SubscriptionId { get; set; }
     public Subscription? Subscription { get; set; }
+    public bool Status { get; set; } = true;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
 }
