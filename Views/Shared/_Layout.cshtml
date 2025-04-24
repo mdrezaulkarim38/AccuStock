@@ -269,41 +269,52 @@
     <script src="~/dist/jstree.min.js"></script>
 
 
+<script>
+    $(document).ready(function () {
+        // SweetAlert Success
+        @if (TempData["SuccessMessageSweet"] != null)
+        {
+            var message = System.Web.HttpUtility.JavaScriptStringEncode(TempData["SuccessMessageSweet"]?.ToString() ?? "");
+            <text>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: '@message',
+                    confirmButtonText: 'OK'
+                });
+            </text>
+        }
 
-    <script>
-        $(document).ready(function () {
-            // SweetAlert for Success
+        // SweetAlert Error
+        @if (TempData["ErrorMessageSweet"] != null)
+        {
+            var message = System.Web.HttpUtility.JavaScriptStringEncode(TempData["ErrorMessageSweet"]?.ToString() ?? "");
+            <text>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '@message',
+                    confirmButtonText: 'OK'
+                });
+            </text>
+        }
+
+        // Toastr Success
         @if (TempData["SuccessMessage"] != null)
         {
-            @:Swal.fire({
-            @:    icon: 'success',
-            @:    title: 'Success',
-            @:    text: '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(TempData["SuccessMessage"].ToString()))',
-            @:    confirmButtonText: 'OK'
-            @:});
+            var message = System.Web.HttpUtility.JavaScriptStringEncode(TempData["SuccessMessage"]?.ToString() ?? "");
+            <text>toastr.success('@message');</text>
         }
 
+        // Toastr Error
         @if (TempData["ErrorMessage"] != null)
         {
-            @:Swal.fire({
-            @:    icon: 'error',
-            @:    title: 'Error',
-            @:    text: '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(TempData["ErrorMessage"].ToString()))',
-            @:    confirmButtonText: 'OK'
-            @:});
+            var message = System.Web.HttpUtility.JavaScriptStringEncode(TempData["ErrorMessage"]?.ToString() ?? "");
+            <text>toastr.error('@message');</text>
         }
+    });
+</script>
 
-        @if (TempData["SuccessMessageToster"] != null)
-        {
-            @:toastr.success('@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(TempData["SuccessMessageToster"].ToString()))');
-        }
-
-        @if (TempData["ErrorMessageToster"] != null)
-        {
-            @:toastr.error('@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(TempData["ErrorMessageToster"].ToString()))');
-        }
-        });
-    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 
