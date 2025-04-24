@@ -1,0 +1,79 @@
+﻿@model AccuStock.Models.ViewModels.SentReportViewModel
+@{
+    ViewData["title"] = "Report Sent";
+}
+<h2>Sent Report</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
+}
+
+<form asp-action="SentReport" method="post">
+    <div class="form-group">
+        <label for="ReportType">Report Type</label>
+        <select asp-for="ReportType" class="form-control" required>
+            <option value="">Select a report type</option>
+            <option value="GeneralLedger">General Ledger</option>
+            <option value="TrialBalance">Trial Balance</option>
+            <option value="ProfitAndLoss">Profit and Loss</option>
+        </select>
+        <span asp-validation-for="ReportType" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="FromDate">From Date</label>
+        <input asp-for="FromDate" type="date" class="form-control" required />
+        <span asp-validation-for="FromDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="ToDate">To Date</label>
+        <input asp-for="ToDate" type="date" class="form-control" required />
+        <span asp-validation-for="ToDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="TimeToSend">Time to Send Report</label>
+        <input asp-for="TimeToSend" type="time" class="form-control" required />
+        <span asp-validation-for="TimeToSend" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('form').validate({
+                rules: {
+                    ReportType: { required: true },
+                    FromDate: { required: true },
+                    ToDate: {
+                        required: true,
+                        greaterThanOrEqual: "#FromDate"
+                    },
+                    TimeToSend: { required: true }
+                },
+                messages: {
+                    ToDate: {
+                        greaterThanOrEqual: "To Date must be greater than or equal to From Date."
+                    }
+                }
+            });
+
+            // Custom validation method for ToDate >= FromDate
+            $.validator.addMethod("greaterThanOrEqual",
+                function (value, element, params) {
+                    var fromDate = $(params).val();
+                    if (!value || !fromDate) return true;
+                    return new Date(value) >= new Date(fromDate);
+                },
+                "To Date must be greater than or equal to From Date.");
+        });
+    </script>
+}

@@ -71,7 +71,7 @@ namespace AccuStock.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("BankAccounts");
+                    b.ToTable("BankAccounts", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.Branch", b =>
@@ -113,7 +113,7 @@ namespace AccuStock.Migrations
 
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("Branches");
+                    b.ToTable("Branches", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.Brand", b =>
@@ -140,7 +140,7 @@ namespace AccuStock.Migrations
 
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("Brands");
+                    b.ToTable("Brands", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.BusinessYear", b =>
@@ -184,7 +184,7 @@ namespace AccuStock.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("BusinessYears");
+                    b.ToTable("BusinessYears", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.Category", b =>
@@ -216,7 +216,7 @@ namespace AccuStock.Migrations
 
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.ChartOfAccount", b =>
@@ -259,7 +259,7 @@ namespace AccuStock.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ChartOfAccounts");
+                    b.ToTable("ChartOfAccounts", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.ChartOfAccountType", b =>
@@ -281,7 +281,7 @@ namespace AccuStock.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ChartOfAccountTypes");
+                    b.ToTable("ChartOfAccountTypes", (string)null);
 
                     b.HasData(
                         new
@@ -486,7 +486,7 @@ namespace AccuStock.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ChatMessages");
+                    b.ToTable("ChatMessages", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.Company", b =>
@@ -541,7 +541,7 @@ namespace AccuStock.Migrations
 
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("Companies");
+                    b.ToTable("Companies", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.JournalPost", b =>
@@ -616,7 +616,7 @@ namespace AccuStock.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("JournalPosts");
+                    b.ToTable("JournalPosts", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.JournalPostDetail", b =>
@@ -702,7 +702,7 @@ namespace AccuStock.Migrations
 
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("JournalPostDetails");
+                    b.ToTable("JournalPostDetails", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.Module", b =>
@@ -726,7 +726,7 @@ namespace AccuStock.Migrations
 
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("Modules");
+                    b.ToTable("Modules", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.OpeningBalances", b =>
@@ -786,7 +786,7 @@ namespace AccuStock.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("OpeningBalances");
+                    b.ToTable("OpeningBalances", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.Product", b =>
@@ -840,7 +840,7 @@ namespace AccuStock.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.Role", b =>
@@ -856,7 +856,7 @@ namespace AccuStock.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
@@ -895,7 +895,7 @@ namespace AccuStock.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Subscriptions");
+                    b.ToTable("Subscriptions", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.Unit", b =>
@@ -911,7 +911,7 @@ namespace AccuStock.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Units");
+                    b.ToTable("Units", (string)null);
 
                     b.HasData(
                         new
@@ -1014,7 +1014,7 @@ namespace AccuStock.Migrations
 
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("AccuStock.Models.BankAccount", b =>
