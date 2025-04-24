@@ -170,15 +170,15 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert(data.message);
-                        window.location.reload(); // Reload to refresh the category list
+                        // alert(data.message);
+                        // window.location.reload(); Reload to refresh the category list
                     } else {
-                        alert(data.message);
+                        // alert(data.message);
                     }
                 })
                 .catch(error => {
-                    console.error("Error:", error);
-                    alert("An error occurred. Please try again.");
+                    // console.error("Error:", error);
+                    // alert("An error occurred. Please try again.");
                 });
             });
         });

@@ -51,17 +51,23 @@ namespace AccuStock.Controllers
                 {
                     TempData["ErrorMessageSweet"] = "Unsuccessfull to Create";
                 }
-                return Json(new { success = true, message = "Category Created Successfully" });
+                else{
+                    TempData["SuccessMessageSweet"] = "Category Created";
+                }
             }
             else
             {
                 bool isUpdated = await _categoryService.UpdateCategory(category);
                 if (!isUpdated)
                 {
-                    return Json(new { success = false, message = "Category name already exists or update failed" });
+                    TempData["ErrorMessageSweet"] = "Category name already exists or update failed";
                 }
-                return Json(new { success = true, message = "Category Updated Successfully" });
+                else
+                {
+                    TempData["SuccessMessageSweet"] = "Category Updated Successfully";
+                }
             }
+            return RedirectToAction("Category"); 
         }
 
         [HttpPost]

@@ -4,7 +4,7 @@
 }
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-8">
         <div class="card shadow">
             <div class="card-header">
                 <h5 class="card-title mb-0">@(Model?.Id == 0 ? "Add New Parent Category" : "Edit Parent Category")</h5>
@@ -57,10 +57,10 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert(data.message);
+                    toastr.success(data.message);
                     window.location.href = "@Url.Action("Category", "Category")";
                 } else {
-                    alert(data.message);
+                    toastr.error(data.message);
                 }
             })
             .catch(error => {

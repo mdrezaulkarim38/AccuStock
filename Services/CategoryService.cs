@@ -22,7 +22,6 @@ namespace AccuStock.Services
             {
                 var subscriptionIdClaim = _baseService.GetSubscriptionId();
                 category.SubscriptionId = subscriptionIdClaim;
-
                 // Check for duplicate category name under the same parent and subscription
                 var exists = await _context.Categories
                     .AnyAsync(c => c.Name == category.Name 
