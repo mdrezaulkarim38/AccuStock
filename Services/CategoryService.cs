@@ -87,7 +87,12 @@ namespace AccuStock.Services
             {
                 return "Category not found.";
             }
-
+            // Check if the category has products associated with it
+            var hasProducts = _context.Products.Any(p => p.CategoryId == catId);
+            if (hasProducts)
+            {
+                return "Cannot delete category. It is associated with existing products.";
+            }
             // Check if the category has children
             var hasChildren = await _context.Categories.AnyAsync(c => c.ParentCategoryId == catId);
             if (hasChildren)

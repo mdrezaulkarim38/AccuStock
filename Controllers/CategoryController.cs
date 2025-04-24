@@ -67,14 +67,19 @@ namespace AccuStock.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteCat(int id)
         {
+            
             var result = await _categoryService.DeleteCategory(id);
-            if (result.Contains("not found"))
+            if (result.Contains("Cannot delete category! Child Already under this.")) 
             {
-                TempData["ErrorMessage"] = result;
+                TempData["ErrorMessageSweet"] = "Unsuccessfull";
+            }
+            if (result.Contains("Cannot delete category. It is associated with existing products."))
+            {
+                TempData["ErrorMessageSweet"] = "Cannot delete category. It is associated with existing products.";
             }
             else
             {
-                TempData["SuccessMessage"] = result;
+                TempData["SuccessMessageSweet"] = "Successfully Deleted";
             }
             return RedirectToAction("Category");
         }
