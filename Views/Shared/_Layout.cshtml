@@ -22,9 +22,9 @@
 </head>
 
 <body>
-    <div id="global-loader">
-        <div class="whirly-loader"></div>
-    </div>
+    @* <div id="global-loader"> *@
+    @*     <div class="whirly-loader"></div> *@
+    @* </div> *@
 
     <div class="main-wrapper">
         <div class="header">
@@ -260,10 +260,10 @@
     <script src="~/assets/js/jquery.dataTables.min.js"></script>
     <script src="~/assets/js/dataTables.bootstrap4.min.js"></script>
     <script src="~/assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/plugins/apexchart/apexcharts.min.js"></script>
-    <script src="assets/plugins/apexchart/chart-data.js"></script>
-    <script src="assets/plugins/sweetalert/sweetalert2.all.min.js"></script>
-    <script src="assets/plugins/sweetalert/sweetalerts.min.js"></script>
+    <script src="~/assets/plugins/apexchart/chart-data.js"></script>
+    <script src="~/assets/plugins/apexchart/apexcharts.min.js"></script>
+    <script src="~/assets/plugins/sweetalert/sweetalert2.all.min.js"></script>
+    <script src="~/assets/plugins/sweetalert/sweetalerts.min.js"></script>
     <script src="~/assets/js/script.js"></script>
     <script src="~/js/toastr.min.js"></script>
     <script src="~/dist/jstree.min.js"></script>
@@ -271,22 +271,41 @@
 
 
     <script>
-        $(document).ready(function () {
-            // $("#basic-datatables").DataTable({});
-            @if (TempData["SuccessMessage"] != null)
-                {
-                    <text>
-                        toastr.success("@TempData["SuccessMessage"]");
-                    </text>
+        $(document).ready(function() {
+
+            if (TempData["SuccessMessageToster"] != null)
+            {
+                <text>
+                    toastr.success("TempData["SuccessMessageToster"]");
+                </text>
+            }
+            if (TempData["ErrorMessageToster"] != null)
+            {
+                <text>
+                    toastr.success("TempData["ErrorMessageToster"]");
+                </text>
             }
 
-                @if (TempData["ErrorMessage"] != null)
-                {
-                    <text>
-                        toastr.error("@TempData["ErrorMessage"]");
-                    </text>
-            }
-          });
+        @if (TempData["SuccessMessage"] != null)
+        {
+            @:Swal.fire({
+            @:icon: 'success',
+            @:title: 'Success',
+            @:text: '@TempData["SuccessMessage"]',
+            @:confirmButtonText: 'OK'
+            @:});
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            @:Swal.fire({
+            @:icon: 'error',
+            @:title: 'Error',
+            @:text: '@TempData["ErrorMessage"]',
+            @:confirmButtonText: 'OK'
+            @:});
+        }
+        });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
