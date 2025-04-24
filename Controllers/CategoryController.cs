@@ -49,7 +49,7 @@ namespace AccuStock.Controllers
                 bool isCreated = await _categoryService.CreateCategory(category);
                 if (!isCreated)
                 {
-                    return Json(new { success = false, message = "A Category already exists for this SubscriptionId." });
+                    TempData["ErrorMessageSweet"] = "Unsuccessfull to Create";
                 }
                 return Json(new { success = true, message = "Category Created Successfully" });
             }
@@ -65,9 +65,9 @@ namespace AccuStock.Controllers
         }
 
         [HttpPost]
+
         public async Task<IActionResult> DeleteCat(int id)
         {
-            
             var result = await _categoryService.DeleteCategory(id);
             if (result.Contains("Cannot delete category! Child Already under this.")) 
             {

@@ -84,7 +84,7 @@
                     <div class="mb-3">
                         <label for="ParentCategoryId" class="form-label">Parent Category</label>
                         <div class="input-group">
-                            <select class="form-select" id="ParentCategoryId" name="ParentCategoryId">
+                            <select class="form-select" id="ParentCategoryId" name="ParentCategoryId" required>
                                 <option value="">-- Select --</option>
                                 @foreach (var parent in Model.Where(p => p.ParentCategoryId == null)) // Only parent categories
                                 {
@@ -95,7 +95,6 @@
                                 <i class="fas fa-edit me-1"></i>
                                 <i class="fas fa-trash-alt"></i>
                             </button>
-
                         </div>
                     </div>
 
