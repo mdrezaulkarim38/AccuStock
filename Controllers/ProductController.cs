@@ -32,7 +32,7 @@ namespace AccuStock.Controllers
         public async Task<IActionResult> AddOrEditProduct(int id = 0)
         {
             ViewBag.Brands = new SelectList(await _brandService.GetAllBrand(), "Id", "Name");
-            ViewBag.Categories = new SelectList(await _categoryService.GetAllCategory(), "Id", "Name");
+            ViewBag.Categories = new SelectList(await _categoryService.GetChildCat(), "Id", "Name");
             ViewBag.Units = new SelectList(await _baseService.GetAllUnit(), "Id", "Name");
 
             if (id == 0)

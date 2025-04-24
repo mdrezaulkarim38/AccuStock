@@ -92,7 +92,7 @@ namespace AccuStock.Services
             var hasChildren = await _context.Categories.AnyAsync(c => c.ParentCategoryId == catId);
             if (hasChildren)
             {
-                return "Cannot delete category with subcategories.";
+                return "Cannot delete category! Child Already under this.";
             }
 
             _context.Categories.Remove(category);
@@ -106,6 +106,14 @@ namespace AccuStock.Services
             return await _context.Categories
                 .Include(c => c.ParentCategory)
                 .Where(c => c.SubscriptionId == subscriptionIdClaim)
+                .ToListAsync();
+        }
+
+        public async Task<List<Category>> GetChildCat()
+        {
+            var subscriptionIdClaim = _baseService.GetSubscriptionId();
+            return await _context.Categories
+                .Where(c => c.SubscriptionId == subscriptionIdClaim && c.ParentCategoryId != null)
                 .ToListAsync();
         }
 
