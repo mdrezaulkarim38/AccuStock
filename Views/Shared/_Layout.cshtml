@@ -271,39 +271,36 @@
 
 
     <script>
-        $(document).ready(function() {
-
-            if (TempData["SuccessMessageToster"] != null)
-            {
-                <text>
-                    toastr.success("TempData["SuccessMessageToster"]");
-                </text>
-            }
-            if (TempData["ErrorMessageToster"] != null)
-            {
-                <text>
-                    toastr.success("TempData["ErrorMessageToster"]");
-                </text>
-            }
-
+        $(document).ready(function () {
+            // SweetAlert for Success
         @if (TempData["SuccessMessage"] != null)
         {
             @:Swal.fire({
-            @:icon: 'success',
-            @:title: 'Success',
-            @:text: '@TempData["SuccessMessage"]',
-            @:confirmButtonText: 'OK'
+            @:    icon: 'success',
+            @:    title: 'Success',
+            @:    text: '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(TempData["SuccessMessage"].ToString()))',
+            @:    confirmButtonText: 'OK'
             @:});
         }
 
         @if (TempData["ErrorMessage"] != null)
         {
             @:Swal.fire({
-            @:icon: 'error',
-            @:title: 'Error',
-            @:text: '@TempData["ErrorMessage"]',
-            @:confirmButtonText: 'OK'
+            @:    icon: 'error',
+            @:    title: 'Error',
+            @:    text: '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(TempData["ErrorMessage"].ToString()))',
+            @:    confirmButtonText: 'OK'
             @:});
+        }
+
+        @if (TempData["SuccessMessageToster"] != null)
+        {
+            @:toastr.success('@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(TempData["SuccessMessageToster"].ToString()))');
+        }
+
+        @if (TempData["ErrorMessageToster"] != null)
+        {
+            @:toastr.error('@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(TempData["ErrorMessageToster"].ToString()))');
         }
         });
     </script>
