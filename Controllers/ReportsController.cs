@@ -52,6 +52,107 @@ namespace AccuStock.Controllers
         // ... Other methods unchanged (GetGlReport, GetAlltransAction, GetTrialBbalance, ProfitAndLoss, SentReport) ...
 
         [HttpGet]
+        public async Task<IActionResult> GetGlReport()
+        {
+            var branches = await _BranchService.GetAllBranches();
+            ViewBag.Branches = branches;
+            var chartOfAccounts = await _chartOfAccount.GetAllChartOfAccount();
+            ViewBag.ChartOfAccounts = chartOfAccounts;
+            var getData = await _gLedgerService.GetAGLedgersList();
+            return View(getData);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetGlReport(DateTime? startDate, DateTime? endDate, int? branchId, int? chartOfAccountId, string reportType)
+        {
+            if (startDate == null || endDate == null)
+            {
+                ModelState.AddModelError(string.Empty, "Please select a valid date range.");
+                return View();
+            }
+
+            var glEntries = await _gLedgerService.GetGLedger(startDate, endDate, branchId, chartOfAccountId);
+            if (reportType == "PDF")
+            {
+                // TODO: Implement PDF generation
+            }
+            else if (reportType == "Excel")
+            {
+                // TODO: Implement Excel generation
+            }
+            var branches = await _BranchService.GetAllBranches();
+            ViewBag.Branches = branches;
+            var chartOfAccounts = await _chartOfAccount.GetAllChartOfAccount();
+            ViewBag.ChartOfAccounts = chartOfAccounts;
+            return View(glEntries);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAlltransAction()
+        {
+            var branches = await _BranchService.GetAllBranches();
+            ViewBag.Branches = branches;
+            var chartOfAccounts = await _chartOfAccount.GetAllChartOfAccount();
+            ViewBag.ChartOfAccounts = chartOfAccounts;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetAlltransAction(DateTime? startDate, DateTime? endDate, int? branchId, int? chartOfAccountId)
+        {
+            if (startDate == null || endDate == null)
+            {
+                ModelState.AddModelError(string.Empty, "Please select a valid date range.");
+                return View();
+            }
+
+            var allEntries = await _transactionService.GetAllTransAction(startDate, endDate, branchId, chartOfAccountId);
+            var branches = await _BranchService.GetAllBranches();
+            ViewBag.Branches = branches;
+            var chartOfAccounts = await _chartOfAccount.GetAllChartOfAccount();
+            ViewBag.ChartOfAccounts = chartOfAccounts;
+            return View(allEntries);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetTrialBbalance()
+        {
+            var branches = await _BranchService.GetAllBranches();
+            ViewBag.Branches = branches;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetTrialBbalance(DateTime? startDate, DateTime? endDate, int? branchId)
+        {
+            if (startDate == null || endDate == null)
+            {
+                ModelState.AddModelError(string.Empty, "Please select a valid date range.");
+            }
+            var result = await _trialbalanceService.GetTrialBalanceAsync(startDate, endDate, branchId);
+            var branches = await _BranchService.GetAllBranches();
+            ViewBag.Branches = branches;
+            return View(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ProfitAndLoss()
+        {
+            var branches = await _BranchService.GetAllBranches();
+            ViewBag.Branches = branches;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProfitAndLoss(DateTime fromDate, DateTime toDate, int branchId)
+        {
+            var model = await _profitAndLossService.GetProfitLossAsync(fromDate, toDate, branchId);
+            var branches = await _BranchService.GetAllBranches();
+            ViewBag.Branches = branches;
+            return View(model);
+        }
+
+        [HttpGet]
         public IActionResult SentReport()
         {
             return View(new SentReportViewModel());
