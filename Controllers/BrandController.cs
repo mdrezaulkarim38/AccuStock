@@ -30,17 +30,17 @@ namespace AccuStock.Controllers
                     TempData["ErrorMessage"] = "A Brand already exists for this SubscriptionId.";
                     return RedirectToAction("Brand");
                 }
-                TempData["SuccessMessage"] = "Brand Created Successfully";
+                TempData["SuccessMessageSweet"] = "Brand Created Successfully";
             }
             else
             {
                 bool isUpdated = await _brandService.UpdateBrand(brand);
                 if (!isUpdated)
                 {
-                    TempData["ErrorMessage"] = "Brand name already exists or update failed";
+                    TempData["ErrorMessageSweet"] = "Brand name already exists or update failed";
                     return RedirectToAction("Brand");
                 }
-                TempData["SuccessMessage"] = "Brand Updated Successfully";
+                TempData["SuccessMessageSweet"] = "Brand Updated Successfully";
             }
 
             return RedirectToAction("Brand");
