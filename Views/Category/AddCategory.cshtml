@@ -3,6 +3,7 @@
     ViewData["Title"] = Model?.Id == 0 ? "Add New Parent Category" : "Edit Parent Category";
 }
 
+
 <div class="row">
     <div class="col-md-8">
         <div class="card shadow">
@@ -12,8 +13,7 @@
             <div class="card-body">
                 <form asp-action="CreateOrUpdateCat" method="post" id="categoryForm">
                     <input type="hidden" id="CategoryId" name="Id" value="@Model?.Id" />
-                    <input type="hidden" name="ParentCategoryId" value="" /> <!-- Ensure ParentCategoryId is null -->
-
+                    <input type="hidden" name="ParentCategoryId" value="" />
                     <div class="mb-3">
                         <label for="Name" class="form-label">Category Name</label>
                         <input type="text" class="form-control" id="Name" name="Name" value="@Model?.Name" required />
@@ -42,31 +42,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        document.getElementById("categoryForm").addEventListener("submit", function (e) {
-            e.preventDefault();
-            var form = this;
-            var formData = new FormData(form);
-
-            fetch(form.action, {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    toastr.success(data.message);
-                    window.location.href = "@Url.Action("Category", "Category")";
-                } else {
-                    toastr.error(data.message);
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                alert("An error occurred. Please try again.");
-            });
-        });
-    </script>
-}
