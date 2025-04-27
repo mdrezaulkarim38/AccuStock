@@ -77,6 +77,7 @@ namespace AccuStock.Controllers;
 
         return RedirectToAction("Customer");
     }
+    [HttpPost]
 
     public async Task<IActionResult> DeleteCus(int id)
     {
@@ -89,6 +90,6 @@ namespace AccuStock.Controllers;
         {
             TempData["SuccessMessageSweet"] = "Successfully Deleted";
         }
-        return RedirectToAction("Category");
+        return RedirectToAction("Customer");
     }
 }
