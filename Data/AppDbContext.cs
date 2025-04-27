@@ -25,6 +25,7 @@ namespace AccuStock.Data
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Unit> Units { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Customer> Customers { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -38,7 +39,7 @@ namespace AccuStock.Data
                 new Role { Id = 1, Name = "SuperAdmin" },
                 new Role { Id = 2, Name = "Admin" },
                 new Role { Id = 3, Name = "Operator" }
-            );
+            );         
 
             // Seeding the Units
 
