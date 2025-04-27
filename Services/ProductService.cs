@@ -1,4 +1,4 @@
-﻿using AccuStock.Data;
+﻿    using AccuStock.Data;
 using AccuStock.Interface;
 using AccuStock.Migrations;
 using AccuStock.Models;
