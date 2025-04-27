@@ -44,6 +44,10 @@ namespace AccuStock.Controllers
                 category.ParentCategoryId = null;
             }
 
+            if(category.ParentCategoryId == null){
+                category.IsParent = 1;
+            }
+
             if (category.Id == 0)
             {
                 bool isCreated = await _categoryService.CreateCategory(category);

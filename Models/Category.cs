@@ -10,7 +10,7 @@ namespace AccuStock.Models
         public int? ParentCategoryId { get; set; }
         [ForeignKey("ParentCategoryId")]
         public Category? ParentCategory { get; set; }
-        public int IsParent { get; set; } = 1;
+        public int IsParent { get; set; } = 0;
         public int SubscriptionId { get; set; }
         public Subscription? Subscription { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
