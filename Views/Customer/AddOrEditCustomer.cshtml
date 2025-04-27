@@ -1,0 +1,77 @@
+﻿@model AccuStock.Models.Customer
+
+@{
+    ViewData["Title"] = (Model.Id == 0) ? "Add Customer" : "Edit Customer";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">@ViewData["Title"]</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="AddOrEditCustomer" method="post" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="row">
+                        <!-- Left Column -->
+                        <div class="col-md-8">
+                            <div class="form-group row">
+                                <label asp-for="Name" class="col-md-4 col-form-label">Customer Name:</label>
+                                <div class="col-md-8">
+                                    <input asp-for="Name" class="form-control" placeholder="Enter Customer Name" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label asp-for="CustomerType" class="col-md-4 col-form-label">Customer Type:</label>
+                                <div class="col-md-8">
+                                    <select asp-for="CustomerType" class="form-control">
+                                        <option value="">--Select--</option>
+                                        <option value="1">Business</option>
+                                        <option value="2">Individual</option>
+                                    </select>
+                                    <span asp-validation-for="CustomerType" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label asp-for="Address" class="col-md-4 col-form-label">Address:</label>
+                                <div class="col-md-8">
+                                    <input asp-for="Address" class="form-control" placeholder="Enter address" />
+                                    <span asp-validation-for="Address" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label asp-for="PhoneNumber" class="col-md-4 col-form-label">Phone Number:</label>
+                                <div class="col-md-8">
+                                    <input asp-for="PhoneNumber" class="form-control" placeholder="Enter phone number" />
+                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label asp-for="Email" class="col-md-4 col-form-label">Email:</label>
+                                <div class="col-md-8">
+                                    <input asp-for="Email" class="form-control" placeholder="Enter email address" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                            </div>
+                    <div class="row mt-4">
+                        <div class="col-md-6 offset-md-3 d-flex gap-3">
+                            <input type="submit" value="Save" class="btn btn-primary w-50" />
+                            <a asp-action="Product" class="btn btn-secondary w-50">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+                        </div>
+                    </div>
+            </div>
+        </div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

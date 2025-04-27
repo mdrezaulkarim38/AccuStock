@@ -49,6 +49,7 @@ builder.Services.AddScoped<IProfitAndLossService, ProfitAndLossService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
