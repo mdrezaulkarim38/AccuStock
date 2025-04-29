@@ -6,7 +6,7 @@ namespace AccuStock.Interface
     {
 
         Task<List<Sale>> GetAllSale();
-        Task<Sale> GetSalebyId(int id);
+        Task<Sale?> GetSalebyId(int id);
         Task<int> GetSalebyInvNum(string invoiceNumber);
         Task<bool> CreateSale(Sale sale);
         Task<bool> UpdateSale(Sale sale);

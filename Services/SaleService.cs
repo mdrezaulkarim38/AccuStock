@@ -1,10 +1,11 @@
 ﻿using AccuStock.Data;
+using AccuStock.Interface;
 using AccuStock.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AccuStock.Services
 {
-    public class SaleService
+    public class SaleService: ISaleService
     {
         private readonly AppDbContext _context;
         private readonly BaseService _baseService;
@@ -26,7 +27,7 @@ namespace AccuStock.Services
                 .ToListAsync();
         }
 
-        public async Task<Sale?> GetSaleById(int saleId)
+        public async Task<Sale?> GetSalebyId(int id)
         {
             var subscriptionId = _baseService.GetSubscriptionId();
             var userId = _baseService.GetUserId();
@@ -35,7 +36,7 @@ namespace AccuStock.Services
             if (branchId == 0)
                 return null; 
             return await _context.Sales
-                .Where(s => s.Id == saleId && s.SubscriptionId == subscriptionId && s.BranchId == branchId)
+                .Where(s => s.Id == id && s.SubscriptionId == subscriptionId && s.BranchId == branchId)
                 .Include(s => s.Customer)
                 .Include(s => s.Branch)
                 .FirstOrDefaultAsync();
