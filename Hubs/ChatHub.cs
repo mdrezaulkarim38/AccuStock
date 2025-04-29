@@ -16,17 +16,22 @@ public class ChatHub : Hub
 
     public async Task SendMessage(string receiverId, string message)
     {
-        var senderId = _service.GetUserId().ToString();
-        if (string.IsNullOrEmpty(senderId) || string.IsNullOrEmpty(receiverId) || string.IsNullOrEmpty(message))
+        if (string.IsNullOrWhiteSpace(receiverId) || string.IsNullOrWhiteSpace(message))
         {
-            return;
+            throw new HubException("Receiver ID and message cannot be empty.");
+        }
+
+        var senderId = _service.GetUserId().ToString();
+        if (string.IsNullOrEmpty(senderId))
+        {
+            throw new HubException("Sender not authenticated.");
         }
 
         var chatMessage = new ChatMessage
         {
             SenderId = senderId,
             ReceiverId = receiverId,
-            Message = message,
+            Message = message.Trim(),
             SentAt = DateTime.UtcNow,
             IsRead = false
         };
