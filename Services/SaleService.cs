@@ -54,5 +54,71 @@ namespace AccuStock.Services
             return sale?.Id ?? 0;
         }
 
+        public async Task<bool> CreateSale(Sale sale)
+        {
+            var subscriptionId = _baseService.GetSubscriptionId();
+            var userId = _baseService.GetUserId();
+
+            sale.SubscriptionId = subscriptionId;
+            foreach (var detail in sale.SaleDetails!)
+            {
+                detail.Sale = sale;
+            }
+
+            await _context.Sales.AddAsync(sale);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> UpdateSale(Sale sale)
+        {
+            try
+            {
+                var subscriptionId = _baseService.GetSubscriptionId();
+
+                var existingSale = await _context.Sales
+                    .Include(s => s.SaleDetails)
+                    .FirstOrDefaultAsync(s => s.Id == sale.Id && s.SubscriptionId == subscriptionId);
+
+                if (existingSale == null)
+                {
+                    return false;
+                }                
+                existingSale.CustomerId = sale.CustomerId;
+                existingSale.BranchId = sale.BranchId;
+                existingSale.InvoiceDate = sale.InvoiceDate;
+                existingSale.InvoiceNumber = sale.InvoiceNumber;
+                existingSale.PaymentMethod = sale.PaymentMethod;
+                existingSale.PaymentStatus = sale.PaymentStatus;
+                existingSale.TotalAmount = sale.TotalAmount;
+                
+                foreach (var newDetail in sale.SaleDetails!)
+                {
+                    var existingDetail = existingSale.SaleDetails!
+                        .FirstOrDefault(d => d.Id == newDetail.Id);
+
+                    if (existingDetail != null)
+                    {
+                        existingDetail.ProductId = newDetail.ProductId;
+                        existingDetail.Quantity = newDetail.Quantity;
+                        existingDetail.Rate = newDetail.Rate;
+                        existingDetail.Discount = newDetail.Discount;
+                        existingDetail.Tax = newDetail.Tax;
+                        _context.Entry(existingDetail).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+
     }
 }
