@@ -118,7 +118,36 @@ namespace AccuStock.Services
                 return false;
             }
         }
+        public async Task<string> DeleteSale(int saleId)
+        {
+            var subscriptionId = _baseService.GetSubscriptionId();
+            var sale = await _context.Sales
+                .Include(s => s.SaleDetails)
+                .FirstOrDefaultAsync(s => s.Id == saleId && s.SubscriptionId == subscriptionId);
 
+            if (sale == null)
+            {
+                return "Sale not found.";
+            }
+            bool hasJournal = await _context.JournalPosts
+                .AnyAsync(j => j.SaleId == saleId && j.SubscriptionId == subscriptionId);
+
+            if (hasJournal)
+            {
+                return "Cannot delete sale. Journal entry already exists.";
+            }
+            //bool hasPayments = await _context.Receipts
+            //    .AnyAsync(r => r.SaleId == saleId && r.SubscriptionId == subscriptionId);
+
+            //if (hasPayments)
+            //{
+            //    return "Cannot delete sale. Payment already recorded.";
+            //}
+            _context.SaleDetails.RemoveRange(sale.SaleDetails!);
+            _context.Sales.Remove(sale);
+            await _context.SaveChangesAsync();
+            return "Sale deleted successfully.";
+        }
 
     }
 }
