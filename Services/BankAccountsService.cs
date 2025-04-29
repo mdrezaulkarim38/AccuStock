@@ -84,7 +84,6 @@ public class BankAccountsService : IBankAccountService
             throw;
         }
     }
-
     public async Task<List<BankAccount>> GetAllBankAccount()
     {
         return await _context.BankAccounts.Where(b => b.SubscriptionId == _baseService.GetSubscriptionId()).ToListAsync();

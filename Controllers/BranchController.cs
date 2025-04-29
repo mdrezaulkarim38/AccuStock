@@ -27,7 +27,7 @@ public class BranchController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateOrUpdateBranch(Branch branch)
     {
-        if (branch.Id == 0)
+            if (branch.Id == 0)
         {
             bool isCreated = await _BranchService.CreateBranch(branch);
             if (!isCreated)

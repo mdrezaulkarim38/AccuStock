@@ -35,7 +35,7 @@
                             @{
                                 int index = 0;
                             }
-                            @foreach (var category in Model)
+                            @foreach (var category in Model.Where(c => c.ParentCategoryId != null))
                             {
                                 index++;
                                 <tr>
@@ -71,7 +71,6 @@
         <div class="modal-content">
             <div class="modal-header bg-light">
                 <h5 class="modal-title" id="categoryModalLabel">Add Category</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="categoryForm" asp-action="CreateOrUpdateCat" method="post">
@@ -84,13 +83,19 @@
 
                     <div class="mb-3">
                         <label for="ParentCategoryId" class="form-label">Parent Category</label>
-                        <select class="form-select" id="ParentCategoryId" name="ParentCategoryId">
-                            <option value="">-- Select --</option>
-                            @foreach (var parent in Model)
-                            {
-                                <option value="@parent.Id">@parent.Name</option>
-                            }
-                        </select>
+                        <div class="input-group">
+                            <select class="form-select" id="ParentCategoryId" name="ParentCategoryId" required>
+                                <option value="">-- Select --</option>
+                                @foreach (var parent in Model.Where(p => p.ParentCategoryId == null)) // Only parent categories
+                                {
+                                    <option value="@parent.Id">@parent.Name</option>
+                                }
+                            </select>
+                            <button type="button" class="btn btn-warning btn-sm" id="editParentButton" onclick="editSelectedParent()" disabled>
+                                <i class="fas fa-edit me-1"></i>
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -120,6 +125,7 @@
             document.getElementById("ParentCategoryId").value = "";
             document.getElementById("categoryModalLabel").textContent = "Add Category";
             document.getElementById("modalSubmitText").textContent = "Submit";
+            document.getElementById("editParentButton").disabled = true;
         }
 
         function editCategory(id, name, parentId) {
@@ -128,6 +134,14 @@
             document.getElementById("ParentCategoryId").value = parentId || "";
             document.getElementById("categoryModalLabel").textContent = "Edit Category";
             document.getElementById("modalSubmitText").textContent = "Update";
+            document.getElementById("editParentButton").disabled = document.getElementById("ParentCategoryId").value === "";
+        }
+
+        function editSelectedParent() {
+            var parentId = document.getElementById("ParentCategoryId").value;
+            if (parentId) {
+                window.location.href = "@Url.Action("AddCategory", "Category")/" + parentId;
+            }
         }
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -138,29 +152,9 @@
                 resetCategoryModal();
             });
 
-            // Handle form submission via AJAX
-            document.getElementById("categoryForm").addEventListener("submit", function (e) {
-                e.preventDefault();
-                var form = this;
-                var formData = new FormData(form);
-
-                fetch(form.action, {
-                    method: "POST",
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message);
-                        window.location.reload(); // Reload to refresh the category list
-                    } else {
-                        alert(data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    alert("An error occurred. Please try again.");
-                });
+            // Enable/disable edit parent button based on selection
+            document.getElementById("ParentCategoryId").addEventListener("change", function () {
+                document.getElementById("editParentButton").disabled = this.value === "";
             });
         });
     </script>

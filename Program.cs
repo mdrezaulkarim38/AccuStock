@@ -4,6 +4,8 @@ using AccuStock.Data;
 using AccuStock.Interface;
 using AccuStock.Services;
 using AccuStock.Hubs;
+using Microsoft.AspNetCore.WebSockets;
+using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,15 @@ builder.Services.AddLogging(logging =>
     logging.AddConsole();
     logging.AddDebug();
 });
+
+builder.Services.AddHangfire(config => 
+{
+    config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseDefaultTypeSerializer()
+            .UseSqlServerStorage(builder.Configuration.GetConnectionString("AccountConnection"));
+});
+builder.Services.AddHangfireServer();
 
 // Register services
 builder.Services.AddSignalR();
@@ -36,7 +47,11 @@ builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<ITrialBalanceService, TrialBalanceService>();
 builder.Services.AddScoped<IProfitAndLossService, ProfitAndLossService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IBrandService, BrandService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 // Configure DbContext with resilience
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -68,7 +83,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseHangfireDashboard();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Dashboard}/{id?}");

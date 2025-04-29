@@ -22,7 +22,6 @@ namespace AccuStock.Services
             {
                 var subscriptionIdClaim = _baseService.GetSubscriptionId();
                 category.SubscriptionId = subscriptionIdClaim;
-
                 // Check for duplicate category name under the same parent and subscription
                 var exists = await _context.Categories
                     .AnyAsync(c => c.Name == category.Name 
@@ -56,7 +55,6 @@ namespace AccuStock.Services
                     return false;
                 }
 
-                // Check for duplicate name under the same parent and subscription
                 var duplicateExists = await _context.Categories
                     .AnyAsync(c => c.Name == category.Name 
                                 && c.SubscriptionId == subscriptionIdClaim 
@@ -88,12 +86,17 @@ namespace AccuStock.Services
             {
                 return "Category not found.";
             }
-
+            // Check if the category has products associated with it
+            var hasProducts = _context.Products.Any(p => p.CategoryId == catId);
+            if (hasProducts)
+            {
+                return "Cannot delete category. It is associated with existing products.";
+            }
             // Check if the category has children
             var hasChildren = await _context.Categories.AnyAsync(c => c.ParentCategoryId == catId);
             if (hasChildren)
             {
-                return "Cannot delete category with subcategories.";
+                return "Cannot delete category! Child Already under this.";
             }
 
             _context.Categories.Remove(category);
@@ -110,7 +113,15 @@ namespace AccuStock.Services
                 .ToListAsync();
         }
 
-        public async Task<Category> GetCategoryById(int id)
+        public async Task<List<Category>> GetChildCat()
+        {
+            var subscriptionIdClaim = _baseService.GetSubscriptionId();
+            return await _context.Categories
+                .Where(c => c.SubscriptionId == subscriptionIdClaim && c.ParentCategoryId != null)
+                .ToListAsync();
+        }
+
+        public async Task<Category?> GetCategoryById(int id)
         {
             var subscriptionIdClaim = _baseService.GetSubscriptionId();
             return await _context.Categories

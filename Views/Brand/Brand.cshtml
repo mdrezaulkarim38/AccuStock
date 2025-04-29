@@ -1,0 +1,117 @@
+﻿@model IEnumerable<AccuStock.Models.Brand>;
+@{
+    ViewData["Title"] = "Brand";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Brand List</h5>
+                <button class="btn btn-primary btn-sm" id="addNewData" data-bs-toggle="modal"
+                        data-bs-target="#addBranchModal">
+                    <i class="fas fa-solid fa-plus"></i> Add New
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table  datanew" style="table-layout: fixed; width: 100%;">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>SL No.</th>
+                                <th>Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int index = 0;
+                            }
+                            @foreach (var brand in Model)
+                            {
+                                index++;
+                                <tr>
+                                    <td>@index</td>
+                                    <td>@brand.Name</td>
+                                    <td class="d-flex align-items-center gap-2">
+                                        <button class="btn btn-warning btn-sm"
+                                                onclick="editBranch('@brand.Id', '@brand.Name')"
+                                                data-bs-toggle="modal" data-bs-target="#addBranchModal">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <form asp-action="DeleteBrand" method="post">
+                                            <input type="hidden" name="id" value="@brand.Id" />
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-trash-alt"></i> Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="addBranchModal" tabindex="-1" aria-labelledby="addBranchModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-dark" style="background : #f9f9fb;">
+                <h5 class="modal-title" id="addBranchModalLabel">Add Brand</h5>
+            </div>
+            <div class="modal-body">
+                <form asp-action="CreateOrUpdateBrand" method="post">
+                    <input type="hidden" id="BrandId" name="Id">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="Name" class="form-label">Brand Name</label>
+                            <input type="text" class="form-control" id="Name" name="Name" required>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <button type="submit" class="btn btn-success btn-sm me-2">
+                            <i class="bi bi-check-circle"></i> <span id="modalSubmitText">Submit</span>
+                        </button>
+                        <button type="reset" class="btn btn-secondary btn-sm">
+                            <i class="bi bi-arrow-clockwise"></i> Refresh
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        function resetBranch() {
+            document.getElementById("BranchId").value = "";
+            document.getElementById("Name").value = "";
+            document.getElementById("addBranchModalLabel").textContent = "Add Brand";
+            document.getElementById("modalSubmitText").textContent = "Submit";
+        }
+
+        document.getElementById("addNewData").addEventListener("click", function () {
+            resetBranch();
+        });
+
+        function editBranch(id, name) {
+            document.getElementById("BrandId").value = id;
+            document.getElementById("Name").value = name;
+            document.getElementById("addBranchModalLabel").textContent = "Edit Brand";
+            document.getElementById("modalSubmitText").textContent = "Update";
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var addBranchModal = document.getElementById("addBranchModal");
+            addBranchModal.addEventListener("hidden.bs.modal", function () {
+                resetBranch();
+            });
+        });
+    </script>
+}

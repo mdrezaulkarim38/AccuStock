@@ -22,15 +22,15 @@
 </head>
 
 <body>
-    <div id="global-loader">
-        <div class="whirly-loader"></div>
-    </div>
+    @* <div id="global-loader"> *@
+    @*     <div class="whirly-loader"></div> *@
+    @* </div> *@
 
     <div class="main-wrapper">
         <div class="header">
             <div class="header-left active">
                 <a asp-controller="Home" asp-action="Dashboard" class="logo">
-                    <img src="~/assets/img/logo.png" alt="" />
+                    <img src="~/assets/img/logonew.png" alt="" />
                 </a>
                 <a asp-controller="Home" asp-action="Dashboard" class="logo-small">
                     <img src="~/assets/img/logo-small.png" alt="" />
@@ -179,20 +179,38 @@
                             </a>
                             <ul>
                                 <li>
-                                    <a asp-controller="Category" asp-action="Category">Categories</a>
+                                    <a asp-controller="Product" asp-action="Product">Products</a>
                                 </li>
                                 <li>
-                                    <a href="">Products</a>
-                                </li>
+                                    <a asp-controller="Category" asp-action="Category">Categories</a>
+                                </li>                                
                                  <li>
-                                    <a href="">Unit</a>
-                                </li>
-                                 <li>
-                                    <a href="">Brand</a>
+                                    <a asp-controller="Brand" asp-action="Brand">Brand</a>
                                 </li>
                             </ul>
                         </li>
 
+
+                        <li class="submenu">
+                            <a href="javascript:void(0);">
+                                <img src="~/assets/img/icons/wallet1.svg" alt="img" />
+                                <span>
+                                    Sales
+                                </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <ul>
+                                <li>
+                                    <a asp-controller="Customer" asp-action="Customer">Customer</a>
+                                </li>@* 
+                                <li>
+                                    <a asp-controller="Category" asp-action="Category">Categories</a>
+                                </li>
+                                <li>
+                                    <a asp-controller="Brand" asp-action="Brand">Brand</a>
+                                </li> *@
+                            </ul>
+                        </li>
                         <li class="submenu">
                             <a href="javascript:void(0);">
                                 <img src="~/assets/img/icons/users1.svg" alt="img" />
@@ -263,34 +281,61 @@
     <script src="~/assets/js/jquery.dataTables.min.js"></script>
     <script src="~/assets/js/dataTables.bootstrap4.min.js"></script>
     <script src="~/assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/plugins/apexchart/apexcharts.min.js"></script>
-    <script src="assets/plugins/apexchart/chart-data.js"></script>
-    <script src="assets/plugins/sweetalert/sweetalert2.all.min.js"></script>
-    <script src="assets/plugins/sweetalert/sweetalerts.min.js"></script>
+    <script src="~/assets/plugins/apexchart/chart-data.js"></script>
+    <script src="~/assets/plugins/apexchart/apexcharts.min.js"></script>
+    <script src="~/assets/plugins/sweetalert/sweetalert2.all.min.js"></script>
+    <script src="~/assets/plugins/sweetalert/sweetalerts.min.js"></script>
     <script src="~/assets/js/script.js"></script>
     <script src="~/js/toastr.min.js"></script>
     <script src="~/dist/jstree.min.js"></script>
 
 
+<script>
+    $(document).ready(function () {
+        // SweetAlert Success
+        @if (TempData["SuccessMessageSweet"] != null)
+        {
+            var message = System.Web.HttpUtility.JavaScriptStringEncode(TempData["SuccessMessageSweet"]?.ToString() ?? "");
+            <text>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: '@message',
+                    confirmButtonText: 'OK'
+                });
+            </text>
+        }
 
-    <script>
-        $(document).ready(function () {
-            // $("#basic-datatables").DataTable({});
-            @if (TempData["SuccessMessage"] != null)
-                {
-                    <text>
-                        toastr.success("@TempData["SuccessMessage"]");
-                    </text>
-            }
+        // SweetAlert Error
+        @if (TempData["ErrorMessageSweet"] != null)
+        {
+            var message = System.Web.HttpUtility.JavaScriptStringEncode(TempData["ErrorMessageSweet"]?.ToString() ?? "");
+            <text>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '@message',
+                    confirmButtonText: 'OK'
+                });
+            </text>
+        }
 
-                @if (TempData["ErrorMessage"] != null)
-                {
-                    <text>
-                        toastr.error("@TempData["ErrorMessage"]");
-                    </text>
-            }
-          });
-    </script>
+        // Toastr Success
+        @if (TempData["SuccessMessage"] != null)
+        {
+            var message = System.Web.HttpUtility.JavaScriptStringEncode(TempData["SuccessMessage"]?.ToString() ?? "");
+            <text>toastr.success('@message');</text>
+        }
+
+        // Toastr Error
+        @if (TempData["ErrorMessage"] != null)
+        {
+            var message = System.Web.HttpUtility.JavaScriptStringEncode(TempData["ErrorMessage"]?.ToString() ?? "");
+            <text>toastr.error('@message');</text>
+        }
+    });
+</script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 

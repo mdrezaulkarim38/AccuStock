@@ -23,9 +23,6 @@ namespace AccuStock.Controllers
         [HttpGet]
         public async Task<IActionResult> AddCategory(int? id)
         {
-            var categories = await _categoryService.GetAllCategory();
-            ViewData["Categories"] = categories;
-
             if (id.HasValue)
             {
                 var category = await _categoryService.GetCategoryById(id.Value);
@@ -47,9 +44,8 @@ namespace AccuStock.Controllers
                 category.ParentCategoryId = null;
             }
 
-            if (!ModelState.IsValid)
-            {
-                return Json(new { success = false, message = "Invalid input data." });
+            if(category.ParentCategoryId == null){
+                category.IsParent = 1;
             }
 
             if (category.Id == 0)
@@ -57,32 +53,43 @@ namespace AccuStock.Controllers
                 bool isCreated = await _categoryService.CreateCategory(category);
                 if (!isCreated)
                 {
-                    return Json(new { success = false, message = "A Category already exists for this SubscriptionId." });
+                    TempData["ErrorMessageSweet"] = "Unsuccessfull to Create";
                 }
-                return Json(new { success = true, message = "Category Created Successfully" });
+                else{
+                    TempData["SuccessMessageSweet"] = "Category Created";
+                }
             }
             else
             {
                 bool isUpdated = await _categoryService.UpdateCategory(category);
                 if (!isUpdated)
                 {
-                    return Json(new { success = false, message = "Category name already exists or update failed" });
+                    TempData["ErrorMessageSweet"] = "Category name already exists or update failed";
                 }
-                return Json(new { success = true, message = "Category Updated Successfully" });
+                else
+                {
+                    TempData["SuccessMessageSweet"] = "Category Updated Successfully";
+                }
             }
+            return RedirectToAction("Category"); 
         }
 
         [HttpPost]
+
         public async Task<IActionResult> DeleteCat(int id)
         {
             var result = await _categoryService.DeleteCategory(id);
-            if (result.Contains("not found"))
+            if (result.Contains("Cannot delete category! Child Already under this.")) 
             {
-                TempData["ErrorMessage"] = result;
+                TempData["ErrorMessageSweet"] = "Unsuccessfull";
+            }
+            if (result.Contains("Cannot delete category. It is associated with existing products."))
+            {
+                TempData["ErrorMessageSweet"] = "Cannot delete category. It is associated with existing products.";
             }
             else
             {
-                TempData["SuccessMessage"] = result;
+                TempData["SuccessMessageSweet"] = "Successfully Deleted";
             }
             return RedirectToAction("Category");
         }

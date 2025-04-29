@@ -4,6 +4,7 @@ using AccuStock.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AccuStock.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250427061536_IsparentCat")]
+    partial class IsparentCat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -545,48 +548,6 @@ namespace AccuStock.Migrations
                     b.HasIndex("SubscriptionId");
 
                     b.ToTable("Companies");
-                });
-
-            modelBuilder.Entity("AccuStock.Models.Customer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("CustomerType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("SubscriptionId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SubscriptionId");
-
-                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("AccuStock.Models.JournalPost", b =>
@@ -1179,17 +1140,6 @@ namespace AccuStock.Migrations
                 });
 
             modelBuilder.Entity("AccuStock.Models.Company", b =>
-                {
-                    b.HasOne("AccuStock.Models.Subscription", "Subscription")
-                        .WithMany()
-                        .HasForeignKey("SubscriptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Subscription");
-                });
-
-            modelBuilder.Entity("AccuStock.Models.Customer", b =>
                 {
                     b.HasOne("AccuStock.Models.Subscription", "Subscription")
                         .WithMany()
