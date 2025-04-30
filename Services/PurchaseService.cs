@@ -1,10 +1,11 @@
 ﻿using AccuStock.Data;
+using AccuStock.Interface;
 using AccuStock.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AccuStock.Services
 {
-    public class PurchaseService
+    public class PurchaseService: IPurchaseService
     {
         private readonly AppDbContext _context;
         private readonly BaseService _baseService;

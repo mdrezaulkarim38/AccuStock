@@ -1,0 +1,67 @@
+﻿@model AccuStock.Models.ViewModels.Purchase.PurchaseViewModel
+
+@{
+    ViewData["Title"] = "Add or Edit Purchase";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="AddOrEditPurchase" method="post">
+    <div class="row mb-3">
+        <div class="form-group">
+            <label for="VendorId">Vendor</label>
+            <select asp-for="VendorId" class="form-control" asp-items="ViewBag.Vendors">
+                <option value="">-- Select Vendor --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="BranchId">Branch</label>
+            <select asp-for="BranchId" class="form-control" asp-items="ViewBag.Branches">
+                <option value="">-- Select Branch --</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PurchaseDate" class="form-label"></label>
+        <input asp-for="PurchaseDate" class="form-control" type="date" />
+        <span asp-validation-for="PurchaseDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Notes" class="form-label"></label>
+        <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+    </div>
+
+    <hr />
+
+    <h4>Purchase Details</h4>
+
+    <div id="purchaseDetails">
+        @for (int i = 0; i < Model.Details.Count; i++)
+        {
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <input asp-for="Details[@i].ProductId" class="form-control" placeholder="Product ID" />
+                </div>
+                <div class="col-md-3">
+                    <input asp-for="Details[@i].Quantity" class="form-control" placeholder="Quantity" />
+                </div>
+                <div class="col-md-3">
+                    <input asp-for="Details[@i].UnitPrice" class="form-control" placeholder="Unit Price" />
+                </div>
+                <div class="col-md-3">
+                    <input asp-for="Details[@i].VatRate" class="form-control" placeholder="VAT %" />
+                </div>
+            </div>
+        }
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
