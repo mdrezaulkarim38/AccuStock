@@ -30,7 +30,9 @@ namespace AccuStock.Data
         public DbSet<SaleDetails> SaleDetails { get; set; }
         public DbSet<SaleReturn> SaleReturns { get; set; }
         public DbSet<Vendor> Vendors { get; set; }
-
+        public DbSet<Purchase> Purchases { get; set; }
+        public DbSet<PurchaseDetail> PurchaseDetails { get; set; }
+        public DbSet<ProductStock> ProductStocks { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
