@@ -10,5 +10,6 @@ namespace AccuStock.Interface
         Task<bool> CreatePurchase(Purchase purchase);
         Task<bool> UpdatePurchase(Purchase purchase);
         Task<string> DeletePurchase(int id);
+        Task<string> GeneratePurchaseNo();
     }
 }
