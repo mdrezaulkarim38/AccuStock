@@ -48,7 +48,7 @@
                             <div class="form-group row">
                                 <label asp-for="CategoryId" class="col-md-4 col-form-label">Category:</label>
                                 <div class="col-md-8">
-                                    <select asp-for="CategoryId" asp-items="@(ViewBag.Categories ?? new SelectList(Enumerable.Empty<SelectListItem>()))" class="form-control">
+                                    <select asp-for="CategoryId" asp-items="@(ViewBag.Categories ?? new SelectList(Enumerable.Empty<SelectListItem>()))" class="form-control select2">
                                         <option value="">--Select--</option>
                                     </select>
                                     <span asp-validation-for="CategoryId" class="text-danger"></span>
@@ -58,8 +58,8 @@
                             <div class="form-group row">
                                 <label asp-for="BrandId" class="col-md-4 col-form-label">Brand:</label>
                                 <div class="col-md-8">
-                                    <select asp-for="BrandId" asp-items="@(ViewBag.Brands ?? new SelectList(Enumerable.Empty<SelectListItem>()))" class="form-control">
-                                        <option value="">--Select--</option>
+                                    <select asp-for="BrandId" asp-items="@(ViewBag.Brands ?? new SelectList(Enumerable.Empty<SelectListItem>()))" class="form-control select2">
+                                        
                                     </select>
                                     <span asp-validation-for="BrandId" class="text-danger"></span>
                                 </div>
@@ -68,7 +68,7 @@
                             <div class="form-group row">
                                 <label asp-for="UnitId" class="col-md-4 col-form-label">Unit:</label>
                                 <div class="col-md-8">
-                                    <select asp-for="UnitId" asp-items="@(ViewBag.Units ?? new SelectList(Enumerable.Empty<SelectListItem>()))" class="form-control">
+                                    <select asp-for="UnitId" asp-items="@(ViewBag.Units ?? new SelectList(Enumerable.Empty<SelectListItem>()))" class="form-control select2">
                                         <option value="">--Select--</option>
                                     </select>
                                     <span asp-validation-for="UnitId" class="text-danger"></span>
