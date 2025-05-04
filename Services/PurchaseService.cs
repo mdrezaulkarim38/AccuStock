@@ -54,43 +54,79 @@ namespace AccuStock.Services
         }
         public async Task<bool> CreatePurchase(Purchase purchase)
         {
-            if (purchase.Details == null || !purchase.Details.Any())
+            try
             {
-                throw new ArgumentException("Purchase must include at least one detail.");
-            }
-
-            var subscriptionId = _baseService.GetSubscriptionId();
-            var userId = _baseService.GetUserId();
-
-            purchase.SubscriptionId = subscriptionId;
-            purchase.PurchaseNo = await GeneratePurchaseNo();
-            foreach (var detail in purchase.Details)
-            {
-                detail.SubTotal = detail.Quantity * detail.UnitPrice;
-                detail.VatAmount = detail.SubTotal * (detail.VatRate / 100);
-                detail.Total = detail.SubTotal + detail.VatAmount;
-            }
-            purchase.SubTotal = purchase.Details.Sum(d => d.SubTotal);
-            purchase.TotalVat = purchase.Details.Sum(d => d.VatAmount);
-            purchase.TotalAmount = purchase.SubTotal + purchase.TotalVat;
-            await _context.Purchases.AddAsync(purchase);
-            var result = await _context.SaveChangesAsync();
-            foreach (var detail in purchase.Details)
-            {
-                var stock = new ProductStock
+                if (purchase == null)
                 {
-                    ProductId = detail.ProductId,
-                    Date = purchase.PurchaseDate,
-                    QuantityIn = detail.Quantity,
-                    QuantityOut = 0,
-                    SourceType = "Purchase",
-                    ReferenceNo = purchase.PurchaseNo ?? "",
-                    SourceId = purchase.Id,
-                    Remarks = "Stock added from purchase"
-                };
-                await _context.ProductStocks.AddAsync(stock);
+                    throw new ArgumentNullException(nameof(purchase), "Purchase cannot be null.");
+                }
+
+                if (purchase.Details == null || !purchase.Details.Any())
+                {
+                    throw new ArgumentException("Purchase must include at least one detail.", nameof(purchase.Details));
+                }
+                var subscriptionId = _baseService.GetSubscriptionId();
+                var userId = _baseService.GetUserId();
+
+                if (subscriptionId <= 0)
+                {
+                    throw new InvalidOperationException("Invalid subscription ID.");
+                }
+
+                purchase.SubscriptionId = subscriptionId;
+                purchase.PurchaseNo = await GeneratePurchaseNo();
+
+                foreach (var detail in purchase.Details)
+                {
+                    if (detail.Quantity <= 0 || detail.UnitPrice < 0 || detail.VatRate < 0)
+                    {
+                        throw new ArgumentException($"Invalid purchase detail data for Product ID {detail.ProductId}.");
+                    }
+                    detail.SubTotal = detail.Quantity * detail.UnitPrice;
+                    detail.VatAmount = detail.SubTotal * (detail.VatRate / 100);
+                    detail.Total = detail.SubTotal + detail.VatAmount;
+                }
+
+                purchase.SubTotal = purchase.Details.Sum(d => d.SubTotal);
+                purchase.TotalVat = purchase.Details.Sum(d => d.VatAmount);
+                purchase.TotalAmount = purchase.SubTotal + purchase.TotalVat;
+
+                await _context.Purchases.AddAsync(purchase);
+                var result = await _context.SaveChangesAsync();
+
+                if (result <= 0)
+                {
+                    throw new InvalidOperationException("Failed to save purchase to the database.");
+                }
+
+                foreach (var detail in purchase.Details)
+                {
+                    var stock = new ProductStock
+                    {
+                        ProductId = detail.ProductId,
+                        Date = purchase.PurchaseDate,
+                        QuantityIn = detail.Quantity,
+                        QuantityOut = 0,
+                        SourceType = "Purchase",
+                        ReferenceNo = purchase.PurchaseNo ?? "",
+                        SourceId = purchase.Id,
+                        Remarks = "Stock added from purchase"
+                    };
+                    await _context.ProductStocks.AddAsync(stock);
+                }
+                var stockResult = await _context.SaveChangesAsync();
+                if (stockResult <= 0)
+                {
+                    throw new InvalidOperationException("Failed to save product stock updates.");
+                }
+
+                return true;
             }
-            return await _context.SaveChangesAsync() > 0 && result > 0;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected error: {ex.Message}");
+                throw new InvalidOperationException("An unexpected error occurred while creating the purchase.", ex);
+            }
         }
         public async Task<string> GeneratePurchaseNo()
         {

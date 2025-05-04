@@ -37,10 +37,10 @@ namespace AccuStock.Controllers
                 VendorList = new SelectList(vendors, "Id", "Name"),
                 BranchList = new SelectList(branches, "Id", "Name"),
                 PurchaseDate = DateTime.Now,
-                Details = new List<PurchaseDetailViewModel> { new PurchaseDetailViewModel() } // Initialize with one empty detail
+                Details = new List<PurchaseDetailViewModel> { new PurchaseDetailViewModel() }
             };
 
-            ViewBag.ProductList = new SelectList(products, "Id", "Name"); // Keep for product dropdown
+            ViewBag.ProductList = new SelectList(products, "Id", "Name");
             return View(viewModel);
         }
         [HttpPost]
@@ -48,7 +48,6 @@ namespace AccuStock.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Repopulate dropdowns if validation fails
                 var vendors = await _vendorService.GetAllVendor();
                 var products = await _productService.GetAllProduct();
                 var branches = await _branchService.GetAllBranches();
@@ -65,11 +64,11 @@ namespace AccuStock.Controllers
                 BranchId = viewModel.BranchId,
                 PurchaseDate = viewModel.PurchaseDate,
                 Notes = viewModel.Notes,
-                PurchaseStatus = 0, // Default to Pending
+                PurchaseStatus = 0,
                 Details = viewModel.Details.Select(d => new PurchaseDetail
                 {
                     ProductId = d.ProductId,
-                    Quantity = (int)d.Quantity, // Assuming Quantity is decimal in ViewModel, cast to int
+                    Quantity = (int)d.Quantity,
                     UnitPrice = d.UnitPrice,
                     VatRate = d.VatRate
                 }).ToList()
@@ -88,7 +87,6 @@ namespace AccuStock.Controllers
             catch (ArgumentException ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                // Repopulate dropdowns
                 var vendors = await _vendorService.GetAllVendor();
                 var products = await _productService.GetAllProduct();
                 var branches = await _branchService.GetAllBranches();
@@ -97,7 +95,6 @@ namespace AccuStock.Controllers
                 ViewBag.ProductList = new SelectList(products, "Id", "Name");
                 return View(viewModel);
             }
-
             return RedirectToAction("Purchase");
         }
     }

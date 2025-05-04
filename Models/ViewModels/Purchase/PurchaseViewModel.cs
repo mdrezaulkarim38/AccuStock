@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
-namespace AccuStock.Models.ViewModels.Purchase
-{
+namespace AccuStock.Models.ViewModels.Purchase;
+
     public class PurchaseViewModel
     {
         public int Id { get; set; }
@@ -18,4 +18,4 @@ namespace AccuStock.Models.ViewModels.Purchase
         public IEnumerable<SelectListItem>? BranchList { get; set; }
         public List<PurchaseDetailViewModel> Details { get; set; } = new();
     }
-}
+
