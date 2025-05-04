@@ -10,9 +10,9 @@ namespace AccuStock.Models.ViewModels.Purchase
         public int VendorId { get; set; }
         [Required]
         public int BranchId { get; set; }
-        [Required]        
+        [Required]
         [DataType(DataType.Date)]
-        public DateTime PurchaseDate { get; set; }        
+        public DateTime PurchaseDate { get; set; }
         public string? Notes { get; set; }
         public IEnumerable<SelectListItem>? VendorList { get; set; }
         public IEnumerable<SelectListItem>? BranchList { get; set; }

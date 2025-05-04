@@ -24,7 +24,7 @@
                             <tr>
                                 <td><strong>Vendor:</strong></td>
                                 <td>
-                                    <select asp-for="VendorId" asp-items="ViewBag.VendorList" class="form-select select2">
+                                    <select asp-for="VendorId" asp-items="@Model.VendorList" class="form-select select2">
                                         <option value="">Select Vendor</option>
                                     </select>
                                     <span asp-validation-for="VendorId" class="text-danger"></span>
@@ -33,7 +33,7 @@
                             <tr>
                                 <td><strong>Branch:</strong></td>
                                 <td>
-                                    <select asp-for="BranchId" asp-items="ViewBag.BranchList" class="form-select select2">
+                                    <select asp-for="BranchId" asp-items="@Model.BranchList" class="form-select select2">
                                         <option value="">Select Branch</option>
                                     </select>
                                     <span asp-validation-for="BranchId" class="text-danger"></span>
@@ -62,7 +62,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <select class="form-control product select2">
+                                    <select class="form-control product select2" name="Details[0].ProductId">
                                         <option value="" disabled selected hidden>Type or Click to select an item</option>
                                         @{
                                             var productList = ViewBag.ProductList as IEnumerable<SelectListItem>;
@@ -76,9 +76,9 @@
                                         }
                                     </select>
                                 </td>
-                                <td><input type="number" class="form-control qty text-end" value="0" min="0" /></td>
-                                <td><input type="number" class="form-control unitPrice text-end" value="0" min="0" /></td>
-                                <td><input type="number" class="form-control vatPercent text-end" value="0" min="0" /></td>
+                                <td><input type="number" class="form-control qty text-end" name="Details[0].Quantity" value="0" min="0" /></td>
+                                <td><input type="number" class="form-control unitPrice text-end" name="Details[0].UnitPrice" value="0" min="0" /></td>
+                                <td><input type="number" class="form-control vatPercent text-end" name="Details[0].VatRate" value="0" min="0" /></td>
                                 <td><span class="amount">0.00</span></td>
                                 <td><button type="button" class="btn btn-danger btn-sm removeRow">Remove</button></td>
                             </tr>
@@ -132,7 +132,6 @@
         border-top: none !important;
     }
 </style>
-
 @section Scripts {
     <script>
         function recalculateTotals() {
@@ -160,24 +159,34 @@
             $('#totalAmount').text(total.toFixed(2));
         }
 
+        function updateRowNames() {
+            $('#purchaseTable tbody tr').each(function (index) {
+                $(this).find('.product').attr('name', `Details[${index}].ProductId`);
+                $(this).find('.qty').attr('name', `Details[${index}].Quantity`);
+                $(this).find('.unitPrice').attr('name', `Details[${index}].UnitPrice`);
+                $(this).find('.vatPercent').attr('name', `Details[${index}].VatRate`);
+            });
+        }
+
         $(document).on('input', '.qty, .unitPrice, .vatPercent', function () {
             recalculateTotals();
         });
 
-                $(document).on('click', '#addNewRow', function () {
+        $(document).on('click', '#addNewRow', function () {
             let productOptions = $('#productTemplate').html();
+            let rowCount = $('#purchaseTable tbody tr').length;
             let newRow = `
                 <tr>
                     <td>
-                        <select class="form-control product select2">
+                        <select class="form-control product select2" name="Details[${rowCount}].ProductId">
                             <option value="">Choose...</option>
                             ${productOptions}
                         </select>
                     </td>
-                     <td><input type="number" class="form-control qty text-end" value="0" min="0" /></td>
-                     <td><input type="number" class="form-control unitPrice text-end" value="0" min="0" /></td>
-                     <td><input type="number" class="form-control vatPercent text-end" value="0" min="0" /></td>
-                     <td><span class="amount text-end">0.00</span></td>
+                    <td><input type="number" class="form-control qty text-end" name="Details[${rowCount}].Quantity" value="0" min="0" /></td>
+                    <td><input type="number" class="form-control unitPrice text-end" name="Details[${rowCount}].UnitPrice" value="0" min="0" /></td>
+                    <td><input type="number" class="form-control vatPercent text-end" name="Details[${rowCount}].VatRate" value="0" min="0" /></td>
+                    <td><span class="amount text-end">0.00</span></td>
                     <td><button type="button" class="btn btn-danger btn-sm removeRow">Remove</button></td>
                 </tr>`;
             $('#purchaseTable tbody').append(newRow);
@@ -188,20 +197,38 @@
                 allowClear: true,
                 width: '100%'
             });
+
+            recalculateTotals();
         });
 
-             $(document).on('click', '.removeRow', function () {
+        $(document).on('click', '.removeRow', function () {
             let rowCount = $('#purchaseTable tbody tr').length;
             if (rowCount <= 1) {
                 alert("At least one row must remain.");
                 return;
             }
             $(this).closest('tr').remove();
+            updateRowNames();
             recalculateTotals();
         });
 
-
         $(document).ready(function () {
+            // Initialize Select2 for all select2 elements
+            $('.select2').select2({
+                placeholder: function () {
+                    return $(this).data('placeholder') || 'Choose...';
+                },
+                allowClear: true,
+                width: '100%'
+            });
+
+            // Ensure Select2 updates the underlying select value
+            $('.select2').on('change', function () {
+                $(this).trigger('change.select2');
+            });
+
+            // Set names for initial row
+            updateRowNames();
             recalculateTotals();
         });
     </script>

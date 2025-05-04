@@ -54,6 +54,11 @@ namespace AccuStock.Services
         }
         public async Task<bool> CreatePurchase(Purchase purchase)
         {
+            if (purchase.Details == null || !purchase.Details.Any())
+            {
+                throw new ArgumentException("Purchase must include at least one detail.");
+            }
+
             var subscriptionId = _baseService.GetSubscriptionId();
             var userId = _baseService.GetUserId();
 
