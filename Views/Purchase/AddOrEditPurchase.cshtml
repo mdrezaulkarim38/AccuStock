@@ -1,67 +1,137 @@
 ﻿@model AccuStock.Models.ViewModels.Purchase.PurchaseViewModel
 
 @{
-    ViewData["Title"] = "Add or Edit Purchase";
+    ViewData["Title"] = "New Purchase";
 }
 
-<h2>@ViewData["Title"]</h2>
-
-<form asp-action="AddOrEditPurchase" method="post">
-    <div class="row mb-3">
-        <div class="form-group">
-            <label for="VendorId">Vendor</label>
-            <select asp-for="VendorId" class="form-control" asp-items="ViewBag.Vendors">
-                <option value="">-- Select Vendor --</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="BranchId">Branch</label>
-            <select asp-for="BranchId" class="form-control" asp-items="ViewBag.Branches">
-                <option value="">-- Select Branch --</option>
-            </select>
-        </div>
-
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="PurchaseDate" class="form-label"></label>
-        <input asp-for="PurchaseDate" class="form-control" type="date" />
-        <span asp-validation-for="PurchaseDate" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Notes" class="form-label"></label>
-        <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
-    </div>
-
-    <hr />
-
-    <h4>Purchase Details</h4>
-
-    <div id="purchaseDetails">
-        @for (int i = 0; i < Model.Details.Count; i++)
-        {
-            <div class="row mb-3">
-                <div class="col-md-3">
-                    <input asp-for="Details[@i].ProductId" class="form-control" placeholder="Product ID" />
-                </div>
-                <div class="col-md-3">
-                    <input asp-for="Details[@i].Quantity" class="form-control" placeholder="Quantity" />
-                </div>
-                <div class="col-md-3">
-                    <input asp-for="Details[@i].UnitPrice" class="form-control" placeholder="Unit Price" />
-                </div>
-                <div class="col-md-3">
-                    <input asp-for="Details[@i].VatRate" class="form-control" placeholder="VAT %" />
-                </div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">New Purchase</h5>
             </div>
-        }
-    </div>
+            <div class="card-body">
+                <form asp-action="AddOrEditPurchase" method="post">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td><strong>Purchase Date:</strong></td>
+                                <td>
+                                    <input type="date" asp-for="PurchaseDate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                    <span asp-validation-for="PurchaseDate" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vendor:</strong></td>
+                                <td>
+                                    <select asp-for="VendorId" asp-items="ViewBag.VendorList" class="form-select">
+                                        <option value="">Select Vendor</option>
+                                    </select>
+                                    <span asp-validation-for="VendorId" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Branch:</strong></td>
+                                <td>
+                                    <select asp-for="BranchId" asp-items="ViewBag.BranchList" class="form-select">
+                                        <option value="">Select Branch</option>
+                                    </select>
+                                    <span asp-validation-for="BranchId" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Notes:</strong></td>
+                                <td>
+                                    <input type="text" asp-for="Notes" class="form-control" placeholder="Enter Notes" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-    <button type="submit" class="btn btn-primary">Save</button>
-</form>
+                    <table class="table table-bordered table-striped mt-5" id="purchaseDetailsTable">
+                        <thead style="background:#fafafa;">
+                            <tr>
+                                <th>Items</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>VAT (%)</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="rowTemplate">
+                                <td>
+                                    <select name="Details[0].ProductId" class="form-control productDropdown">
+                                        <option value="">Select Product</option>
+                                        @if (ViewBag.ProductList is IEnumerable<SelectListItem> products)
+                                        {
+                                            foreach (var product in products)
+                                            {
+                                                <option value="@product.Value">@product.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="number" step="any" name="Details[0].Quantity" class="form-control" />
+                                </td>
+                                <td>
+                                    <input type="number" step="any" name="Details[0].UnitPrice" class="form-control" />
+                                </td>
+                                <td>
+                                    <input type="number" step="any" name="Details[0].VatRate" class="form-control" />
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm removeRow">X</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="5">
+                                    <button type="button" class="btn btn-success btn-sm" id="addNewRow">Add New Row</button>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                        <a href="@Url.Action("Purchase", "Purchase")" class="btn btn-secondary btn-sm">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table > :not(:first-child) {
+        border-top: none !important;
+    }
+</style>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            let rowIdx = 1;
+
+            $('#addNewRow').click(function () {
+                let newRow = $('.rowTemplate').first().clone();
+                newRow.find('input, select').each(function () {
+                    const name = $(this).attr('name');
+                    const newName = name.replace(/\[\d+\]/, `[${rowIdx}]`);
+                    $(this).attr('name', newName).val('');
+                });
+                $('#purchaseDetailsTable tbody').append(newRow);
+                rowIdx++;
+            });
+
+            $(document).on('click', '.removeRow', function () {
+                if ($('#purchaseDetailsTable tbody tr').length > 1) {
+                    $(this).closest('tr').remove();
+                }
+            });
+        });
+    </script>
 }

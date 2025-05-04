@@ -24,8 +24,18 @@ namespace AccuStock.Controllers
             var purchase = await _purchaseService.GetAllPurchase();
             return View(purchase);
         }
-        
 
+        [HttpGet]
+        public async Task<IActionResult> AddOrEditPurchase()
+        {
+            var vendors = await _vendorService.GetAllVendor();
+            var products = await _productService.GetAllProduct();
+            var branches = await _branchService.GetAllBranches();
+            ViewBag.VendorList = new SelectList(vendors, "Id", "Name");
+            ViewBag.ProductList = new SelectList(products, "Id", "Name");
+            ViewBag.BranchList = new SelectList(branches, "Id", "Name");
+            return View();
+        }
 
         [HttpPost]
         public async Task<IActionResult> AddOrEditPurchase(Purchase purchase)
