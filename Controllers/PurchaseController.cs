@@ -56,7 +56,7 @@ namespace AccuStock.Controllers
                     ProductId = d.ProductId,
                     Quantity = d.Quantity,
                     UnitPrice = d.UnitPrice,
-                    VatRate = d.VatAmount
+                    VatRate = d.VatRate
                 }).ToList()
                 : new List<PurchaseDetailViewModel> { new PurchaseDetailViewModel() } 
                     };
