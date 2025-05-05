@@ -20,11 +20,17 @@ namespace AccuStock.Services
             var userId = _baseService.GetUserId();
             var branchId = await _baseService.GetBranchId(subscriptionId, userId);
 
-            return await _context.Purchases
-                .Where(c => c.SubscriptionId == subscriptionId && c.BranchId == branchId)
-                .Include(c => c.Branch)
-                .Include(c => c.Vendor)
-                .ToListAsync();
+            var query = _context.Purchases.Include(c => c.Branch).Include(p => p.Vendor).Where(p => p.SubscriptionId == subscriptionId).AsQueryable();
+            if(branchId != 0)
+            {
+                query = query.Where(p => p.BranchId == branchId);
+            }
+            return await query.ToListAsync();
+            // return await _context.Purchases
+            //     .Where(c => c.SubscriptionId == subscriptionId && c.BranchId == branchId)
+            //     .Include(c => c.Branch)
+            //     .Include(c => c.Vendor)
+            //     .ToListAsync();
         }
 
         public async Task<Purchase?> GetPurchasebyId(int id)
