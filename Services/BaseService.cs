@@ -29,7 +29,7 @@ public class BaseService
     }
     
     public async Task<int> GetBranchId(int subscriptionId, int userId)
-    {
+    {   
         var userBranch = await _appDbContext.Users.Where(u => u.Id == userId && u.SubscriptionId == subscriptionId).FirstOrDefaultAsync();
         return userBranch?.BranchId ?? 0;
     }

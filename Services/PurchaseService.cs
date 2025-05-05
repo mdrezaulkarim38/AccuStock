@@ -23,6 +23,7 @@ namespace AccuStock.Services
             return await _context.Purchases
                 .Where(c => c.SubscriptionId == subscriptionId && c.BranchId == branchId)
                 .Include(c => c.Branch)
+                .Include(c => c.Vendor)
                 .ToListAsync();
         }
 
