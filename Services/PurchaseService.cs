@@ -34,12 +34,12 @@ namespace AccuStock.Services
             var userId = _baseService.GetUserId();
             var branchId = await _baseService.GetBranchId(subscriptionId, userId);
 
-            if (branchId == 0)
-                return null;
-            return await _context.Purchases
-                .Where(s => s.Id == id && s.SubscriptionId == subscriptionId && s.BranchId == branchId)
-                .Include(s => s.Branch)
-                .FirstOrDefaultAsync();
+            var query = _context.Purchases.Include(c => c.Branch).Include(p=> p.Details).Include(p => p.Vendor).Where(p => p.SubscriptionId == subscriptionId && p.Id == id).AsQueryable();
+            if(branchId != 0)
+            {
+                query = query.Where(p => p.BranchId == branchId);
+            }
+            return await query.FirstOrDefaultAsync();
         }
         public async Task<int> GetPurchasebyPurNum(string purchaseNum)
         {

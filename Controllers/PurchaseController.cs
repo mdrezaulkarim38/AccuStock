@@ -32,17 +32,56 @@ namespace AccuStock.Controllers
             var products = await _productService.GetAllProduct();
             var branches = await _branchService.GetAllBranches();
 
-            var viewModel = new PurchaseViewModel
+            ViewBag.ProductList = new SelectList(products, "Id", "Name");
+
+            if (id != 0)
+            {
+                var purchase = await _purchaseService.GetPurchasebyId(id);
+
+                if (purchase != null)
+                {
+                    var purchaseViewModel = new PurchaseViewModel
+                    {
+                        Id = purchase.Id,
+                        VendorId = purchase.VendorId,
+                        BranchId = purchase.BranchId,
+                        PurchaseDate = purchase.PurchaseDate,
+                        Notes = purchase.Notes,
+                        VendorList = new SelectList(vendors, "Id", "Name", purchase.VendorId),
+                        BranchList = new SelectList(branches, "Id", "Name", purchase.BranchId),
+                        Details = purchase.Details != null
+                ? purchase.Details.Select(d => new PurchaseDetailViewModel
+                {
+                    ProductId = d.ProductId,
+                    Quantity = d.Quantity,
+                    UnitPrice = d.UnitPrice,
+                }).ToList()
+                : new List<PurchaseDetailViewModel> { new PurchaseDetailViewModel() } 
+                    };
+
+                    return View(purchaseViewModel);
+                }
+
+                // If purchase not found
+                return View(new PurchaseViewModel
+                {
+                    VendorList = new SelectList(vendors, "Id", "Name"),
+                    BranchList = new SelectList(branches, "Id", "Name"),
+                    PurchaseDate = DateTime.Now,
+                    Details = new List<PurchaseDetailViewModel> { new PurchaseDetailViewModel() }
+                });
+            }
+
+            // New purchase case
+            return View(new PurchaseViewModel
             {
                 VendorList = new SelectList(vendors, "Id", "Name"),
                 BranchList = new SelectList(branches, "Id", "Name"),
                 PurchaseDate = DateTime.Now,
                 Details = new List<PurchaseDetailViewModel> { new PurchaseDetailViewModel() }
-            };
-
-            ViewBag.ProductList = new SelectList(products, "Id", "Name");
-            return View(viewModel);
+            });
         }
+
         //[HttpPost]
         //public async Task<IActionResult> AddOrEditPurchase(PurchaseViewModel viewModel)
         //{

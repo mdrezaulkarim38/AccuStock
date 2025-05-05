@@ -57,7 +57,7 @@
                                     </td>
                                     <td>@item.TotalAmount.ToString()</td>
                                     <td>
-                                        <form asp-action="AddOrEditPurchase" method="post">
+                                        <form asp-controller="Purchase" asp-action="AddOrEditPurchase" method="GET">
                                             <input type="hidden" name="id" value="@item.Id" />
                                             <button type="submit" class="btn btn-sm btn-warning">
                                                 <i class="fa fa-edit"></i>
