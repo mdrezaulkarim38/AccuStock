@@ -39,22 +39,9 @@ namespace AccuStock.Controllers
                 PurchaseDate = DateTime.Now,
                 Details = new List<PurchaseDetailViewModel> { new PurchaseDetailViewModel() }
             };
-            ViewBag.ProductList = new SelectList(products, "Id", "Name");
-            if(id == 0)
-            {
-                return View(new Purchase());
 
-            }
-            else
-            {
-                var purchase = await _purchaseService.GetPurchasebyId(id);
-                if (purchase== null)
-                {
-                    TempData["ErrorMessage"] = "Purchase not found!";
-                    return RedirectToAction("Purchase");
-                }
-                return View(purchase);
-            };
+            ViewBag.ProductList = new SelectList(products, "Id", "Name");
+            return View(viewModel);
         }
         //[HttpPost]
         //public async Task<IActionResult> AddOrEditPurchase(PurchaseViewModel viewModel)
