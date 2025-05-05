@@ -26,11 +26,6 @@ namespace AccuStock.Services
                 query = query.Where(p => p.BranchId == branchId);
             }
             return await query.ToListAsync();
-            // return await _context.Purchases
-            //     .Where(c => c.SubscriptionId == subscriptionId && c.BranchId == branchId)
-            //     .Include(c => c.Branch)
-            //     .Include(c => c.Vendor)
-            //     .ToListAsync();
         }
 
         public async Task<Purchase?> GetPurchasebyId(int id)
