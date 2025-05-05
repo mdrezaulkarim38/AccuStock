@@ -16,14 +16,15 @@
                             <tr>
                                 <td><strong>Purchase Date:</strong></td>
                                 <td>
-                                    <input type="date" asp-for="PurchaseDate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                    <input type="date" asp-for="PurchaseDate" class="form-control" />
                                     <span asp-validation-for="PurchaseDate" class="text-danger"></span>
                                 </td>
                             </tr>
                             <tr>
                                 <td><strong>Vendor:</strong></td>
                                 <td>
-                                    <select asp-for="VendorId" asp-items="@Model.VendorList" class="form-select select2">
+                                    <select asp-for="VendorId" asp-items="@Model.VendorList"
+                                        class="form-select select2">
                                         <option value="">Select Vendor</option>
                                     </select>
                                     <span asp-validation-for="VendorId" class="text-danger"></span>
@@ -32,7 +33,8 @@
                             <tr>
                                 <td><strong>Branch:</strong></td>
                                 <td>
-                                    <select asp-for="BranchId" asp-items="@Model.BranchList" class="form-select select2">
+                                    <select asp-for="BranchId" asp-items="@Model.BranchList"
+                                        class="form-select select2">
                                         <option value="">Select Branch</option>
                                     </select>
                                     <span asp-validation-for="BranchId" class="text-danger"></span>
@@ -59,33 +61,67 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <select class="form-control product select2" name="Details[0].ProductId">
-                                        <option value="" disabled selected hidden>Type or Click to select an item</option>
-                                        @{
-                                            //var productList = ViewBag.ProductList as IEnumerable<SelectListItem>;
-                                            if (Model.ProductList != null)
-                                            {
-                                                foreach (var product in Model.ProductList)
+                            @if (Model.Details.Count > 0)
+                            {
+                                foreach (var data in Model.Details)
+                                {
+                                    <tr>
+                                        <td>
+                                            <select class="form-control product select2" name="Details[0].ProductId">
+                                                @if (Model.ProductList != null)
+                                                    {
+                                                        foreach (var product in Model.ProductList)
+                                                        {
+                                                            <option value="@product.Value">@product.Text</option>
+                                                        }
+                                                    }
+                                            </select>
+                                        </td>
+                                        <td><input type="number" class="form-control qty text-end" name="Details[0].Quantity"
+                                                value="@data.Quantity" min="0" /></td>
+                                        <td><input type="number" class="form-control unitPrice text-end"
+                                                name="Details[0].UnitPrice" value="@data.UnitPrice" min="0" /></td>
+                                        <td><input type="number" class="form-control vatPercent text-end"
+                                                name="Details[0].VatRate" value="@data.VatRate" min="0" /></td>
+                                        <td><span class="amount">@(data.UnitPrice * data.Quantity)</span></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm removeRow">Remove</button></td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td>
+                                        <select class="form-control product select2" name="Details[0].ProductId">
+                                            <option value="" disabled selected hidden>Type or Click to select an item
+                                            </option>
+                                            @{
+                                                if (Model.ProductList != null)
                                                 {
-                                                    <option value="@product.Value">@product.Text</option>
+                                                    foreach (var product in Model.ProductList)
+                                                    {
+                                                        <option value="@product.Value">@product.Text</option>
+                                                    }
                                                 }
                                             }
-                                        }
-                                    </select>
-                                </td>
-                                <td><input type="number" class="form-control qty text-end" name="Details[0].Quantity" value="0" min="0" /></td>
-                                <td><input type="number" class="form-control unitPrice text-end" name="Details[0].UnitPrice" value="0" min="0" /></td>
-                                <td><input type="number" class="form-control vatPercent text-end" name="Details[0].VatRate" value="0" min="0" /></td>
-                                <td><span class="amount">0.00</span></td>
-                                <td><button type="button" class="btn btn-danger btn-sm removeRow">Remove</button></td>
-                            </tr>
+                                        </select>
+                                    </td>
+                                    <td><input type="number" class="form-control qty text-end" name="Details[0].Quantity"
+                                            value="0" min="0" /></td>
+                                    <td><input type="number" class="form-control unitPrice text-end"
+                                            name="Details[0].UnitPrice" value="0" min="0" /></td>
+                                    <td><input type="number" class="form-control vatPercent text-end"
+                                            name="Details[0].VatRate" value="0" min="0" /></td>
+                                    <td><span class="amount">0.00</span></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm removeRow">Remove</button></td>
+                                </tr>
+                            }
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td colspan="6">
-                                    <button type="button" class="btn btn-success btn-sm" id="addNewRow">Add New Row</button>
+                                    <button type="button" class="btn btn-success btn-sm" id="addNewRow">Add New
+                                        Row</button>
                                 </td>
                             </tr>
                             <tr>
@@ -105,7 +141,7 @@
 
                     <!-- One-time product select template -->
                     <select id="productTemplate" class="d-none">
-                        @{                            
+                        @{
                             if (Model.ProductList != null)
                             {
                                 foreach (var product in Model.ProductList)
@@ -127,7 +163,7 @@
 </div>
 
 <style>
-    .table > :not(:first-child) {
+    .table> :not(:first-child) {
         border-top: none !important;
     }
 </style>
@@ -175,19 +211,19 @@
             let productOptions = $('#productTemplate').html();
             let rowCount = $('#purchaseTable tbody tr').length;
             let newRow = `
-                <tr>
-                    <td>
-                        <select class="form-control product select2" name="Details[${rowCount}].ProductId">
-                            <option value="">Choose...</option>
-                            ${productOptions}
-                        </select>
-                    </td>
-                    <td><input type="number" class="form-control qty text-end" name="Details[${rowCount}].Quantity" value="0" min="0" /></td>
-                    <td><input type="number" class="form-control unitPrice text-end" name="Details[${rowCount}].UnitPrice" value="0" min="0" /></td>
-                    <td><input type="number" class="form-control vatPercent text-end" name="Details[${rowCount}].VatRate" value="0" min="0" /></td>
-                    <td><span class="amount text-end">0.00</span></td>
-                    <td><button type="button" class="btn btn-danger btn-sm removeRow">Remove</button></td>
-                </tr>`;
+                    <tr>
+                        <td>
+                            <select class="form-control product select2" name="Details[${rowCount}].ProductId">
+                                <option value="">Choose...</option>
+                                ${productOptions}
+                            </select>
+                        </td>
+                        <td><input type="number" class="form-control qty text-end" name="Details[${rowCount}].Quantity" value="0" min="0" /></td>
+                        <td><input type="number" class="form-control unitPrice text-end" name="Details[${rowCount}].UnitPrice" value="0" min="0" /></td>
+                        <td><input type="number" class="form-control vatPercent text-end" name="Details[${rowCount}].VatRate" value="0" min="0" /></td>
+                        <td><span class="amount text-end">0.00</span></td>
+                        <td><button type="button" class="btn btn-danger btn-sm removeRow">Remove</button></td>
+                    </tr>`;
             $('#purchaseTable tbody').append(newRow);
 
             // Initialize Select2 on the new select
