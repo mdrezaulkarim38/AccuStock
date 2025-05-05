@@ -64,10 +64,10 @@
                                     <select class="form-control product select2" name="Details[0].ProductId">
                                         <option value="" disabled selected hidden>Type or Click to select an item</option>
                                         @{
-                                            var productList = ViewBag.ProductList as IEnumerable<SelectListItem>;
-                                            if (productList != null)
+                                            //var productList = ViewBag.ProductList as IEnumerable<SelectListItem>;
+                                            if (Model.ProductList != null)
                                             {
-                                                foreach (var product in productList)
+                                                foreach (var product in Model.ProductList)
                                                 {
                                                     <option value="@product.Value">@product.Text</option>
                                                 }
@@ -106,9 +106,9 @@
                     <!-- One-time product select template -->
                     <select id="productTemplate" class="d-none">
                         @{                            
-                            if (productList != null)
+                            if (Model.ProductList != null)
                             {
-                                foreach (var product in productList)
+                                foreach (var product in Model.ProductList)
                                 {
                                     <option value="@product.Value">@product.Text</option>
                                 }

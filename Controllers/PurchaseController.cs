@@ -32,7 +32,7 @@ namespace AccuStock.Controllers
             var products = await _productService.GetAllProduct();
             var branches = await _branchService.GetAllBranches();
 
-            ViewBag.ProductList = new SelectList(products, "Id", "Name");
+            //ViewBag.ProductList = new SelectList(products, "Id", "Name");
 
             if (id != 0)
             {
@@ -49,6 +49,7 @@ namespace AccuStock.Controllers
                         Notes = purchase.Notes,
                         VendorList = new SelectList(vendors, "Id", "Name", purchase.VendorId),
                         BranchList = new SelectList(branches, "Id", "Name", purchase.BranchId),
+                        ProductList = new SelectList(products, "Id", "Name", purchase.Id),
                         Details = purchase.Details != null
                 ? purchase.Details.Select(d => new PurchaseDetailViewModel
                 {
@@ -67,6 +68,7 @@ namespace AccuStock.Controllers
                 {
                     VendorList = new SelectList(vendors, "Id", "Name"),
                     BranchList = new SelectList(branches, "Id", "Name"),
+                    ProductList = new SelectList(products,"Id", "Name"),
                     PurchaseDate = DateTime.Now,
                     Details = new List<PurchaseDetailViewModel> { new PurchaseDetailViewModel() }
                 });
@@ -77,6 +79,7 @@ namespace AccuStock.Controllers
             {
                 VendorList = new SelectList(vendors, "Id", "Name"),
                 BranchList = new SelectList(branches, "Id", "Name"),
+                ProductList = new SelectList(products,"Id", "Name"),
                 PurchaseDate = DateTime.Now,
                 Details = new List<PurchaseDetailViewModel> { new PurchaseDetailViewModel() }
             });

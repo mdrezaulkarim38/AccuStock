@@ -16,6 +16,7 @@ namespace AccuStock.Models.ViewModels.Purchase;
         public string? Notes { get; set; }
         public IEnumerable<SelectListItem>? VendorList { get; set; }
         public IEnumerable<SelectListItem>? BranchList { get; set; }
+        public IEnumerable<SelectListItem>? ProductList { get; set; }
         public List<PurchaseDetailViewModel> Details { get; set; } = new();
     }
 
