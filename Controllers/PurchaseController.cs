@@ -39,21 +39,84 @@ namespace AccuStock.Controllers
                 PurchaseDate = DateTime.Now,
                 Details = new List<PurchaseDetailViewModel> { new PurchaseDetailViewModel() }
             };
-
             ViewBag.ProductList = new SelectList(products, "Id", "Name");
-            return View(viewModel);
+            if(id == 0)
+            {
+                return View(new Purchase());
+
+            }
+            else
+            {
+                var purchase = await _purchaseService.GetPurchasebyId(id);
+                if (purchase== null)
+                {
+                    TempData["ErrorMessage"] = "Purchase not found!";
+                    return RedirectToAction("Purchase");
+                }
+                return View(purchase);
+            };
         }
+        //[HttpPost]
+        //public async Task<IActionResult> AddOrEditPurchase(PurchaseViewModel viewModel)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        var vendors = await _vendorService.GetAllVendor();
+        //        var products = await _productService.GetAllProduct();
+        //        var branches = await _branchService.GetAllBranches();
+        //        viewModel.VendorList = new SelectList(vendors, "Id", "Name");
+        //        viewModel.BranchList = new SelectList(branches, "Id", "Name");
+        //        ViewBag.ProductList = new SelectList(products, "Id", "Name");
+        //        return View(viewModel);
+        //    }
+
+        //    var purchase = new Purchase
+        //    {
+        //        Id = viewModel.Id,
+        //        VendorId = viewModel.VendorId,
+        //        BranchId = viewModel.BranchId,
+        //        PurchaseDate = viewModel.PurchaseDate,
+        //        Notes = viewModel.Notes,
+        //        PurchaseStatus = 0,
+        //        Details = viewModel.Details.Select(d => new PurchaseDetail
+        //        {
+        //            ProductId = d.ProductId,
+        //            Quantity = (int)d.Quantity,
+        //            UnitPrice = d.UnitPrice,
+        //            VatRate = d.VatRate
+        //        }).ToList()
+        //    };
+
+        //    try
+        //    {
+        //        bool isCreated = await _purchaseService.CreatePurchase(purchase);
+        //        if (!isCreated)
+        //        {
+        //            TempData["ErrorMessage"] = "Failed to create purchase.";
+        //            return RedirectToAction("Purchase");
+        //        }
+        //        TempData["SuccessMessage"] = "Purchase Created Successfully";
+        //    }
+        //    catch (ArgumentException ex)
+        //    {
+        //        TempData["ErrorMessage"] = ex.Message;
+        //        var vendors = await _vendorService.GetAllVendor();
+        //        var products = await _productService.GetAllProduct();
+        //        var branches = await _branchService.GetAllBranches();
+        //        viewModel.VendorList = new SelectList(vendors, "Id", "Name");
+        //        viewModel.BranchList = new SelectList(branches, "Id", "Name");
+        //        ViewBag.ProductList = new SelectList(products, "Id", "Name");
+        //        return View(viewModel);
+        //    }
+        //    return RedirectToAction("Purchase");
+        //}
+
         [HttpPost]
         public async Task<IActionResult> AddOrEditPurchase(PurchaseViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
-                var vendors = await _vendorService.GetAllVendor();
-                var products = await _productService.GetAllProduct();
-                var branches = await _branchService.GetAllBranches();
-                viewModel.VendorList = new SelectList(vendors, "Id", "Name");
-                viewModel.BranchList = new SelectList(branches, "Id", "Name");
-                ViewBag.ProductList = new SelectList(products, "Id", "Name");
+                await PopulateDropdowns(viewModel);
                 return View(viewModel);
             }
 
@@ -76,26 +139,46 @@ namespace AccuStock.Controllers
 
             try
             {
-                bool isCreated = await _purchaseService.CreatePurchase(purchase);
-                if (!isCreated)
+                if (purchase.Id == 0)
                 {
-                    TempData["ErrorMessage"] = "Failed to create purchase.";
-                    return RedirectToAction("Purchase");
+                    bool isCreated = await _purchaseService.CreatePurchase(purchase);
+                    if (!isCreated)
+                    {
+                        TempData["ErrorMessage"] = "Failed to create purchase.";
+                        return RedirectToAction("Purchase");
+                    }
+                    TempData["SuccessMessage"] = "Purchase Created Successfully";
                 }
-                TempData["SuccessMessage"] = "Purchase Created Successfully";
+                else
+                {
+                    bool isUpdated = await _purchaseService.UpdatePurchase(purchase);
+                    if (!isUpdated)
+                    {
+                        TempData["ErrorMessage"] = "Failed to update purchase.";
+                        return RedirectToAction("Purchase");
+                    }
+                    TempData["SuccessMessage"] = "Purchase Updated Successfully";
+                }
             }
-            catch (ArgumentException ex)
+            catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                var vendors = await _vendorService.GetAllVendor();
-                var products = await _productService.GetAllProduct();
-                var branches = await _branchService.GetAllBranches();
-                viewModel.VendorList = new SelectList(vendors, "Id", "Name");
-                viewModel.BranchList = new SelectList(branches, "Id", "Name");
-                ViewBag.ProductList = new SelectList(products, "Id", "Name");
+                await PopulateDropdowns(viewModel);
                 return View(viewModel);
             }
+
             return RedirectToAction("Purchase");
+        }
+
+        private async Task PopulateDropdowns(PurchaseViewModel viewModel)
+        {
+            var vendors = await _vendorService.GetAllVendor();
+            var products = await _productService.GetAllProduct();
+            var branches = await _branchService.GetAllBranches();
+
+            viewModel.VendorList = new SelectList(vendors, "Id", "Name");
+            viewModel.BranchList = new SelectList(branches, "Id", "Name");
+            ViewBag.ProductList = new SelectList(products, "Id", "Name");
         }
     }
 }
