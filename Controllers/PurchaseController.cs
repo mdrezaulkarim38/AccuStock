@@ -163,9 +163,15 @@ namespace AccuStock.Controllers
                     ProductId = d.ProductId,
                     Quantity = (int)d.Quantity,
                     UnitPrice = d.UnitPrice,
-                    VatRate = d.VatRate
-                }).ToList()
-            };
+                    VatRate = d.VatRate,
+                    SubTotal = (int)d.Quantity * d.UnitPrice,
+                    VatAmount = ((int)d.Quantity * d.UnitPrice) * (d.VatRate / 100),
+                    Total = ((int)d.Quantity * d.UnitPrice) * (1 + d.VatRate / 100)
+                }).ToList()};
+
+            purchase.SubTotal = purchase.Details.Sum(d => d.SubTotal);
+            purchase.TotalVat = purchase.Details.Sum(d => d.VatAmount);
+            purchase.TotalAmount = purchase.SubTotal + purchase.TotalVat;
 
             try
             {

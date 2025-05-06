@@ -1,16 +1,17 @@
 ﻿@model AccuStock.Models.ViewModels.Purchase.PurchaseViewModel
 
 @{
-    ViewData["Title"] = "New Purchase";
+    ViewData["Title"] = (Model.Id == 0) ? "Add Bill" : "Edit Bill";
 }
 <div class="row">
     <div class="col-md-12">
         <div class="card shadow">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">New Purchase</h5>
+                <h5 class="card-title mb-0">@ViewData["Title"]</h5>
             </div>
             <div class="card-body">
                 <form asp-action="AddOrEditPurchase" method="post">
+                    <input type="hidden" asp-for="Id" />
                     <table class="table">
                         <tbody>
                             <tr>
@@ -63,29 +64,36 @@
                         <tbody>
                             @if (Model.Details.Count > 0)
                             {
+                                int index = 0;
                                 foreach (var data in Model.Details)
                                 {
                                     <tr>
                                         <td>
-                                            <select class="form-control product select2" name="Details[0].ProductId">
+                                            <select class="form-control product select2" name="Details[@index].ProductId">
+                                                <option value="">Type or click to select an item</option>
                                                 @if (Model.ProductList != null)
+                                                {
+                                                    foreach (var product in Model.ProductList)
                                                     {
-                                                        foreach (var product in Model.ProductList)
+                                                        if (product.Value == data.ProductId.ToString())
+                                                        {
+                                                            <option value="@product.Value" selected>@product.Text</option>
+                                                        }
+                                                        else
                                                         {
                                                             <option value="@product.Value">@product.Text</option>
                                                         }
                                                     }
+                                                }
                                             </select>
                                         </td>
-                                        <td><input type="number" class="form-control qty text-end" name="Details[0].Quantity"
-                                                value="@data.Quantity" min="0" /></td>
-                                        <td><input type="number" class="form-control unitPrice text-end"
-                                                name="Details[0].UnitPrice" value="@data.UnitPrice" min="0" /></td>
-                                        <td><input type="number" class="form-control vatPercent text-end"
-                                                name="Details[0].VatRate" value="@data.VatRate" min="0" /></td>
+                                        <td><input type="text" class="form-control qty text-end" name="Details[@index].Quantity" value="@data.Quantity" /></td>
+                                        <td><input type="text" class="form-control unitPrice text-end" name="Details[@index].UnitPrice" value="@data.UnitPrice" /></td>
+                                        <td><input type="text" class="form-control vatPercent text-end" name="Details[@index].VatRate" value="@data.VatRate" /></td>
                                         <td><span class="amount">@(data.UnitPrice * data.Quantity)</span></td>
                                         <td><button type="button" class="btn btn-danger btn-sm removeRow">Remove</button></td>
                                     </tr>
+                                    index++;
                                 }
                             }
                             else
@@ -104,12 +112,11 @@
                                             }
                                         </select>
                                     </td>
-                                    <td><input type="number" class="form-control qty text-end" name="Details[0].Quantity"
-                                            value="0" min="0" /></td>
-                                    <td><input type="number" class="form-control unitPrice text-end"
-                                            name="Details[0].UnitPrice" value="0" min="0" /></td>
-                                    <td><input type="number" class="form-control vatPercent text-end"
-                                            name="Details[0].VatRate" value="0" min="0" /></td>
+                                    <td><input type="text" class="form-control qty text-end" name="Details[0].Quantity" placeholder="Enter Quantity"/></td>
+                                    <td><input type="text" class="form-control unitPrice text-end"
+                                            name="Details[0].UnitPrice" placeholder="Enter Unit Price" /></td>
+                                    <td><input type="text" class="form-control vatPercent text-end"
+                                            name="Details[0].VatRate" placeholder="Enter Vat Rate(%)"/></td>
                                     <td><span class="amount">0.00</span></td>
                                     <td><button type="button" class="btn btn-danger btn-sm removeRow">Remove</button></td>
                                 </tr>

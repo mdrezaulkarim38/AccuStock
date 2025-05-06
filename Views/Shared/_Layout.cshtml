@@ -210,7 +210,7 @@
                             <a href="javascript:void(0);">
                                 <img src="~/assets/img/icons/wallet1.svg" alt="img" />
                                 <span>
-                                    Purchase
+                                    Purchases
                                 </span>
                                 <span class="menu-arrow"></span>
                             </a>
@@ -219,7 +219,7 @@
                                     <a asp-controller="Vendor" asp-action="Vendor">Vendor</a>
                                 </li>
                                 <li>
-                                    <a asp-controller="Purchase" asp-action="Purchase"> Add Purchase</a>
+                                    <a asp-controller="Purchase" asp-action="Purchase">Bills</a>
                                 </li>
                             </ul>
                         </li>
@@ -307,7 +307,7 @@
         $(document).ready(function () {
                 recalculateTotals();
                 $('.select2').select2({
-                    placeholder: 'Please Select',
+                        placeholder: 'Select an option',
                     allowClear: true,
                     width: '100%'
                 });

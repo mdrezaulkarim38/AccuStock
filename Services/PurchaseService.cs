@@ -161,7 +161,7 @@ namespace AccuStock.Services
                     {
                         return false;
                     }
-                    existingPurchase.PurchaseNo = purchase.PurchaseNo;
+                    //existingPurchase.PurchaseNo = await GeneratePurchaseNo();
                     existingPurchase.VendorId = purchase.VendorId;
                     existingPurchase.BranchId = purchase.BranchId;
                     existingPurchase.PurchaseStatus = purchase.PurchaseStatus;
@@ -184,6 +184,7 @@ namespace AccuStock.Services
 
                     foreach (var detail in purchase.Details)
                     {
+                        detail.PurchaseId = purchase.Id;
                         detail.SubTotal = detail.Quantity * detail.UnitPrice;
                         detail.VatAmount = detail.SubTotal * (detail.VatRate / 100);
                         detail.Total = detail.SubTotal + detail.VatAmount;
