@@ -18,6 +18,6 @@
         public Subscription? Subscription { get; set; }
         public Vendor? Vendor { get; set; }
         public Branch? Branch { get; set; }
-        public List<PurchaseDetail> Details { get; set; }
+        public List<PurchaseDetail>? Details { get; set; }
     }
 }

@@ -167,8 +167,8 @@ namespace AccuStock.Services
                     existingPurchase.PurchaseStatus = purchase.PurchaseStatus;
                     existingPurchase.PurchaseDate = purchase.PurchaseDate;
                     existingPurchase.Notes = purchase.Notes;
-                    existingPurchase.SubTotal = purchase.Details.Sum(d => d.SubTotal);
-                    existingPurchase.TotalVat = purchase.Details.Sum(d => d.VatAmount);
+                    existingPurchase.SubTotal = purchase.Details!.Sum(d => d.SubTotal);
+                    existingPurchase.TotalVat = purchase.Details!.Sum(d => d.VatAmount);
                     existingPurchase.TotalAmount = purchase.SubTotal + purchase.TotalVat;
 
                     var existingDetails = await _context.PurchaseDetails
@@ -182,7 +182,7 @@ namespace AccuStock.Services
                     _context.PurchaseDetails.RemoveRange(existingDetails);
                     _context.ProductStocks.RemoveRange(existingProductStocks);
 
-                    foreach (var detail in purchase.Details)
+                    foreach (var detail in purchase.Details!)
                     {
                         detail.PurchaseId = purchase.Id;
                         detail.SubTotal = detail.Quantity * detail.UnitPrice;
@@ -231,7 +231,7 @@ namespace AccuStock.Services
                         return "Purchase not found.";
                     }                    
                     var existingDetails = existingPurchase.Details;
-                    _context.PurchaseDetails.RemoveRange(existingDetails);
+                    _context.PurchaseDetails.RemoveRange(existingDetails!);
                     
                     var existingProductStocks = await _context.ProductStocks
                         .Where(s => s.SourceId == id && s.SourceType == "Purchase")

@@ -34,8 +34,26 @@ namespace AccuStock.Services
         {
             try
             {
-                var subscriptionIdClaim = _baseService.GetSubscriptionId();
-                vendor.SubscriptionId = subscriptionIdClaim;
+                vendor.SubscriptionId = _baseService.GetSubscriptionId();
+
+                int maxChartOfAccountId = await _context.ChartOfAccounts
+                   .Where(c => c.SubScriptionId == vendor.SubscriptionId)
+                   .MaxAsync(c => (int?)c.Id) ?? 0;
+                maxChartOfAccountId += 1;
+
+                var chartOfAccount = new ChartOfAccount
+                {
+                    Name = vendor.Name,
+                    AccountCode = maxChartOfAccountId.ToString(),
+                    ChartOfAccountTypeId = 14,
+                    SubScriptionId = vendor.SubscriptionId,
+                    UserId = _baseService.GetUserId()
+                };
+
+                _context.ChartOfAccounts.Add(chartOfAccount);
+                await _context.SaveChangesAsync();
+
+                vendor.ChartOfAccountId = chartOfAccount.Id;
                 _context.Vendors.Add(vendor);
                 await _context.SaveChangesAsync();
                 return true;
