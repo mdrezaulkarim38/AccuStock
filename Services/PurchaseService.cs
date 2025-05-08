@@ -569,4 +569,5 @@ namespace AccuStock.Services
                     await transaction.RollbackAsync();
                     return $"Error deleting purchase: {ex.Message}";
                 }
-            }}}}
+            }}
+    }}
