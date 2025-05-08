@@ -37,9 +37,9 @@ public class BaseService
     {
         return await _appDbContext.Units.ToListAsync();
     }
-    //public async Task<int> GetBusinessYearId(int subscriptionId)
-    //{
-    //    var bYearId= await _appDbContext.BusinessYears.Where(u=> u.SubscriptionId == subscriptionId).FirstOrDefaultAsync();
-    //    return userBranch?.BranchId ?? 0;
-    //}
+    public async Task<int> GetBusinessYearId(int subscriptionId)
+    {
+       var bYearId= await _appDbContext.BusinessYears.Where(u=> u.SubscriptionId == subscriptionId).FirstOrDefaultAsync();
+       return bYearId!.Id;
+    }
 }
