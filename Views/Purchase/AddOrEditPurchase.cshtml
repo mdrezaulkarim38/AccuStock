@@ -42,6 +42,17 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td><strong>Payment Method</strong></td>
+                                <td>
+                                    <select name="PaymentMethod" id="PaymentMethod" class="form-select select2">
+                                        <option value="">Select Payment Method</option>
+                                        <option value="0">Credit (Payable)</option>
+                                        <option value="1">Cash (Immediate Payment))</option>
+                                    </select>
+                                </td>
+                            </tr>
+
+                            <tr>
                                 <td><strong>Notes:</strong></td>
                                 <td>
                                     <input type="text" asp-for="Notes" class="form-control" placeholder="Enter Notes" />

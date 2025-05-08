@@ -12,11 +12,12 @@
         public decimal SubTotal { get; set; }
         public decimal TotalVat { get; set; }
         public decimal TotalAmount { get; set; }
+        public int? PaymentMethod { get; set; } // 0: Cash (Immediate Payment), 1: Credit (Payable)
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
         public int SubscriptionId { get; set; }
         public Subscription? Subscription { get; set; }
-        public Vendor? Vendor { get; set; }
+        public Vendor? Vendor { get; set; } 
         public Branch? Branch { get; set; }
         public List<PurchaseDetail>? Details { get; set; }
     }

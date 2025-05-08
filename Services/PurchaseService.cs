@@ -1,4 +1,4 @@
-﻿using AccuStock.Data;
+﻿    using AccuStock.Data;
 using AccuStock.Interface;
 using AccuStock.Models;
 using Microsoft.EntityFrameworkCore;
@@ -54,36 +54,107 @@ namespace AccuStock.Services
                 .FirstOrDefaultAsync();
             return purchase?.Id ?? 0;
         }
+        //public async Task<bool> CreatePurchase(Purchase purchase)
+        //{
+        //    try
+        //    {
+        //        if (purchase == null)
+        //        {
+        //            throw new ArgumentNullException(nameof(purchase), "Purchase cannot be null.");
+        //        }
+
+        //        if (purchase.Details == null || !purchase.Details.Any())
+        //        {
+        //            throw new ArgumentException("Purchase must include at least one detail.", nameof(purchase.Details));
+        //        }
+        //        var subscriptionId = _baseService.GetSubscriptionId();
+        //        var userId = _baseService.GetUserId();
+
+        //        if (subscriptionId <= 0)
+        //        {
+        //            throw new InvalidOperationException("Invalid subscription ID.");
+        //        }
+
+        //        purchase.SubscriptionId = subscriptionId;
+        //        purchase.PurchaseNo = await GeneratePurchaseNo();
+
+        //        foreach (var detail in purchase.Details)
+        //        {
+        //            if (detail.Quantity <= 0 || detail.UnitPrice < 0 || detail.VatRate < 0)
+        //            {
+        //                throw new ArgumentException($"Invalid purchase detail data for Product ID {detail.ProductId}.");
+        //            }
+        //            detail.SubTotal = detail.Quantity * detail.UnitPrice;
+        //            detail.VatAmount = detail.SubTotal * (detail.VatRate / 100);
+        //            detail.Total = detail.SubTotal + detail.VatAmount;
+        //        }
+
+        //        purchase.SubTotal = purchase.Details.Sum(d => d.SubTotal);
+        //        purchase.TotalVat = purchase.Details.Sum(d => d.VatAmount);
+        //        purchase.TotalAmount = purchase.SubTotal + purchase.TotalVat;
+
+        //        await _context.Purchases.AddAsync(purchase);
+        //        var result = await _context.SaveChangesAsync();
+
+        //        if (result <= 0)
+        //        {
+        //            throw new InvalidOperationException("Failed to save purchase to the database.");
+        //        }
+
+        //        foreach (var detail in purchase.Details)
+        //        {
+        //            var stock = new ProductStock
+        //            {
+        //                ProductId = detail.ProductId,
+        //                Date = purchase.PurchaseDate,
+        //                QuantityIn = detail.Quantity,
+        //                QuantityOut = 0,
+        //                SourceType = "Purchase",
+        //                ReferenceNo = purchase.PurchaseNo ?? "",
+        //                SourceId = purchase.Id,
+        //                Remarks = "Stock added from purchase"
+        //            };
+        //            await _context.ProductStocks.AddAsync(stock);
+        //        }
+        //        var stockResult = await _context.SaveChangesAsync();
+        //        if (stockResult <= 0)
+        //        {
+        //            throw new InvalidOperationException("Failed to save product stock updates.");
+        //        }
+
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"Unexpected error: {ex.Message}");
+        //        throw new InvalidOperationException("An unexpected error occurred while creating the purchase.", ex);
+        //    }
+        //}
+
         public async Task<bool> CreatePurchase(Purchase purchase)
         {
+            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
                 if (purchase == null)
-                {
                     throw new ArgumentNullException(nameof(purchase), "Purchase cannot be null.");
-                }
 
                 if (purchase.Details == null || !purchase.Details.Any())
-                {
                     throw new ArgumentException("Purchase must include at least one detail.", nameof(purchase.Details));
-                }
+
                 var subscriptionId = _baseService.GetSubscriptionId();
                 var userId = _baseService.GetUserId();
-
-                if (subscriptionId <= 0)
-                {
-                    throw new InvalidOperationException("Invalid subscription ID.");
-                }
+                var branchId = purchase.BranchId;
+                //var businessYearId = _baseService.GetBusinessYearId();
 
                 purchase.SubscriptionId = subscriptionId;
                 purchase.PurchaseNo = await GeneratePurchaseNo();
 
                 foreach (var detail in purchase.Details)
                 {
-                    if (detail.Quantity <= 0 || detail.UnitPrice < 0 || detail.VatRate < 0)
-                    {
+                    if (detail.Quantity <= 0 || detail.UnitPrice < 0)
                         throw new ArgumentException($"Invalid purchase detail data for Product ID {detail.ProductId}.");
-                    }
+
                     detail.SubTotal = detail.Quantity * detail.UnitPrice;
                     detail.VatAmount = detail.SubTotal * (detail.VatRate / 100);
                     detail.Total = detail.SubTotal + detail.VatAmount;
@@ -94,12 +165,7 @@ namespace AccuStock.Services
                 purchase.TotalAmount = purchase.SubTotal + purchase.TotalVat;
 
                 await _context.Purchases.AddAsync(purchase);
-                var result = await _context.SaveChangesAsync();
-
-                if (result <= 0)
-                {
-                    throw new InvalidOperationException("Failed to save purchase to the database.");
-                }
+                await _context.SaveChangesAsync();
 
                 foreach (var detail in purchase.Details)
                 {
@@ -116,20 +182,103 @@ namespace AccuStock.Services
                     };
                     await _context.ProductStocks.AddAsync(stock);
                 }
-                var stockResult = await _context.SaveChangesAsync();
-                if (stockResult <= 0)
+
+                await _context.SaveChangesAsync();
+                // Insert into JournalPost
+                var journal = new JournalPost                
                 {
-                    throw new InvalidOperationException("Failed to save product stock updates.");
+                    BusinessYearId = purchase.PurchaseDate.Year,
+                    BranchId = branchId,
+                    VchNo = purchase.PurchaseNo,
+                    VchDate = purchase.PurchaseDate,
+                    VchType = 1, // Purchase VCH Type
+                    Debit = purchase.TotalAmount,
+                    Credit = purchase.TotalAmount,
+                    PurchaseId = purchase.Id,
+                    UserId = userId,
+                    RefNo = purchase.PurchaseNo,
+                    Notes = "Purchase entry",
+                    Created = DateTime.Now,
+                    SubscriptionId = subscriptionId,
+                };
+
+                await _context.JournalPosts.AddAsync(journal);
+                await _context.SaveChangesAsync();
+
+                // Add JournalPostDetails based on payment method
+                var journalDetails = new List<JournalPostDetail>();
+
+                if (purchase.PaymentMethod == 0) // Cash Purchase
+                {
+                    journalDetails.Add(new JournalPostDetail
+                    {
+                        //BusinessYearId = businessYearId,
+                        BranchId = branchId,
+                        JournalPostId = journal.Id,
+                        ChartOfAccountId = 101, // TODO: Set cash ChartOfAccountId
+                        VchNo = journal.VchNo,
+                        VchDate = journal.VchDate,
+                        VchType = journal.VchType,
+                        Credit = purchase.TotalAmount,
+                        Description = "Cash Payment",
+                        Remarks = "Cash paid for purchase",
+                        PurchaseId = purchase.Id,
+                        SubscriptionId = subscriptionId,
+                        CreatedAt = DateTime.Now
+                    });
+                }
+                else if (purchase.PaymentMethod == 1) // Credit Purchase
+                {
+                    journalDetails.Add(new JournalPostDetail
+                    {
+                        //BusinessYearId = businessYearId,
+                        BranchId = branchId,
+                        JournalPostId = journal.Id,
+                        ChartOfAccountId = 102, // TODO: Set accounts payable ChartOfAccountId
+                        Credit = purchase.TotalAmount,
+                        VchNo = journal.VchNo,
+                        VchDate = journal.VchDate,
+                        VchType = journal.VchType,
+                        Description = "Credit Purchase",
+                        Remarks = "Purchase on credit",
+                        PurchaseId = purchase.Id,
+                        SubscriptionId = subscriptionId,
+                        CreatedAt = DateTime.Now
+                    });
                 }
 
+                // Debit entry for purchase expense
+                journalDetails.Add(new JournalPostDetail
+                {
+                   // BusinessYearId = businessYearId,
+                    BranchId = branchId,
+                    JournalPostId = journal.Id,
+                    ChartOfAccountId = 103, // TODO: Set purchase expense ChartOfAccountId
+                    Debit = purchase.TotalAmount,
+                    VchNo = journal.VchNo,
+                    VchDate = journal.VchDate,
+                    VchType = journal.VchType,
+                    Description = "Purchase expense",
+                    Remarks = "Expense booked for purchase",
+                    PurchaseId = purchase.Id,
+                    SubscriptionId = subscriptionId,
+                    CreatedAt = DateTime.Now
+                });
+
+                await _context.JournalPostDetails.AddRangeAsync(journalDetails);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Unexpected error: {ex.Message}");
+                await transaction.RollbackAsync();
+                Console.WriteLine($"CreatePurchase Error: {ex.Message}");
                 throw new InvalidOperationException("An unexpected error occurred while creating the purchase.", ex);
             }
         }
+
         public async Task<string> GeneratePurchaseNo()
         {
             var lastPurchase = await _context.Purchases

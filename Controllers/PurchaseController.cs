@@ -45,6 +45,7 @@ namespace AccuStock.Controllers
                         Id = purchase.Id,
                         VendorId = purchase.VendorId,
                         BranchId = purchase.BranchId,
+                        PaymentMethod = purchase.PaymentMethod,
                         PurchaseDate = purchase.PurchaseDate,
                         Notes = purchase.Notes,
                         VendorList = new SelectList(vendors, "Id", "Name", purchase.VendorId),
@@ -86,61 +87,6 @@ namespace AccuStock.Controllers
             });
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> AddOrEditPurchase(PurchaseViewModel viewModel)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        var vendors = await _vendorService.GetAllVendor();
-        //        var products = await _productService.GetAllProduct();
-        //        var branches = await _branchService.GetAllBranches();
-        //        viewModel.VendorList = new SelectList(vendors, "Id", "Name");
-        //        viewModel.BranchList = new SelectList(branches, "Id", "Name");
-        //        ViewBag.ProductList = new SelectList(products, "Id", "Name");
-        //        return View(viewModel);
-        //    }
-
-        //    var purchase = new Purchase
-        //    {
-        //        Id = viewModel.Id,
-        //        VendorId = viewModel.VendorId,
-        //        BranchId = viewModel.BranchId,
-        //        PurchaseDate = viewModel.PurchaseDate,
-        //        Notes = viewModel.Notes,
-        //        PurchaseStatus = 0,
-        //        Details = viewModel.Details.Select(d => new PurchaseDetail
-        //        {
-        //            ProductId = d.ProductId,
-        //            Quantity = (int)d.Quantity,
-        //            UnitPrice = d.UnitPrice,
-        //            VatRate = d.VatRate
-        //        }).ToList()
-        //    };
-
-        //    try
-        //    {
-        //        bool isCreated = await _purchaseService.CreatePurchase(purchase);
-        //        if (!isCreated)
-        //        {
-        //            TempData["ErrorMessage"] = "Failed to create purchase.";
-        //            return RedirectToAction("Purchase");
-        //        }
-        //        TempData["SuccessMessage"] = "Purchase Created Successfully";
-        //    }
-        //    catch (ArgumentException ex)
-        //    {
-        //        TempData["ErrorMessage"] = ex.Message;
-        //        var vendors = await _vendorService.GetAllVendor();
-        //        var products = await _productService.GetAllProduct();
-        //        var branches = await _branchService.GetAllBranches();
-        //        viewModel.VendorList = new SelectList(vendors, "Id", "Name");
-        //        viewModel.BranchList = new SelectList(branches, "Id", "Name");
-        //        ViewBag.ProductList = new SelectList(products, "Id", "Name");
-        //        return View(viewModel);
-        //    }
-        //    return RedirectToAction("Purchase");
-        //}
-
         [HttpPost]
         public async Task<IActionResult> AddOrEditPurchase(PurchaseViewModel viewModel)
         {
@@ -155,6 +101,7 @@ namespace AccuStock.Controllers
                 Id = viewModel.Id,
                 VendorId = viewModel.VendorId,
                 BranchId = viewModel.BranchId,
+                PaymentMethod = viewModel.PaymentMethod,
                 PurchaseDate = viewModel.PurchaseDate,
                 Notes = viewModel.Notes,
                 PurchaseStatus = 0,

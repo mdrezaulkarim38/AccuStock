@@ -36,5 +36,10 @@ public class BaseService
     public async Task<List<Unit>> GetAllUnit()
     {
         return await _appDbContext.Units.ToListAsync();
-    } 
+    }
+    //public async Task<int> GetBusinessYearId(int subscriptionId)
+    //{
+    //    var bYearId= await _appDbContext.BusinessYears.Where(u=> u.SubscriptionId == subscriptionId).FirstOrDefaultAsync();
+    //    return userBranch?.BranchId ?? 0;
+    //}
 }
