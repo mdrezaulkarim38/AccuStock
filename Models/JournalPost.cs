@@ -22,7 +22,7 @@ public class JournalPost
     public string? RefNo { get; set; }
     public string? Notes { get; set; }
     public DateTime? Created { get; set; } = DateTime.Now;
-    public DateTime? Updated { get; set; }
+    public DateTime? Updated { get; set; } = DateTime.Now;
     public int SubscriptionId { get; set; }
     public Subscription? Subscription { get; set; }
     public List<JournalPostDetail> JournalPostDetails { get; set; } = new List<JournalPostDetail>();
