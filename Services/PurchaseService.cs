@@ -253,7 +253,7 @@ namespace AccuStock.Services
                     BusinessYearId = await _baseService.GetBusinessYearId(subscriptionId),
                     BranchId = branchId,
                     JournalPostId = journal.Id,
-                    ChartOfAccountId = 23, // TODO: Set InventoroyStock ChartOfAccountId
+                    ChartOfAccountId = 22, // TODO: Set InventoryStock ChartOfAccountId
                     Debit = purchase.TotalAmount,
                     VchNo = journal.VchNo,
                     VchDate = journal.VchDate,
