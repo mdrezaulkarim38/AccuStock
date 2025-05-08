@@ -27,7 +27,7 @@ public class JournalService : IJournalService
         {
             journal.SubscriptionId = _baseService.GetSubscriptionId();
             journal.UserId = userId;
-            journal.VchNo = await GenerateVchNoAsync(journal.SubscriptionId);
+            journal.VchNo = await _baseService.GenerateVchNoAsync(journal.SubscriptionId);
             journal.Debit = journal.JournalPostDetails?.Sum(d => d.Debit) ?? 0;
             journal.Credit = journal.JournalPostDetails?.Sum(d => d.Credit) ?? 0;
             journal.Created = DateTime.Now;
@@ -156,34 +156,34 @@ public class JournalService : IJournalService
         return businessYear.Id;
     }
 
-    private async Task<string> GenerateVchNoAsync(int subscriptionId)
-    {
-        var currentYear = DateTime.Now.Year;
-        var lastVchNo = await _context.JournalPosts
-            .Where(j => j.SubscriptionId == subscriptionId)
-            .OrderByDescending(j => j.VchNo)
-            .FirstOrDefaultAsync();
+    //private async Task<string> GenerateVchNoAsync(int subscriptionId)
+    //{
+    //    var currentYear = DateTime.Now.Year;
+    //    var lastVchNo = await _context.JournalPosts
+    //        .Where(j => j.SubscriptionId == subscriptionId)
+    //        .OrderByDescending(j => j.VchNo)
+    //        .FirstOrDefaultAsync();
 
-        if (lastVchNo == null)
-        {
-            return $"{currentYear}000001";
-        }
+    //    if (lastVchNo == null)
+    //    {
+    //        return $"{currentYear}000001";
+    //    }
 
-        var lastVchNoString = lastVchNo.VchNo!.ToString();
-        var lastYear = int.Parse(lastVchNoString.Substring(0, 4));
-        var lastNumber = int.Parse(lastVchNoString.Substring(4));
+    //    var lastVchNoString = lastVchNo.VchNo!.ToString();
+    //    var lastYear = int.Parse(lastVchNoString.Substring(0, 4));
+    //    var lastNumber = int.Parse(lastVchNoString.Substring(4));
 
-        if (lastYear == currentYear)
-        {
-            lastNumber++;
-        }
-        else
-        {
-            lastNumber = 1;
-        }
+    //    if (lastYear == currentYear)
+    //    {
+    //        lastNumber++;
+    //    }
+    //    else
+    //    {
+    //        lastNumber = 1;
+    //    }
 
-        return $"{currentYear}{lastNumber:D6}";
-    }
+    //    return $"{currentYear}{lastNumber:D6}";
+    //}
 
     
     public async Task<List<JournalPost>> GetJournal()

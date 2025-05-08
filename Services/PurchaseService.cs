@@ -187,17 +187,17 @@ namespace AccuStock.Services
                 // Insert into JournalPost
                 var journal = new JournalPost                
                 {
-                    BusinessYearId = purchase.PurchaseDate.Year,
+                    BusinessYearId = await _baseService.GetBusinessYearId(purchase.SubscriptionId),
                     BranchId = branchId,
-                    VchNo = purchase.PurchaseNo,
+                    VchNo = await _baseService.GenerateVchNoAsync(purchase.SubscriptionId),
                     VchDate = purchase.PurchaseDate,
-                    VchType = 1, // Purchase VCH Type
+                    VchType = 3, // Purchase VCH Type
                     Debit = purchase.TotalAmount,
                     Credit = purchase.TotalAmount,
                     PurchaseId = purchase.Id,
                     UserId = userId,
                     RefNo = purchase.PurchaseNo,
-                    Notes = "Purchase entry",
+                    Notes = "Purchase Entry",
                     Created = DateTime.Now,
                     SubscriptionId = subscriptionId,
                 };
@@ -208,39 +208,39 @@ namespace AccuStock.Services
                 // Add JournalPostDetails based on payment method
                 var journalDetails = new List<JournalPostDetail>();
 
-                if (purchase.PaymentMethod == 0) // Cash Purchase
+                if (purchase.PaymentMethod == 0) // Credit (Payable)
                 {
                     journalDetails.Add(new JournalPostDetail
                     {
-                        //BusinessYearId = businessYearId,
+                        BusinessYearId = await _baseService.GetBusinessYearId(subscriptionId),
                         BranchId = branchId,
                         JournalPostId = journal.Id,
-                        ChartOfAccountId = 101, // TODO: Set cash ChartOfAccountId
+                        ChartOfAccountId = 21, // TODO: Set Accounts Payable ChartOfAccountId
                         VchNo = journal.VchNo,
                         VchDate = journal.VchDate,
                         VchType = journal.VchType,
                         Credit = purchase.TotalAmount,
-                        Description = "Cash Payment",
-                        Remarks = "Cash paid for purchase",
+                        Description = "Due(AP) Payment",
+                        Remarks = "Accounts Payable for purchase",
                         PurchaseId = purchase.Id,
                         SubscriptionId = subscriptionId,
                         CreatedAt = DateTime.Now
                     });
                 }
-                else if (purchase.PaymentMethod == 1) // Credit Purchase
+                else if (purchase.PaymentMethod == 1) // Cash (Immediate Payment) Purchase
                 {
                     journalDetails.Add(new JournalPostDetail
                     {
-                        //BusinessYearId = businessYearId,
+                        BusinessYearId = await _baseService.GetBusinessYearId(subscriptionId),
                         BranchId = branchId,
                         JournalPostId = journal.Id,
-                        ChartOfAccountId = 102, // TODO: Set accounts payable ChartOfAccountId
+                        ChartOfAccountId = 20, // TODO: Set Cash in Hand ChartOfAccountId
                         Credit = purchase.TotalAmount,
                         VchNo = journal.VchNo,
                         VchDate = journal.VchDate,
                         VchType = journal.VchType,
-                        Description = "Credit Purchase",
-                        Remarks = "Purchase on credit",
+                        Description = "Cash(Immediate Payment) Purchase",
+                        Remarks = "Cash Credit for Purchase",
                         PurchaseId = purchase.Id,
                         SubscriptionId = subscriptionId,
                         CreatedAt = DateTime.Now
@@ -250,16 +250,16 @@ namespace AccuStock.Services
                 // Debit entry for purchase expense
                 journalDetails.Add(new JournalPostDetail
                 {
-                   // BusinessYearId = businessYearId,
+                    BusinessYearId = await _baseService.GetBusinessYearId(subscriptionId),
                     BranchId = branchId,
                     JournalPostId = journal.Id,
-                    ChartOfAccountId = 103, // TODO: Set purchase expense ChartOfAccountId
+                    ChartOfAccountId = 23, // TODO: Set InventoroyStock ChartOfAccountId
                     Debit = purchase.TotalAmount,
                     VchNo = journal.VchNo,
                     VchDate = journal.VchDate,
                     VchType = journal.VchType,
                     Description = "Purchase expense",
-                    Remarks = "Expense booked for purchase",
+                    Remarks = "Inventory booked for purchase",
                     PurchaseId = purchase.Id,
                     SubscriptionId = subscriptionId,
                     CreatedAt = DateTime.Now

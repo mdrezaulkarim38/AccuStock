@@ -42,4 +42,32 @@ public class BaseService
        var bYearId= await _appDbContext.BusinessYears.Where(u=> u.SubscriptionId == subscriptionId).FirstOrDefaultAsync();
        return bYearId!.Id;
     }
+    public async Task<string> GenerateVchNoAsync(int subscriptionId)
+    {
+        var currentYear = DateTime.Now.Year;
+        var lastVchNo = await _appDbContext.JournalPosts
+            .Where(j => j.SubscriptionId == subscriptionId)
+            .OrderByDescending(j => j.VchNo)
+            .FirstOrDefaultAsync();
+
+        if (lastVchNo == null)
+        {
+            return $"{currentYear}000001";
+        }
+
+        var lastVchNoString = lastVchNo.VchNo!.ToString();
+        var lastYear = int.Parse(lastVchNoString.Substring(0, 4));
+        var lastNumber = int.Parse(lastVchNoString.Substring(4));
+
+        if (lastYear == currentYear)
+        {
+            lastNumber++;
+        }
+        else
+        {
+            lastNumber = 1;
+        }
+
+        return $"{currentYear}{lastNumber:D6}";
+    }
 }
