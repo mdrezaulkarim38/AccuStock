@@ -14,7 +14,7 @@
         public ChartOfAccount? ChartOfAccount { get; set; }
         public int BusinessYearId { get; set; }
         public BusinessYear? BusinessYear { get; set; }
-        public int SubScriptionId { get; set; }
+        public int SubscriptionId { get; set; }
         public Subscription? Subscription { get; set; }
         public int UserId { get; set; }
         public User? User { get; set; }

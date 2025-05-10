@@ -13,6 +13,8 @@
         public decimal Total { get; set; }
         // Navigation
         public Product? Product { get; set; }
-        public Purchase? Purchase { get; set; }       
+        public Purchase? Purchase { get; set; }   
+        public int SubscriptionId { get; set; }
+        public Subscription? Subscription { get; set; }
     }
 }

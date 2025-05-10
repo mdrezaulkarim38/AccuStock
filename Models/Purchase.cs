@@ -1,13 +1,17 @@
-﻿namespace AccuStock.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace AccuStock.Models
 {
     public class Purchase
     {
-        public int Id { get; set; }        
+        public int Id { get; set; }
+        [StringLength(150)]
         public string? PurchaseNo { get; set; }
         public int VendorId { get; set; }
         public int BranchId { get; set; }
         public int PurchaseStatus { get; set; } // 0: Pending, 1: Completed, 2: Cancelled
-        public DateTime PurchaseDate { get; set; }        
+        public DateTime PurchaseDate { get; set; }
+        [StringLength(100)]
         public string? Notes { get; set; }
         public decimal SubTotal { get; set; }
         public decimal TotalVat { get; set; }

@@ -65,41 +65,41 @@ namespace AccuStock.Data
 
             modelBuilder.Entity<ChartOfAccountType>().HasData(
     // Top-Level Account Types (ParentId = 0)
-    new ChartOfAccountType { Id = 1, Name = "Assets", ParentId = 0, GroupID = 1 },
-    new ChartOfAccountType { Id = 2, Name = "Liabilities", ParentId = 0, GroupID = 1 },
-    new ChartOfAccountType { Id = 3, Name = "Equity", ParentId = 0, GroupID = 1 },
-    new ChartOfAccountType { Id = 4, Name = "Income", ParentId = 0, GroupID = 1 },
-    new ChartOfAccountType { Id = 5, Name = "Expense", ParentId = 0, GroupID = 1 },
+    new ChartOfAccountType { Id = 1, Name = "Assets", ParentId = 0, GroupId = 1 },
+    new ChartOfAccountType { Id = 2, Name = "Liabilities", ParentId = 0, GroupId = 1 },
+    new ChartOfAccountType { Id = 3, Name = "Equity", ParentId = 0, GroupId = 1 },
+    new ChartOfAccountType { Id = 4, Name = "Income", ParentId = 0, GroupId = 1 },
+    new ChartOfAccountType { Id = 5, Name = "Expense", ParentId = 0, GroupId = 1 },
 
     // Child Accounts under "Assets" (ParentId = 1)
-    new ChartOfAccountType { Id = 6, Name = "Other Assets", ParentId = 1, GroupID = 0 },
-    new ChartOfAccountType { Id = 7, Name = "Other Current Assets", ParentId = 1, GroupID = 0 },
-    new ChartOfAccountType { Id = 8, Name = "Cash", ParentId = 1, GroupID = 0 },
-    new ChartOfAccountType { Id = 9, Name = "Bank", ParentId = 1, GroupID = 0 },
-    new ChartOfAccountType { Id = 10, Name = "Fixed Assets", ParentId = 1, GroupID = 0 },
-    new ChartOfAccountType { Id = 11, Name = "Stock", ParentId = 1, GroupID = 0 },
-    new ChartOfAccountType { Id = 12, Name = "Payment Clearing", ParentId = 1, GroupID = 0 },
-    new ChartOfAccountType { Id = 13, Name = "Input Tax", ParentId = 1, GroupID = 0 },
+    new ChartOfAccountType { Id = 6, Name = "Other Assets", ParentId = 1, GroupId = 0 },
+    new ChartOfAccountType { Id = 7, Name = "Other Current Assets", ParentId = 1, GroupId = 0 },
+    new ChartOfAccountType { Id = 8, Name = "Cash", ParentId = 1, GroupId = 0 },
+    new ChartOfAccountType { Id = 9, Name = "Bank", ParentId = 1, GroupId = 0 },
+    new ChartOfAccountType { Id = 10, Name = "Fixed Assets", ParentId = 1, GroupId = 0 },
+    new ChartOfAccountType { Id = 11, Name = "Stock", ParentId = 1, GroupId = 0 },
+    new ChartOfAccountType { Id = 12, Name = "Payment Clearing", ParentId = 1, GroupId = 0 },
+    new ChartOfAccountType { Id = 13, Name = "Input Tax", ParentId = 1, GroupId = 0 },
 
     // Child Accounts under "Liabilities" (ParentId = 2)
-    new ChartOfAccountType { Id = 14, Name = "Other Current Liability", ParentId = 2, GroupID = 0 },
-    new ChartOfAccountType { Id = 15, Name = "Credit Card", ParentId = 2, GroupID = 0 },
-    new ChartOfAccountType { Id = 16, Name = "Long Term Liability", ParentId = 2, GroupID = 0 },
-    new ChartOfAccountType { Id = 17, Name = "Other Liability", ParentId = 2, GroupID = 0 },
-    new ChartOfAccountType { Id = 18, Name = "Overseas Tax Payable", ParentId = 2, GroupID = 0 },
-    new ChartOfAccountType { Id = 19, Name = "Output Tax", ParentId = 2, GroupID = 0 },
+    new ChartOfAccountType { Id = 14, Name = "Other Current Liability", ParentId = 2, GroupId = 0 },
+    new ChartOfAccountType { Id = 15, Name = "Credit Card", ParentId = 2, GroupId = 0 },
+    new ChartOfAccountType { Id = 16, Name = "Long Term Liability", ParentId = 2, GroupId = 0 },
+    new ChartOfAccountType { Id = 17, Name = "Other Liability", ParentId = 2, GroupId = 0 },
+    new ChartOfAccountType { Id = 18, Name = "Overseas Tax Payable", ParentId = 2, GroupId = 0 },
+    new ChartOfAccountType { Id = 19, Name = "Output Tax", ParentId = 2, GroupId = 0 },
 
     // Child Accounts under "Equity" (ParentId = 3)
-    new ChartOfAccountType { Id = 20, Name = "Equity", ParentId = 3, GroupID = 0 },
+    new ChartOfAccountType { Id = 20, Name = "Equity", ParentId = 3, GroupId = 0 },
 
     // Child Accounts under "Income" (ParentId = 4)
-    new ChartOfAccountType { Id = 21, Name = "Income", ParentId = 4, GroupID = 0 },
-    new ChartOfAccountType { Id = 22, Name = "Other Income", ParentId = 4, GroupID = 0 },
+    new ChartOfAccountType { Id = 21, Name = "Income", ParentId = 4, GroupId = 0 },
+    new ChartOfAccountType { Id = 22, Name = "Other Income", ParentId = 4, GroupId = 0 },
 
     // Child Accounts under "Expense" (ParentId = 5)
-    new ChartOfAccountType { Id = 23, Name = "Expense", ParentId = 5, GroupID = 0 },
-    new ChartOfAccountType { Id = 24, Name = "Cost of Goods Sold", ParentId = 5, GroupID = 0 },
-    new ChartOfAccountType { Id = 25, Name = "Other Expense", ParentId = 5, GroupID = 0 }
+    new ChartOfAccountType { Id = 23, Name = "Expense", ParentId = 5, GroupId = 0 },
+    new ChartOfAccountType { Id = 24, Name = "Cost of Goods Sold", ParentId = 5, GroupId = 0 },
+    new ChartOfAccountType { Id = 25, Name = "Other Expense", ParentId = 5, GroupId = 0 }
 );
 
             // Prevent multiple cascade paths
@@ -115,9 +115,8 @@ namespace AccuStock.Data
             .HasForeignKey(b => b.SubscriptionId)
             .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ChartOfAccount>().HasOne(ca => ca.Subscription).WithMany().HasForeignKey(ca => ca.SubScriptionId).OnDelete(DeleteBehavior.Restrict);
-
-
+            modelBuilder.Entity<ChartOfAccount>().HasOne(ca => ca.Subscription).WithMany().HasForeignKey(ca => ca.SubscriptionId).OnDelete(DeleteBehavior.Restrict);
+            
             // Decimal property configuration to avoid truncation warnings
             modelBuilder.Entity<JournalPost>()
                 .Property(j => j.Credit)
@@ -158,6 +157,39 @@ namespace AccuStock.Data
             modelBuilder.Entity<OpeningBalances>()
             .Property(o => o.Credit)
             .HasColumnType("decimal(18,2)");
+            
+            modelBuilder.Entity<Purchase>(entity =>
+            {
+                entity.Property(e => e.SubTotal).HasPrecision(18, 2);
+                entity.Property(e => e.TotalAmount).HasPrecision(18, 2);
+                entity.Property(e => e.TotalVat).HasPrecision(18, 2);
+            });
+
+            modelBuilder.Entity<PurchaseDetail>(entity =>
+            {
+                entity.Property(e => e.SubTotal).HasPrecision(18, 2);
+                entity.Property(e => e.Total).HasPrecision(18, 2);
+                entity.Property(e => e.UnitPrice).HasPrecision(18, 2);
+                entity.Property(e => e.VatAmount).HasPrecision(18, 2);
+                entity.Property(e => e.VatRate).HasPrecision(5, 2); // Percentage, adjust if needed
+            });
+
+            modelBuilder.Entity<Sale>(entity =>
+            {
+                entity.Property(e => e.TotalAmount).HasPrecision(18, 2);
+            });
+
+            modelBuilder.Entity<SaleDetails>(entity =>
+            {
+                entity.Property(e => e.Discount).HasPrecision(18, 2);
+                entity.Property(e => e.Rate).HasPrecision(18, 2);
+                entity.Property(e => e.Tax).HasPrecision(18, 2);
+            });
+
+            modelBuilder.Entity<SaleReturn>(entity =>
+            {
+                entity.Property(e => e.RefundAmount).HasPrecision(18, 2);
+            });
 
         }
 
