@@ -540,34 +540,50 @@ namespace AccuStock.Services
 
         public async Task<string> DeletePurchase(int id)
         {
-            using (var transaction = await _context.Database.BeginTransactionAsync())
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                try
-                {                    
-                    var existingPurchase = await _context.Purchases
-                        .Include(p => p.Details)
-                        .FirstOrDefaultAsync(p => p.Id == id);
+                var existingPurchase = await _context.Purchases
+                    .Include(p => p.Details)
+                    .FirstOrDefaultAsync(p => p.Id == id);
 
-                    if (existingPurchase == null)
-                    {
-                        return "Purchase not found.";
-                    }                    
-                    var existingDetails = existingPurchase.Details;
-                    _context.PurchaseDetails.RemoveRange(existingDetails!);
-                    
-                    var existingProductStocks = await _context.ProductStocks
-                        .Where(s => s.SourceId == id && s.SourceType == "Purchase")
+                if (existingPurchase == null)
+                {
+                    return "Purchase not found.";
+                }
+                if (existingPurchase.PurchaseStatus != 0)
+                {
+                    return "Cannot delete this purchase because it is already posted to journal.";
+                }
+                var existingDetails = existingPurchase.Details;
+                _context.PurchaseDetails.RemoveRange(existingDetails!);
+                var existingProductStocks = await _context.ProductStocks
+                    .Where(s => s.SourceId == id && s.SourceType == "Purchase")
+                    .ToListAsync();
+                _context.ProductStocks.RemoveRange(existingProductStocks);
+
+                var journalPost = await _context.JournalPosts
+                    .FirstOrDefaultAsync(j => j.PurchaseId == id);
+
+                if (journalPost != null)
+                {
+                    var journalPostDetails = await _context.JournalPostDetails
+                        .Where(d => d.JournalPostId == journalPost.Id)
                         .ToListAsync();
-                    _context.ProductStocks.RemoveRange(existingProductStocks);                    
-                    _context.Purchases.Remove(existingPurchase);                    
-                    await _context.SaveChangesAsync();
-                    await transaction.CommitAsync();
-                    return "Purchase deleted successfully.";
+                    _context.JournalPostDetails.RemoveRange(journalPostDetails);
+
+                    _context.JournalPosts.Remove(journalPost);
                 }
-                catch (Exception ex)
-                {                    
-                    await transaction.RollbackAsync();
-                    return $"Error deleting purchase: {ex.Message}";
-                }
-            }}
-    }}
+                _context.Purchases.Remove(existingPurchase);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return "Purchase deleted successfully.";
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return $"Error deleting purchase: {ex.Message}";
+            }
+        }
+    }
+}

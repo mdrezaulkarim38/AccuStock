@@ -57,13 +57,23 @@
                                     </td>
                                     <td>@item.TotalAmount.ToString()</td>
                                     <td>
-                                        <form asp-controller="Purchase" asp-action="AddOrEditPurchase" method="GET">
-                                            <input type="hidden" name="id" value="@item.Id" />
-                                            <button type="submit" class="btn btn-sm btn-warning">
-                                                <i class="fa fa-edit"></i>
-                                            </button>
-                                        </form>
+                                        <div class="d-flex">
+                                            <form asp-controller="Purchase" asp-action="AddOrEditPurchase" method="GET" class="me-1">
+                                                <input type="hidden" name="id" value="@item.Id" />
+                                                <button type="submit" class="btn btn-sm btn-warning">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                            </form>
+
+                                            <form asp-action="DeletePurchase" asp-route-id="@item.Id" method="post"
+                                                  onsubmit="return confirm('Are you sure you want to delete this Purchase?');">
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="fa fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
+
                                 </tr>
                                 index++;
                             }

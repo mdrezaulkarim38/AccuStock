@@ -163,5 +163,23 @@ namespace AccuStock.Controllers
             viewModel.BranchList = new SelectList(branches, "Id", "Name");
             ViewBag.ProductList = new SelectList(products, "Id", "Name");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeletePurchase(int id)
+        {
+            var result = await _purchaseService.DeletePurchase(id);
+
+            if (result.Contains("Purchase deleted successfully", StringComparison.OrdinalIgnoreCase))
+            {
+                TempData["SuccessMessageSweet"] = result;
+            }
+            else
+            {
+                TempData["ErrorMessageSweet"] = result;
+            }
+
+            return RedirectToAction("Purchase");
+        }
+
     }
 }
