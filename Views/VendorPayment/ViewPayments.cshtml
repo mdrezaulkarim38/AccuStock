@@ -1,0 +1,97 @@
+﻿@using AccuStock.Models.ViewModels.VendorPayment
+@model List<VendorPaymentViewModel>
+@{
+    ViewData["Title"] = "Vendor Payments";
+}
+
+<h2>Vendor Payment</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<form asp-action="ViewPayments" method="post">
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label>Vendor</label>
+            <select name="vendorId" class="form-select select2" asp-items="ViewBag.VendorList" required>
+                <option value="0">-- Select Vendor --</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label>From Date</label>
+            <input type="date" name="fromDate" value="@ViewBag.FromDate" class="form-control" required />
+        </div>
+        <div class="col-md-3">
+            <label>To Date</label>
+            <input type="date" name="toDate" value="@ViewBag.ToDate" class="form-control" required />
+        </div>
+        <div class="col-md-2">
+            <label>&nbsp;</label>
+            <button type="submit" class="btn btn-primary w-100">Search</button>
+        </div>
+    </div>
+</form>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Purchase No</th>
+                <th>Vendor Name</th>
+                <th>Phone</th>
+                <th>Date</th>
+                <th>Bill</th>
+                <th>Paid</th>
+                <th>Due</th>
+                <th>Pay Amount</th>
+                <th>Method</th>
+                <th>Notes</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <form method="post" asp-action="MakePayment">
+                        <input type="hidden" value="@item." />
+                    <td>@item.PurchaseNo</td>
+                    <td>@item.VendorName</td>
+                    <td>@item.PhoneNumber</td>
+                    <td>@item.PurchaseDate.ToShortDateString()</td>
+                    <td>@item.BillAmount</td>
+                    <td>@item.AmountPaid</td>
+                    <td>@item.AmountDue</td>
+                    <td>
+                        <input type="number" name="AmountPaid" step="0.01" class="form-control" required />
+                    </td>
+                    <td>
+                        <select name="PaymentMethod" class="form-control">
+                            <option value="0">Cash</option>
+                            <option value="1">Bank</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" name="Notes" class="form-control" />
+                    </td>
+                    <td>
+                        <input type="hidden" name="PurchaseId" value="@item.PurchaseId" />
+                        <input type="hidden" name="vendorId" value="@ViewBag.VendorId" />
+                        <input type="hidden" name="fromDate" value="@ViewBag.FromDate" />
+                        <input type="hidden" name="toDate" value="@ViewBag.ToDate" />
+                        <button type="submit" class="btn btn-sm btn-success">Pay</button>
+                    </td>
+                    </form>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

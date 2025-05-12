@@ -53,6 +53,7 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ISaleService, SaleService>();
 builder.Services.AddScoped<IVendor, VendorService>();
 builder.Services.AddScoped<IPurchaseService, PurchaseService>();
+builder.Services.AddScoped<IVendorPaymentService, VendorPaymentService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
