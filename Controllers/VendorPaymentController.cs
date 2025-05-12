@@ -47,7 +47,7 @@ namespace AccuStock.Controllers
             if (!ModelState.IsValid)
             {
                 TempData["Error"] = "Invalid data";
-                return RedirectToAction("Index");
+                return RedirectToAction("VendorPaymentList");
             }
             try
             {
@@ -60,7 +60,7 @@ namespace AccuStock.Controllers
             }
 
             // Reload updated list
-            return RedirectToAction("Index", new { vendorId = vendorId, fromDate = fromDate.ToString("yyyy-MM-dd"), toDate = toDate.ToString("yyyy-MM-dd") });
+            return RedirectToAction("VendorPaymentList", new { vendorId = vendorId, fromDate = fromDate.ToString("yyyy-MM-dd"), toDate = toDate.ToString("yyyy-MM-dd") });
         }
     }
 }

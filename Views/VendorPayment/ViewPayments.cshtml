@@ -61,8 +61,7 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <form method="post" asp-action="MakePayment">
-                        <input type="hidden" value="@item." />
+                    <form method="post" asp-action="MakePayment">                        
                     <td>@item.PurchaseNo</td>
                     <td>@item.VendorName</td>
                     <td>@item.PhoneNumber</td>
@@ -84,7 +83,7 @@
                     </td>
                     <td>
                         <input type="hidden" name="PurchaseId" value="@item.PurchaseId" />
-                        <input type="hidden" name="vendorId" value="@ViewBag.VendorId" />
+                        <input type="hidden" name="vendorId" value="@item.VendorId" />
                         <input type="hidden" name="fromDate" value="@ViewBag.FromDate" />
                         <input type="hidden" name="toDate" value="@ViewBag.ToDate" />
                         <button type="submit" class="btn btn-sm btn-success">Pay</button>

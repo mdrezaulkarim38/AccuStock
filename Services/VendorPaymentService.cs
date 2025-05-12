@@ -72,6 +72,7 @@ namespace AccuStock.Services
                 var subscriptionId = _baseService.GetSubscriptionId();
                 var userId = _baseService.GetUserId();
                 var branchId = purchase.BranchId;
+                var vendorId = purchase.VendorId;
 
                 var payment = new VendorPayment
                 {
@@ -82,6 +83,7 @@ namespace AccuStock.Services
                     Notes = request.Notes,
                     SubscriptionId = subscriptionId,
                     UserId = userId,
+                    VendorId = vendorId,
                     BranchId = branchId
                 };
                 await _context.VendorPayments.AddAsync(payment);
@@ -114,6 +116,7 @@ namespace AccuStock.Services
                     RefNo = purchase.PurchaseNo,
                     Notes = "Vendor Payment",
                     Created = DateTime.Now,
+                    VendorPaymentId = payment.Id,
                     SubscriptionId = subscriptionId
                 };
                 await _context.JournalPosts.AddAsync(journal);
@@ -135,6 +138,7 @@ namespace AccuStock.Services
                     Description = "Vendor Payment",
                     Remarks = "Accounts Payable Cleared",
                     PurchaseId = purchase.Id,
+                    VendorPaymentId = payment.Id,
                     SubscriptionId = subscriptionId,
                     CreatedAt = DateTime.Now
                 },
@@ -152,14 +156,13 @@ namespace AccuStock.Services
                     Description = "Vendor Payment",
                     Remarks = "Cash Paid",
                     PurchaseId = purchase.Id,
+                    VendorPaymentId = payment.Id,
                     SubscriptionId = subscriptionId,
                     CreatedAt = DateTime.Now
                 }
             };
-
                 await _context.JournalPostDetails.AddRangeAsync(journalDetails);
                 await _context.SaveChangesAsync();
-
                 await tx.CommitAsync();
                 return true;
             }
