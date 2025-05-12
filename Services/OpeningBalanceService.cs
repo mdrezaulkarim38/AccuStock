@@ -18,7 +18,7 @@ public class OpeningBalanceService : IOpeningBalanceService
     {
         try
         {
-            openingBalance.SubScriptionId = _baseService.GetSubscriptionId();
+            openingBalance.SubscriptionId = _baseService.GetSubscriptionId();
             openingBalance.UserId = _baseService.GetUserId();
             
             await _context.OpeningBalances.AddAsync(openingBalance);
@@ -35,7 +35,7 @@ public class OpeningBalanceService : IOpeningBalanceService
         try
         {
             var subscriptionIdClaim = _baseService.GetSubscriptionId();
-            var existingOpBl = await _context.OpeningBalances.FirstOrDefaultAsync(o => o.SubScriptionId == subscriptionIdClaim && o.Id == opbl.Id);
+            var existingOpBl = await _context.OpeningBalances.FirstOrDefaultAsync(o => o.SubscriptionId == subscriptionIdClaim && o.Id == opbl.Id);
 
             if (existingOpBl == null)
             {
@@ -57,6 +57,6 @@ public class OpeningBalanceService : IOpeningBalanceService
     }
     public async Task<List<OpeningBalances>> GetOpBl()
     {
-        return await _context.OpeningBalances.Where(o => o.SubScriptionId == _baseService.GetSubscriptionId()).ToListAsync();
+        return await _context.OpeningBalances.Where(o => o.SubscriptionId == _baseService.GetSubscriptionId()).ToListAsync();
     }
 }

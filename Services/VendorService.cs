@@ -37,7 +37,7 @@ namespace AccuStock.Services
                 vendor.SubscriptionId = _baseService.GetSubscriptionId();
 
                 int maxChartOfAccountId = await _context.ChartOfAccounts
-                   .Where(c => c.SubScriptionId == vendor.SubscriptionId)
+                   .Where(c => c.SubscriptionId == vendor.SubscriptionId)
                    .MaxAsync(c => (int?)c.Id) ?? 0;
                 maxChartOfAccountId += 1;
 
@@ -46,7 +46,7 @@ namespace AccuStock.Services
                     Name = vendor.Name,
                     AccountCode = maxChartOfAccountId.ToString(),
                     ChartOfAccountTypeId = 14,
-                    SubScriptionId = vendor.SubscriptionId,
+                    SubscriptionId = vendor.SubscriptionId,
                     UserId = _baseService.GetUserId()
                 };
 

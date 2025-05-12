@@ -20,7 +20,7 @@ public class ChartOfAccountService : IChartOfAccount
         var subscriptionId = _baseService.GetSubscriptionId();
         return await _context.ChartOfAccounts
             .Include(c => c.ChartOfAccountType)
-            .Where(c => c.SubScriptionId == subscriptionId)
+            .Where(c => c.SubscriptionId == subscriptionId)
             .ToListAsync();
     }
 
@@ -34,7 +34,7 @@ public class ChartOfAccountService : IChartOfAccount
         if (chartOfAccount == null) throw new ArgumentNullException(nameof(chartOfAccount));
         try
         {
-            chartOfAccount.SubScriptionId = _baseService.GetSubscriptionId();
+            chartOfAccount.SubscriptionId = _baseService.GetSubscriptionId();
             chartOfAccount.UserId = _baseService.GetUserId();
 
             _context.Add(chartOfAccount);
@@ -55,7 +55,7 @@ public class ChartOfAccountService : IChartOfAccount
         {
             var subscriptionId = _baseService.GetSubscriptionId();
             var existingCoa = await _context.ChartOfAccounts
-                .FirstOrDefaultAsync(coa => coa.SubScriptionId == subscriptionId && coa.Id == chartOfAccount.Id);
+                .FirstOrDefaultAsync(coa => coa.SubscriptionId == subscriptionId && coa.Id == chartOfAccount.Id);
 
             if (existingCoa == null) return false;
 

@@ -1,4 +1,6 @@
-﻿namespace AccuStock.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace AccuStock.Models;
 
 public class JournalPost
 {
@@ -7,6 +9,7 @@ public class JournalPost
     public BusinessYear? BusinessYear { get; set; }
     public int BranchId { get; set; }
     public Branch? Branch { get; set; }
+    [StringLength(60)]
     public string? VchNo { get; set; }
     public DateTime? VchDate { get; set; }
     public int? VchType { get; set; }
@@ -19,7 +22,9 @@ public class JournalPost
     public int? CustomerPaymentId { get; set; }
     public int? UserId { get; set; }
     public User? User { get; set; }
+    [StringLength(100)]
     public string? RefNo { get; set; }
+    [StringLength(100)]
     public string? Notes { get; set; }
     public DateTime? Created { get; set; } = DateTime.Now;
     public DateTime? Updated { get; set; } = DateTime.Now;

@@ -1,8 +1,10 @@
-﻿namespace AccuStock.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace AccuStock.Models;
+public class Unit
 {
-    public class Unit
-    {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-    }
+    public int Id { get; set; }
+    [StringLength(60)]
+    public string? Name { get; set; }
 }
+
