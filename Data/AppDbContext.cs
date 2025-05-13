@@ -182,9 +182,10 @@ namespace AccuStock.Data
 
             modelBuilder.Entity<SaleDetails>(entity =>
             {
-                entity.Property(e => e.Discount).HasPrecision(18, 2);
-                entity.Property(e => e.Rate).HasPrecision(18, 2);
-                entity.Property(e => e.Tax).HasPrecision(18, 2);
+                entity.Property(e => e.SubTotal).HasPrecision(18, 2);
+                entity.Property(e => e.VatRate).HasPrecision(18, 2);
+                entity.Property(e => e.UnitPrice).HasPrecision(18, 2);
+                entity.Property(e => e.Total).HasPrecision(18, 2);
             });
 
             modelBuilder.Entity<SaleReturn>(entity =>
