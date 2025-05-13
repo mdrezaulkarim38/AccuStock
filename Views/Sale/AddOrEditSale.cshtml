@@ -1,1 +1,120 @@
-﻿
+﻿@model AccuStock.Models.ViewModels.Sale.SaleViewModel
+
+@{
+    ViewData["Title"] = "Create Sale Entry";
+}
+
+<h2>Create Sale Entry</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="SaleDate"></label>
+        <input asp-for="SaleDate" class="form-control" type="date" />
+        <span asp-validation-for="SaleDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CustomerId"></label>
+        <select asp-for="CustomerId" asp-items="Model.CustomerList" class="form-control">
+            <option value="">-- Select Customer --</option>
+        </select>
+        <span asp-validation-for="CustomerId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="BranchId"></label>
+        <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control">
+            <option value="">-- Select Branch --</option>
+        </select>
+        <span asp-validation-for="BranchId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PaymentMethod"></label>
+        <input asp-for="PaymentMethod" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Notes"></label>
+        <textarea asp-for="Notes" class="form-control"></textarea>
+    </div>
+
+    <hr />
+    <h4>Sale Details</h4>
+
+    <table class="table table-bordered" id="saleDetailsTable">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Qty</th>
+                <th>Unit Price</th>
+                <th>VAT %</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Details.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <select name="Details[@i].ProductId" class="form-control">
+                            <option value="">-- Select Product --</option>
+                            @foreach (var item in Model.ProductList!)
+                            {
+                                <option value="@item.Value")>@item.Text</option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <input name="Details[@i].Quantity" class="form-control" value="@Model.Details[i].Quantity" />
+                    </td>
+                    <td>
+                        <input name="Details[@i].UnitPrice" class="form-control" value="@Model.Details[i].UnitPrice" />
+                    </td>
+                    <td>
+                        <input name="Details[@i].VatRate" class="form-control" value="@Model.Details[i].VatRate" />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">X</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="button" class="btn btn-secondary" onclick="addRow()">Add Product</button>
+    <br /><br />
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        let index = @Model.Details.Count
+        function addRow() {
+            const row = `
+                <tr>
+                    <td>
+                        <select name="Details[${index}].ProductId" class="form-control">
+                            <option value="">-- Select Product --</option>
+                            @foreach (var item in Model.ProductList!)
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        </select>
+                    </td>
+                    <td><input name="Details[${index}].Quantity" class="form-control" /></td>
+                    <td><input name="Details[${index}].UnitPrice" class="form-control" /></td>
+                    <td><input name="Details[${index}].VatRate" class="form-control" /></td>
+                    <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">X</button></td>
+                </tr>
+            `;
+            document.querySelector("#saleDetailsTable tbody").insertAdjacentHTML('beforeend', row);
+            index++;
+        }
+
+        function removeRow(btn) {
+            btn.closest("tr").remove();
+        }
+    </script>
+}
