@@ -5,16 +5,6 @@
 }
 
 <h2>Vendor Payment</h2>
-
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">@TempData["Success"]</div>
-}
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">@TempData["Error"]</div>
-}
-
 <form asp-action="ViewPayments" method="post">
     <div class="row mb-3">
         <div class="col-md-4">
@@ -38,21 +28,20 @@
         </div>
     </div>
 </form>
-
+<br />
+<br />
 @if (Model != null && Model.Any())
 {
     <table class="table table-bordered">
-        <thead>
+        <thead style="background: #cfe2ff">
             <tr>
                 <th>Purchase No</th>
-                <th>Vendor Name</th>
-                <th>Phone</th>
+                <th>Vendor Details</th>
                 <th>Date</th>
                 <th>Bill</th>
                 <th>Paid</th>
                 <th>Due</th>
                 <th>Pay Amount</th>
-                <th>Method</th>
                 <th>Notes</th>
                 <th>Action</th>
             </tr>
@@ -63,21 +52,20 @@
                 <tr>
                     <form method="post" asp-action="MakePayment">                        
                     <td>@item.PurchaseNo</td>
-                    <td>@item.VendorName</td>
-                    <td>@item.PhoneNumber</td>
+                    <td>@($"{item.VendorName} ({item.PhoneNumber})")</td>
                     <td>@item.PurchaseDate.ToShortDateString()</td>
                     <td>@item.BillAmount</td>
                     <td>@item.AmountPaid</td>
                     <td>@item.AmountDue</td>
                     <td>
-                        <input type="number" name="AmountPaid" step="0.01" class="form-control" required />
+                        <input type="number" name="AmountPaid" class="form-control" required />
                     </td>
-                    <td>
+             @*        <td>
                         <select name="PaymentMethod" class="form-control">
                             <option value="0">Cash</option>
                             <option value="1">Bank</option>
                         </select>
-                    </td>
+                    </td> *@
                     <td>
                         <input type="text" name="Notes" class="form-control" />
                     </td>

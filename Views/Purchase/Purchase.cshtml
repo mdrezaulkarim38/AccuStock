@@ -38,21 +38,21 @@
                                     <td>@(item.Vendor?.Name ?? "N/A")</td>
                                     <td>@(item.Branch?.Name ?? "N/A")</td>
                                     <td>
-                                        @if (item.PurchaseStatus == 0)
+                                        @if (item.PurchaseStatus == 0 && item.PaymentMethod == 0)
                                         {
                                             <span class="badge bg-warning">Pending</span>
                                         }
-                                        else if (item.PurchaseStatus == 1)
+                                        else if (item.PurchaseStatus == 1 && item.PaymentMethod == 0)
                                         {
                                             <span class="badge bg-success">Completed</span>
                                         }
-                                        else if (item.PurchaseStatus == 2)
+                                        else if (item.PurchaseStatus == 2 && item.PaymentMethod == 0)
                                         {
                                             <span class="badge bg-danger">Partial</span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-secondary">Unknown</span>
+                                            <span class="badge bg-info">Completed</span>
                                         }
                                     </td>
                                     <td>@item.TotalAmount.ToString()</td>
