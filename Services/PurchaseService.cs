@@ -218,7 +218,7 @@ namespace AccuStock.Services
                     nextNumber = lastNumber + 1;
                 }
             }
-            return $"P-BILL-{nextNumber.ToString("D2")}";
+            return $"PBILL{nextNumber.ToString("D2")}";
         }      
 
         public async Task<bool> UpdatePurchase(Purchase purchase)

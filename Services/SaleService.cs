@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AccuStock.Services
 {
-    public class SaleService: ISaleService
+    public class SaleService : ISaleService
     {
         private readonly AppDbContext _context;
         private readonly BaseService _baseService;
@@ -33,7 +33,7 @@ namespace AccuStock.Services
             var branchId = await _baseService.GetBranchId(subscriptionId, userId);
 
             if (branchId == 0)
-                return null; 
+                return null;
             return await _context.Sales
                 .Where(s => s.Id == id && s.SubscriptionId == subscriptionId && s.BranchId == branchId)
                 .Include(s => s.Customer)
@@ -90,8 +90,9 @@ namespace AccuStock.Services
                 foreach (var detail in sale.SaleDetails)
                 {
                     var currentStock = await _context.ProductStocks
-        .Where(ps => ps.ProductId == detail.ProductId && ps.SubscriptionId == subscriptionId)
-        .SumAsync(ps => ps.QuantityIn - ps.QuantityOut);
+                        .Where(ps => ps.ProductId == detail.ProductId && ps.SubscriptionId == subscriptionId)
+                        .SumAsync(ps => ps.QuantityIn - ps.QuantityOut);
+
                     if (currentStock < detail.Quantity)
                     {
                         throw new InvalidOperationException($"Insufficient stock for product ID {detail.ProductId}. Available: {currentStock}, Requested: {detail.Quantity}");
@@ -132,7 +133,7 @@ namespace AccuStock.Services
                 await _context.JournalPosts.AddAsync(journal);
                 await _context.SaveChangesAsync();
 
-                var journalDetails = new List<JournalPostDetail>();                
+                var journalDetails = new List<JournalPostDetail>();
                 if (sale.PaymentMethod == 0) // On Credit
                 {
                     journalDetails.Add(new JournalPostDetail
@@ -160,7 +161,7 @@ namespace AccuStock.Services
                     Credit = sale.TotalAmount,
                     Description = "Sales Revenue",
                     Remarks = "Credit revenue for sale"
-                });            
+                });
                 //decimal totalCOGS = sale.SaleDetails.Sum(d => d.Quantity * (d.Product?.CostPrice ?? 0)); // You must have CostPrice in Product
                 journalDetails.Add(new JournalPostDetail
                 {
@@ -219,7 +220,7 @@ namespace AccuStock.Services
                 if (existingSale == null)
                 {
                     return false;
-                }                
+                }
                 existingSale.CustomerId = sale.CustomerId;
                 existingSale.BranchId = sale.BranchId;
                 existingSale.InvoiceDate = sale.InvoiceDate;
@@ -227,7 +228,7 @@ namespace AccuStock.Services
                 existingSale.PaymentMethod = sale.PaymentMethod;
                 existingSale.PaymentStatus = sale.PaymentStatus;
                 existingSale.TotalAmount = sale.TotalAmount;
-                
+
                 foreach (var newDetail in sale.SaleDetails!)
                 {
                     var existingDetail = existingSale.SaleDetails!
@@ -300,7 +301,7 @@ namespace AccuStock.Services
                     nextNumber = lastNumber + 1;
                 }
             }
-            return $"S-INV-{nextNumber.ToString("D2")}";
+            return $"SINV{nextNumber.ToString("D2")}";
         }
 
     }
