@@ -21,8 +21,7 @@ namespace AccuStock.Controllers
             _customerService = customerService;
             _branchService = branchService;
             _productService = productService;
-        }
-        
+        }        
         public async Task<IActionResult> Sales()
         {
             var sales = await _saleService.GetAllSale();
