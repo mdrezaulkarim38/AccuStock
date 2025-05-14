@@ -1,4 +1,5 @@
 ﻿using AccuStock.Interface;
+using AccuStock.Migrations;
 using AccuStock.Models;
 using AccuStock.Models.ViewModels.Sale;
 using AccuStock.Services;
@@ -99,7 +100,7 @@ namespace AccuStock.Controllers
             }
             else
             {
-                bool isUpdated = await _saleService.UpdateSale(sale);
+                bool isUpdated = await _saleService.UpdateSale(sale.Id, sale);
                 if (!isUpdated)
                 {
                     TempData["ErrorMessage"] = "Sale already exists or update failed";

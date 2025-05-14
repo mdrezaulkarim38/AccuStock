@@ -9,7 +9,7 @@ namespace AccuStock.Interface
         Task<Sale?> GetSalebyId(int id);
         Task<int> GetSalebyInvNum(string invoiceNumber);
         Task<bool> CreateSale(Sale sale);
-        Task<bool> UpdateSale(Sale sale);
+        Task<bool> UpdateSale(int saleId, Sale updatedSale);
         Task<string> DeleteSale(int saleId);
     }
 }

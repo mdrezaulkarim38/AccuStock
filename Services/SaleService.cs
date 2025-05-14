@@ -210,53 +210,201 @@ namespace AccuStock.Services
             }
         }
 
-        public async Task<bool> UpdateSale(Sale sale)
+        public async Task<bool> UpdateSale(int saleId, Sale updatedSale)
         {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
             try
             {
                 var subscriptionId = _baseService.GetSubscriptionId();
+                var userId = _baseService.GetUserId();
+                var branchId = updatedSale.BranchId;
 
+                // Fetch the existing sale with its details
                 var existingSale = await _context.Sales
                     .Include(s => s.SaleDetails)
-                    .FirstOrDefaultAsync(s => s.Id == sale.Id && s.SubscriptionId == subscriptionId);
+                    .FirstOrDefaultAsync(s => s.Id == saleId && s.SubscriptionId == subscriptionId);
 
                 if (existingSale == null)
                 {
-                    return false;
+                    throw new ArgumentException("Sale not found.");
                 }
-                existingSale.CustomerId = sale.CustomerId;
-                existingSale.BranchId = sale.BranchId;
-                existingSale.InvoiceDate = sale.InvoiceDate;
-                existingSale.InvoiceNumber = sale.InvoiceNumber;
-                existingSale.PaymentMethod = sale.PaymentMethod;
-                existingSale.PaymentStatus = sale.PaymentStatus;
-                existingSale.TotalAmount = sale.TotalAmount;
+                // Update basic sale properties
+                existingSale.BranchId = updatedSale.BranchId;
+                existingSale.InvoiceDate = updatedSale.InvoiceDate;
+                existingSale.PaymentMethod = updatedSale.PaymentMethod;
+                existingSale.CustomerId = updatedSale.CustomerId;
+                existingSale.Notes = updatedSale.Notes;
+                existingSale.InvoiceDate = updatedSale.InvoiceDate;
 
-                foreach (var newDetail in sale.SaleDetails!)
+                // Validate SaleDetails
+                if (updatedSale.SaleDetails == null || !updatedSale.SaleDetails.Any())
                 {
-                    var existingDetail = existingSale.SaleDetails!
-                        .FirstOrDefault(d => d.Id == newDetail.Id);
+                    throw new ArgumentException("SaleDetails cannot be null or empty.");
+                }
 
-                    if (existingDetail != null)
+                // Remove old SaleDetails and associated stock entries
+                var oldDetails = existingSale.SaleDetails.ToList();
+                foreach (var oldDetail in oldDetails)
+                {
+                    var stock = await _context.ProductStocks
+                        .FirstOrDefaultAsync(ps => ps.SourceId == existingSale.Id && ps.ProductId == oldDetail.ProductId && ps.SourceType == "Sale");
+                    if (stock != null)
                     {
-                        existingDetail.ProductId = newDetail.ProductId;
-                        existingDetail.Quantity = newDetail.Quantity;
-                        //existingDetail.Rate = newDetail.Rate;
-                        //existingDetail.Discount = newDetail.Discount;
-                        //existingDetail.Tax = newDetail.Tax;
-                        _context.Entry(existingDetail).State = EntityState.Modified;
-                    }
-                    else
-                    {
-                        return false;
+                        _context.ProductStocks.Remove(stock);
                     }
                 }
+                _context.SaleDetails.RemoveRange(oldDetails);
+
+                // Add new SaleDetails
+                foreach (var detail in updatedSale.SaleDetails)
+                {
+                    detail.SaleId = existingSale.Id;
+                    detail.SubTotal = detail.Quantity * detail.UnitPrice;
+                    detail.VatAmount = detail.SubTotal * (detail.VatRate / 100);
+                    detail.Total = detail.SubTotal + detail.VatAmount;
+                    detail.SubscriptionId = subscriptionId;
+                }
+
+                // Update sale totals
+                existingSale.SubTotal = updatedSale.SaleDetails.Sum(d => d.SubTotal);
+                existingSale.TotalVat = updatedSale.SaleDetails.Sum(d => d.VatAmount);
+                existingSale.TotalAmount = existingSale.SubTotal + existingSale.TotalVat;
+
+                // Add new SaleDetails to context
+                await _context.SaleDetails.AddRangeAsync(updatedSale.SaleDetails);
+
+                // Update Product Stock
+                foreach (var detail in updatedSale.SaleDetails)
+                {
+                    var currentStock = await _context.ProductStocks
+                        .Where(ps => ps.ProductId == detail.ProductId && ps.SubscriptionId == subscriptionId)
+                        .SumAsync(ps => ps.QuantityIn - ps.QuantityOut);
+
+                    if (currentStock < detail.Quantity)
+                    {
+                        throw new InvalidOperationException($"Insufficient stock for product ID {detail.ProductId}. Available: {currentStock}, Requested: {detail.Quantity}");
+                    }
+                    var stock = new ProductStock
+                    {
+                        ProductId = detail.ProductId,
+                        Date = existingSale.InvoiceDate,
+                        QuantityOut = detail.Quantity,
+                        QuantityIn = 0,
+                        SourceType = "Sale",
+                        ReferenceNo = existingSale.InvoiceNumber ?? "",
+                        SourceId = existingSale.Id,
+                        Remarks = "Stock reduced from updated sale",
+                        SubscriptionId = subscriptionId
+                    };
+                    await _context.ProductStocks.AddAsync(stock);
+                }
+
+                // Remove old journal entries
+                var oldJournal = await _context.JournalPosts
+                    .FirstOrDefaultAsync(j => j.SaleId == existingSale.Id && j.SubscriptionId == subscriptionId);
+                if (oldJournal != null)
+                {
+                    var oldJournalDetails = await _context.JournalPostDetails
+                        .Where(jd => jd.JournalPostId == oldJournal.Id)
+                        .ToListAsync();
+                    _context.JournalPostDetails.RemoveRange(oldJournalDetails);
+                    _context.JournalPosts.Remove(oldJournal);
+                }
+
+                // Create new journal entry
+                var journal = new JournalPost
+                {
+                    BusinessYearId = await _baseService.GetBusinessYearId(subscriptionId),
+                    BranchId = branchId,
+                    VchNo = await _baseService.GenerateVchNoAsync(subscriptionId),
+                    VchDate = existingSale.InvoiceDate,
+                    VchType = 5, // Sale VCH Type
+                    Debit = existingSale.TotalAmount,
+                    Credit = existingSale.TotalAmount,
+                    SaleId = existingSale.Id,
+                    UserId = userId,
+                    RefNo = existingSale.InvoiceNumber,
+                    Notes = "Updated Sales Entry",
+                    Created = DateTime.Now,
+                    SubscriptionId = subscriptionId
+                };
+
+                await _context.JournalPosts.AddAsync(journal);
                 await _context.SaveChangesAsync();
+
+                // Create new journal details
+                var journalDetails = new List<JournalPostDetail>();
+                if (existingSale.PaymentMethod == 0) // On Credit
+                {
+                    journalDetails.Add(new JournalPostDetail
+                    {
+                        ChartOfAccountId = 23, // Accounts Receivable
+                        Debit = existingSale.TotalAmount,
+                        Description = "Credit Sale - Receivable",
+                        Remarks = "Accounts Receivable"
+                    });
+                }
+                else if (existingSale.PaymentMethod == 1) // On Cash
+                {
+                    journalDetails.Add(new JournalPostDetail
+                    {
+                        ChartOfAccountId = 20, // Cash in Hand
+                        Debit = existingSale.TotalAmount,
+                        Description = "Cash Sale",
+                        Remarks = "Cash received from sale"
+                    });
+                }
+
+                // Sales Revenue Credit
+                journalDetails.Add(new JournalPostDetail
+                {
+                    ChartOfAccountId = 24, // Sales Revenue
+                    Credit = existingSale.TotalAmount,
+                    Description = "Sales Revenue",
+                    Remarks = "Credit revenue for sale"
+                });
+
+                // COGS and Inventory
+                journalDetails.Add(new JournalPostDetail
+                {
+                    ChartOfAccountId = 25, // Cost of Goods Sold
+                    Debit = existingSale.TotalAmount,
+                    Description = "COGS Entry",
+                    Remarks = "Record expense for COGS"
+                });
+
+                journalDetails.Add(new JournalPostDetail
+                {
+                    ChartOfAccountId = 22, // Inventory
+                    Credit = existingSale.TotalAmount,
+                    Description = "Inventory Reduction",
+                    Remarks = "Reduce inventory for sold items"
+                });
+
+                // Finalize Journal Details
+                foreach (var jd in journalDetails)
+                {
+                    jd.JournalPostId = journal.Id;
+                    jd.BranchId = branchId;
+                    jd.VchNo = journal.VchNo;
+                    jd.VchDate = journal.VchDate;
+                    jd.VchType = journal.VchType;
+                    jd.BusinessYearId = journal.BusinessYearId;
+                    jd.SaleId = existingSale.Id;
+                    jd.SubscriptionId = subscriptionId;
+                    jd.CreatedAt = DateTime.Now;
+                }
+                await _context.JournalPostDetails.AddRangeAsync(journalDetails);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return false;
+                await transaction.RollbackAsync();
+                Console.WriteLine($"UpdateSale Error: {ex.Message}");
+                throw new InvalidOperationException("An unexpected error occurred while updating the sale.", ex);
             }
         }
         public async Task<string> DeleteSale(int saleId)
