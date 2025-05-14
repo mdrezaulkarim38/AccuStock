@@ -65,9 +65,11 @@ namespace AccuStock.Services
                 var branchId = sale.BranchId;
 
                 sale.SubscriptionId = subscriptionId;
-                sale.CreatedAt = DateTime.Now;
-                sale.UpdatedAt = DateTime.Now;
-
+                sale.InvoiceNumber = await GenerateInvoiceNo();
+                if (sale.SaleDetails == null || !sale.SaleDetails.Any())
+                {
+                    throw new ArgumentException("SaleDetails cannot be null or empty.");
+                }
                 foreach (var detail in sale.SaleDetails!)
                 {
                     detail.Sale = sale;
@@ -75,8 +77,6 @@ namespace AccuStock.Services
                     detail.VatAmount = detail.SubTotal * (detail.VatRate / 100);
                     detail.Total = detail.SubTotal + detail.VatAmount;
                     detail.SubscriptionId = subscriptionId;
-                    detail.CreatedAt = DateTime.Now;
-                    detail.UpdatedAt = DateTime.Now;
                 }
 
                 sale.SubTotal = sale.SaleDetails.Sum(d => d.SubTotal);
@@ -89,6 +89,13 @@ namespace AccuStock.Services
                 // Record Product Stock Out
                 foreach (var detail in sale.SaleDetails)
                 {
+                    var currentStock = await _context.ProductStocks
+        .Where(ps => ps.ProductId == detail.ProductId && ps.SubscriptionId == subscriptionId)
+        .SumAsync(ps => ps.QuantityIn - ps.QuantityOut);
+                    if (currentStock < detail.Quantity)
+                    {
+                        throw new InvalidOperationException($"Insufficient stock for product ID {detail.ProductId}. Available: {currentStock}, Requested: {detail.Quantity}");
+                    }
                     var stock = new ProductStock
                     {
                         ProductId = detail.ProductId,
@@ -277,6 +284,23 @@ namespace AccuStock.Services
             _context.Sales.Remove(sale);
             await _context.SaveChangesAsync();
             return "Sale deleted successfully.";
+        }
+
+        public async Task<string> GenerateInvoiceNo()
+        {
+            var lastinvoice = await _context.Sales
+                .OrderByDescending(s => s.Id)
+                .FirstOrDefaultAsync();
+            int nextNumber = 1;
+            if (lastinvoice != null && !string.IsNullOrEmpty(lastinvoice.InvoiceNumber))
+            {
+                var parts = lastinvoice.InvoiceNumber.Split('-');
+                if (parts.Length == 3 && int.TryParse(parts[2], out int lastNumber))
+                {
+                    nextNumber = lastNumber + 1;
+                }
+            }
+            return $"S-INV-{nextNumber.ToString("D2")}";
         }
 
     }

@@ -13,10 +13,14 @@ namespace AccuStock.Controllers
     {
         private readonly ISaleService _saleService;
         private readonly ICustomerService _customerService;
-        public SaleController(ISaleService saleService, ICustomerService customerService )
+        private readonly IBranchService _branchService;
+        private readonly IProductService _productService;
+        public SaleController(ISaleService saleService, ICustomerService customerService, IBranchService branchService, IProductService productService )
         {
             _saleService = saleService;
             _customerService = customerService;
+            _branchService = branchService;
+            _productService = productService;
         }
         
         public async Task<IActionResult> Sales()
@@ -27,48 +31,63 @@ namespace AccuStock.Controllers
         [HttpGet]
         public async Task<IActionResult> AddOrEditSale(int id = 0)
         {
-            //var model = new SaleViewModel
-            //{
-            //    SaleDate = DateTime.Now,
-            //    CustomerList = new SelectList(await _customerService.GetAllCustomer(), "Id", "Name").ToList(),
-            //    Details = new List<SaleDetailViewModel>() // empty initially
-            //};
+            var model = new SaleViewModel
+            {
+                SaleDate = DateTime.Now,
+                CustomerList = new SelectList(await _customerService.GetAllCustomer(), "Id", "Name").ToList(),
+                BranchList = new SelectList(await _branchService.GetAllBranches(), "Id", "Name").ToList(),
+                ProductList = new SelectList(await _productService.GetAllProduct(), "Id", "Name").ToList(),
+                Details = new List<SaleDetailVM>()
+            };
 
-            //if (id != 0)
-            //{
-            //    var sale = await _saleService.GetSalebyId(id);
-            //    if (sale == null)
-            //    {
-            //        TempData["ErrorMessage"] = "Sale not found!";
-            //        return RedirectToAction("Sale");
-            //    }
+            if (id != 0)
+            {
+                var sale = await _saleService.GetSalebyId(id);
+                if (sale == null)
+                {
+                    TempData["ErrorMessage"] = "Sale not found!";
+                    return RedirectToAction("Sales");
+                }
 
-            //    // Populate the ViewModel with existing sale data
-            //    model.Id = sale.Id;
-            //    model.CustomerId = sale.CustomerId;
-            //    model.BranchId = sale.BranchId;
-            //    model.SaleDate = sale.SaleDate;
-            //    model.Notes = sale.Notes;
-            //    model.PaymentMethod = sale.PaymentMethod;
+                model.Id = sale.Id;
+                model.CustomerId = sale.CustomerId;
+                model.BranchId = sale.BranchId;
+                model.SaleDate = sale.InvoiceDate;
+                model.PaymentMethod = sale.PaymentMethod?.ToString();
+                //model.Notes = sale.Notes;
 
-            //    // Map sale details
-            //    model.Details = sale.SaleDetails.Select(d => new SaleDetailViewModel
-            //    {
-            //        ProductId = d.ProductId,
-            //        Quantity = d.Quantity,
-            //        UnitPrice = d.UnitPrice,
-            //        VatRate = d.VatRate
-            //    }).ToList();
-            //}
-            return View();
+                model.Details = sale.SaleDetails?.Select(d => new SaleDetailVM
+                {
+                    ProductId = d.ProductId,
+                    Quantity = d.Quantity,
+                    UnitPrice = d.UnitPrice,
+                    VatRate = d.VatRate
+                }).ToList() ?? new List<SaleDetailVM>();
+            }
+            return View(model);
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> AddOrEditSale(Sale sale)
+        public async Task<IActionResult> AddOrEditSale(SaleViewModel viewModel)
         {
             ViewBag.Customers = new SelectList(await _customerService.GetAllCustomer(), "Id", "Name");
-
+            var sale = new Sale
+            {
+                Id = viewModel.Id,
+                InvoiceDate = viewModel.SaleDate,
+                CustomerId = viewModel.CustomerId,
+                BranchId = viewModel.BranchId,
+                PaymentMethod = Convert.ToInt32(viewModel.PaymentMethod),
+                Notes = viewModel.Notes!,
+                SaleDetails = viewModel.Details.Select(d => new SaleDetails
+                {
+                    ProductId = d.ProductId,
+                    Quantity = (int)d.Quantity,
+                    UnitPrice = d.UnitPrice,
+                    VatRate = d.VatRate
+                }).ToList()
+            };
             if (sale.Id == 0)
             {
                 bool isCreated = await _saleService.CreateSale(sale);
@@ -89,9 +108,7 @@ namespace AccuStock.Controllers
                 }
                 TempData["SuccessMessage"] = "Sale Updated Successfully";
             }
-
-            return RedirectToAction("Sale");
+            return RedirectToAction("Sales");
         }
-
     }
 }

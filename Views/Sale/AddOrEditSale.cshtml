@@ -4,117 +4,234 @@
     ViewData["Title"] = "Create Sale Entry";
 }
 
-<h2>Create Sale Entry</h2>
+<style>
+    .table > :not(:first-child) {
+    border-top: none !important;
+    }
+</style>
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label asp-for="SaleDate"></label>
-        <input asp-for="SaleDate" class="form-control" type="date" />
-        <span asp-validation-for="SaleDate" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="CustomerId"></label>
-        <select asp-for="CustomerId" asp-items="Model.CustomerList" class="form-control">
-            <option value="">-- Select Customer --</option>
-        </select>
-        <span asp-validation-for="CustomerId" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="BranchId"></label>
-        <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control">
-            <option value="">-- Select Branch --</option>
-        </select>
-        <span asp-validation-for="BranchId" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="PaymentMethod"></label>
-        <input asp-for="PaymentMethod" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Notes"></label>
-        <textarea asp-for="Notes" class="form-control"></textarea>
-    </div>
-
-    <hr />
-    <h4>Sale Details</h4>
-
-    <table class="table table-bordered" id="saleDetailsTable">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Qty</th>
-                <th>Unit Price</th>
-                <th>VAT %</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (int i = 0; i < Model.Details.Count; i++)
-            {
-                <tr>
-                    <td>
-                        <select name="Details[@i].ProductId" class="form-control">
-                            <option value="">-- Select Product --</option>
-                            @foreach (var item in Model.ProductList!)
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Create Sale Entry</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="AddOrEditSale" method="post">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td><strong>Sale Date:</strong></td>
+                                <td>
+                                    <input type="date" asp-for="SaleDate" class="form-control" />
+                                    <span asp-validation-for="SaleDate" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Customer:</strong></td>
+                                <td>
+                                    <select asp-for="CustomerId" asp-items="Model.CustomerList" class="form-select select2">
+                                        <option value="">Select Customer</option>
+                                    </select>
+                                    <span asp-validation-for="CustomerId" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Branch:</strong></td>
+                                <td>
+                                    <select asp-for="BranchId" asp-items="Model.BranchList" class="form-select select2">
+                                        <option value="">Select Branch</option>
+                                    </select>
+                                    <span asp-validation-for="BranchId" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Payment Method:</strong></td>
+                                <td>
+                                    <select asp-for="PaymentMethod" class="form-select select2">
+                                        <option value="">Select Payment Method</option>
+                                        <option value="0">Credit</option>
+                                        <option value="1">Cash</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Notes:</strong></td>
+                                <td>
+                                    <input type="text" asp-for="Notes" class="form-control" placeholder="Enter Notes" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-bordered" id="saleDetailsTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 30%;">Product</th>
+                                <th style="width: 10%;">Qty</th>
+                                <th style="width: 15%;">Unit Price</th>
+                                <th style="width: 10%;">VAT (%)</th>
+                                <th style="width: 15%;">Amount</th>
+                                <th style="width: 10%;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(Model.Details.Count > 0)
                             {
-                                <option value="@item.Value")>@item.Text</option>
+                                int index = 0;
+                                foreach (var data in Model.Details)
+                                { 
+                                    <tr>
+                                        <td>
+                                            <select name="Details[@index].ProductId" class="form-control product select2">
+                                                <option value="">-- Select Product --</option>
+                                                @if (Model.ProductList != null)
+                                                {
+                                                    foreach (var product in Model.ProductList)
+                                                    {
+                                                        if (product.Value == data.ProductId.ToString())
+                                                        {
+                                                            <option value="@product.Value" selected>@product.Text</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@product.Value">@product.Text</option>
+                                                        }
+                                                    }
+                                                }
+                                            </select>
+                                        </td>
+                                        <td><input name="Details[@index].Quantity" value="@data.Quantity" class="form-control qty text-end" /></td>
+                                        <td><input name="Details[@index].UnitPrice" value="@data.UnitPrice" class="form-control unitPrice text-end" /></td>
+                                        <td><input name="Details[@index].VatRate" value="@data" class="form-control vatRate text-end" /></td>
+                                        <td><span class="amount text-end">@(data.UnitPrice * data.Quantity)</span></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm removeRow" disabled>Remove</button></td>
+                                    </tr>
+                                    index++;
+                                }}
+                            else
+                            {
+                                <tr>
+                                    <td>
+                                        <select class="form-control product select2" name="Details[0].ProductId">
+                                            <option value="">-- Select Product --</option>
+                                            @if (Model.ProductList != null)
+                                            {
+                                                foreach (var product in Model.ProductList)
+                                                {
+                                                    <option value="@product.Value">@product.Text</option>
+                                                }
+                                            }
+                                        </select>
+                                    </td>
+                                    <td><input type="text" class="form-control qty text-end" name="Details[0].Quantity" placeholder="Enter Quantity" /></td>
+                                    <td><input type="text" class="form-control unitPrice text-end" name="Details[0].UnitPrice" placeholder="Enter Unit Price" /></td>
+                                    <td><input type="text" class="form-control vatRate text-end" name="Details[0].VatRate" placeholder="Enter Vat Rate(%)" /></td>
+                                    <td><span class="amount">0.00</span></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm removeRow">Remove</button></td>
+                                </tr>
                             }
-                        </select>
-                    </td>
-                    <td>
-                        <input name="Details[@i].Quantity" class="form-control" value="@Model.Details[i].Quantity" />
-                    </td>
-                    <td>
-                        <input name="Details[@i].UnitPrice" class="form-control" value="@Model.Details[i].UnitPrice" />
-                    </td>
-                    <td>
-                        <input name="Details[@i].VatRate" class="form-control" value="@Model.Details[i].VatRate" />
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">X</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <button type="button" class="btn btn-secondary" onclick="addRow()">Add Product</button>
-    <br /><br />
-    <button type="submit" class="btn btn-primary">Save</button>
-</form>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="6">
+                                    <button type="button" class="btn btn-success btn-sm" id="addNewRow">Add New Row</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="text-end"><strong>Subtotal:</strong></td>
+                                <td colspan="2"><span id="subTotal">0.00</span></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="text-end"><strong>VAT Amount:</strong></td>
+                                <td colspan="2"><span id="vatAmount">0.00</span></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                                <td colspan="2"><span id="totalAmount">0.00</span></td>
+                            </tr>                            
+                        </tfoot>
+                    </table>
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                        <a href="@Url.Action("Sales", "Sale")" class="btn btn-secondary btn-sm">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        let index = @Model.Details.Count
-        function addRow() {
+        // Generate product options from Model.ProductList
+        const productOptions = `@Html.Raw(string.Join("", Model.ProductList!.Select(p => $"<option value='{p.Value}'>{p.Text}</option>")))`;
+
+        let index = 1;
+
+        function calculateTotals() {
+            let subtotal = 0, vat = 0;
+            document.querySelectorAll("#saleDetailsTable tbody tr").forEach(row => {
+                const qty = parseFloat(row.querySelector(".qty")?.value || 0);
+                const price = parseFloat(row.querySelector(".unitPrice")?.value || 0);
+                const vatRate = parseFloat(row.querySelector(".vatRate")?.value || 0);
+                const amount = qty * price;
+                const vatAmt = amount * vatRate / 100;
+
+                row.querySelector(".amount").innerText = amount.toFixed(2);
+
+                subtotal += amount;
+                vat += vatAmt;
+            });
+
+            document.getElementById("subTotal").innerText = subtotal.toFixed(2);
+            document.getElementById("vatAmount").innerText = vat.toFixed(2);
+            document.getElementById("totalAmount").innerText = (subtotal + vat).toFixed(2);
+        }
+
+        document.addEventListener("input", e => {
+            if (e.target.classList.contains("qty") || e.target.classList.contains("unitPrice") || e.target.classList.contains("vatRate")) {
+                calculateTotals();
+            }
+        });
+
+        document.getElementById("addNewRow").addEventListener("click", () => {
             const row = `
                 <tr>
                     <td>
-                        <select name="Details[${index}].ProductId" class="form-control">
+                        <select name="Details[${index}].ProductId" class="form-control product select2">
                             <option value="">-- Select Product --</option>
-                            @foreach (var item in Model.ProductList!)
-                            {
-                                <option value="@item.Value">@item.Text</option>
-                            }
+                            ${productOptions}
                         </select>
                     </td>
-                    <td><input name="Details[${index}].Quantity" class="form-control" /></td>
-                    <td><input name="Details[${index}].UnitPrice" class="form-control" /></td>
-                    <td><input name="Details[${index}].VatRate" class="form-control" /></td>
-                    <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">X</button></td>
-                </tr>
-            `;
+                    <td><input name="Details[${index}].Quantity" class="form-control qty text-end" /></td>
+                    <td><input name="Details[${index}].UnitPrice" class="form-control unitPrice text-end" /></td>
+                    <td><input name="Details[${index}].VatRate" class="form-control vatRate text-end" /></td>
+                    <td><span class="amount text-end">0.00</span></td>
+                    <td><button type="button" class="btn btn-danger btn-sm removeRow">Remove</button></td>
+                </tr>`;
             document.querySelector("#saleDetailsTable tbody").insertAdjacentHTML('beforeend', row);
+            $(`select[name="Details[${index}].ProductId"]`).select2();
             index++;
-        }
+            calculateTotals();
+        });
 
-        function removeRow(btn) {
-            btn.closest("tr").remove();
-        }
+        document.addEventListener("click", function (e) {
+            if (e.target.classList.contains("removeRow")) {
+                const row = e.target.closest("tr");
+                const rows = document.querySelectorAll("#saleDetailsTable tbody tr");
+                if (row.rowIndex === 1 || row === rows[0]) {
+                    alert("You cannot remove the first/default row.");
+                    return;
+                }
+                row.remove();
+                calculateTotals();
+            }
+        });
+
+        window.onload = () => {
+            $('.select2').select2();
+            calculateTotals();
+        };
     </script>
-}
+}   
