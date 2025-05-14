@@ -18,6 +18,7 @@
             </div>
             <div class="card-body">
                 <form asp-action="AddOrEditSale" method="post">
+                    <input type="hidden" asp-for="Id"/>
                     <table class="table">
                         <tbody>
                             <tr>
@@ -102,7 +103,7 @@
                                         </td>
                                         <td><input name="Details[@index].Quantity" value="@data.Quantity" class="form-control qty text-end" /></td>
                                         <td><input name="Details[@index].UnitPrice" value="@data.UnitPrice" class="form-control unitPrice text-end" /></td>
-                                        <td><input name="Details[@index].VatRate" value="@data" class="form-control vatRate text-end" /></td>
+                                        <td><input name="Details[@index].VatRate" value="@data.VatRate" class="form-control vatRate text-end" /></td>
                                         <td><span class="amount text-end">@(data.UnitPrice * data.Quantity)</span></td>
                                         <td><button type="button" class="btn btn-danger btn-sm removeRow" disabled>Remove</button></td>
                                     </tr>

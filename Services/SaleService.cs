@@ -31,17 +31,27 @@ namespace AccuStock.Services
         }
         public async Task<Sale?> GetSalebyId(int id)
         {
-            var subscriptionId = _baseService.GetSubscriptionId();
-            var userId = _baseService.GetUserId();
-            var branchId = await _baseService.GetBranchId(subscriptionId, userId);
-
-            if (branchId == 0)
+            if (id <= 0)
                 return null;
-            return await _context.Sales
-                .Where(s => s.Id == id && s.SubscriptionId == subscriptionId && s.BranchId == branchId)
-                .Include(s => s.Customer)
-                .Include(s => s.Branch)
-                .FirstOrDefaultAsync();
+
+            try
+            {
+                var subscriptionId = _baseService.GetSubscriptionId();
+                //var userId = _baseService.GetUserId();
+                //var branchId = await _baseService.GetBranchId(subscriptionId, userId);
+
+                return await _context.Sales
+                    .Include(s => s.Customer)
+                    .Include(s => s.Branch)
+                    .Include(s => s.SaleDetails)
+                    .Where(s => s.SubscriptionId == subscriptionId && s.Id == id)
+                    .FirstOrDefaultAsync();
+            }
+            catch (Exception)
+            {
+                // Log the error (use your logging framework)
+                return null;
+            }
         }
         public async Task<int> GetSalebyInvNum(string invoiceNumber)
         {

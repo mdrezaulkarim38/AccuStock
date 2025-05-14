@@ -48,13 +48,13 @@ namespace AccuStock.Controllers
                     TempData["ErrorMessage"] = "Sale not found!";
                     return RedirectToAction("Sales");
                 }
-
+                    
                 model.Id = sale.Id;
                 model.CustomerId = sale.CustomerId;
                 model.BranchId = sale.BranchId;
                 model.SaleDate = sale.InvoiceDate;
                 model.PaymentMethod = sale.PaymentMethod?.ToString();
-                //model.Notes = sale.Notes;
+                model.Notes = sale.Notes;
 
                 model.Details = sale.SaleDetails?.Select(d => new SaleDetailVM
                 {
