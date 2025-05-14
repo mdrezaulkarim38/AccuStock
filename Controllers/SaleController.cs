@@ -67,7 +67,6 @@ namespace AccuStock.Controllers
             return View(model);
         }
 
-
         [HttpPost]
         public async Task<IActionResult> AddOrEditSale(SaleViewModel viewModel)
         {
@@ -108,6 +107,23 @@ namespace AccuStock.Controllers
                 }
                 TempData["SuccessMessage"] = "Sale Updated Successfully";
             }
+            return RedirectToAction("Sales");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteSale(int id)
+        {
+            var result = await _saleService.DeleteSale(id);
+
+            if (result.Contains("Sale deleted successfully.", StringComparison.OrdinalIgnoreCase))
+            {
+                TempData["SuccessMessageSweet"] = result;
+            }
+            else
+            {
+                TempData["ErrorMessageSweet"] = result;
+            }
+
             return RedirectToAction("Sales");
         }
     }

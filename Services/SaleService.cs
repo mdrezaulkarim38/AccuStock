@@ -417,35 +417,62 @@ namespace AccuStock.Services
                 throw new InvalidOperationException("An unexpected error occurred while updating the sale.", ex);
             }
         }
+
         public async Task<string> DeleteSale(int saleId)
         {
-            var subscriptionId = _baseService.GetSubscriptionId();
-            var sale = await _context.Sales
-                .Include(s => s.SaleDetails)
-                .FirstOrDefaultAsync(s => s.Id == saleId && s.SubscriptionId == subscriptionId);
+            using var transaction = await _context.Database.BeginTransactionAsync();
 
-            if (sale == null)
-            {
-                return "Sale not found.";
+            try
+            {                
+                var sale = await _context.Sales
+                    .Include(s => s.SaleDetails)
+                    .FirstOrDefaultAsync(s => s.Id == saleId);
+
+                if (sale == null)
+                {
+                    return "Sale not found.";
+                }
+                if (sale.PaymentStatus != 0)
+                {
+                    return "Cannot delete sale because it has a non-zero payment status.";
+                }
+
+                var subscriptionId = sale.SubscriptionId;
+                var productStocks = await _context.ProductStocks
+                    .Where(ps => ps.SourceType == "Sale" && ps.SourceId == saleId && ps.SubscriptionId == subscriptionId)
+                    .ToListAsync();
+                _context.ProductStocks.RemoveRange(productStocks);
+                
+                var journalPost = await _context.JournalPosts
+                    .FirstOrDefaultAsync(jp => jp.SaleId == saleId && jp.SubscriptionId == subscriptionId);
+
+                if (journalPost != null)
+                {
+                    var journalPostDetails = await _context.JournalPostDetails
+                        .Where(jpd => jpd.JournalPostId == journalPost.Id && jpd.SubscriptionId == subscriptionId)
+                        .ToListAsync();
+                    _context.JournalPostDetails.RemoveRange(journalPostDetails);
+                    _context.JournalPosts.Remove(journalPost);
+                }
+                
+                if (sale.SaleDetails != null)
+                {
+                    _context.SaleDetails.RemoveRange(sale.SaleDetails);
+                }
+                
+                _context.Sales.Remove(sale);
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return "Sale deleted successfully.";
             }
-            bool hasJournal = await _context.JournalPosts
-                .AnyAsync(j => j.SaleId == saleId && j.SubscriptionId == subscriptionId);
-
-            if (hasJournal)
+            catch (Exception ex)
             {
-                return "Cannot delete sale. Journal entry already exists.";
+                await transaction.RollbackAsync();
+                Console.WriteLine($"DeleteSale Error: {ex.Message}");
+                return $"An error occurred while deleting the sale: {ex.Message}";
             }
-            //bool hasPayments = await _context.Receipts
-            //    .AnyAsync(r => r.SaleId == saleId && r.SubscriptionId == subscriptionId);
-
-            //if (hasPayments)
-            //{
-            //    return "Cannot delete sale. Payment already recorded.";
-            //}
-            _context.SaleDetails.RemoveRange(sale.SaleDetails!);
-            _context.Sales.Remove(sale);
-            await _context.SaveChangesAsync();
-            return "Sale deleted successfully.";
         }
 
         public async Task<string> GenerateInvoiceNo()

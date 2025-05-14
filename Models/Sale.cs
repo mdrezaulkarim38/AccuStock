@@ -13,7 +13,7 @@ public class Sale
     public int BranchId { get; set; }
     public Branch? Branch { get; set; }    
     public int? PaymentMethod { get; set; } // 0: Credit Sale, 1: Cash Sale
-    public int PaymentStatus { get; set; } = 0; // 0: Pending, 1: Completed, 2: Cancelled
+    public int PaymentStatus { get; set; } = 0; // 0: Pending, 1: Completed, 2: Partial
     public decimal SubTotal { get; set; }
     public decimal TotalVat { get; set; }
     public decimal TotalAmount { get; set; }
