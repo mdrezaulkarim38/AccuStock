@@ -1,0 +1,50 @@
+﻿@model IEnumerable<AccuStock.Models.CustomerPayment>
+@{
+    ViewData["Title"] = "Customer Payment List";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">All Customer Payments</h5>
+                <a asp-action="ViewPayments" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus"></i> Add New
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped datanew">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Sl</th>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th>Branch</th>
+                                <th>Amount Paid</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int index = 1;
+                            }
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@index</td>
+                                    <td>@item.PaymentDate.ToString("dd-MMM-yyyy")</td>
+                                    <td>@(item.Customer?.Name ?? "N/A")</td>
+                                    <td>@(item.Branch?.Name ?? "N/A")</td>
+                                    <td>@item.AmountPaid.ToString("N2")</td>
+                                    <td>@item.Notes</td>
+                                </tr>
+                                index++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

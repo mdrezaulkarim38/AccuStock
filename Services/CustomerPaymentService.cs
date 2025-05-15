@@ -3,10 +3,11 @@ using AccuStock.Models.ViewModels.CustomerPayment;
 using AccuStock.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.EntityFrameworkCore;
+using AccuStock.Interface;
 
 namespace AccuStock.Services
 {
-    public class CustomerPaymentService
+    public class CustomerPaymentService : ICustomerPaymentService
     {
         private readonly AppDbContext _context;
         private readonly BaseService _baseService;
