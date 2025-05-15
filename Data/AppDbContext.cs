@@ -34,6 +34,7 @@ namespace AccuStock.Data
         public DbSet<PurchaseDetail> PurchaseDetails { get; set; }
         public DbSet<ProductStock> ProductStocks { get; set; }
         public DbSet<VendorPayment> VendorPayments { get; set; }
+        public DbSet<CustomerPayment> CustomerPayments { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
