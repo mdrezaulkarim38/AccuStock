@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using AccuStock.Models.ViewModels.Purchase;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
 namespace AccuStock.Models.ViewModels.PurchaseReturn
@@ -7,10 +8,13 @@ namespace AccuStock.Models.ViewModels.PurchaseReturn
     {
         public int Id { get; set; }
 
+        [Required(ErrorMessage = "Please select a purchase.")]
         public int PurchaseId { get; set; }
 
+        [Required(ErrorMessage = "Please select a branch.")]
         public int BranchId { get; set; }
 
+        [Required(ErrorMessage = "Please specify the return date.")]
         [DataType(DataType.Date)]
         public DateTime ReturnDate { get; set; }
 

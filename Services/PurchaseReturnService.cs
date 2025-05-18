@@ -1,10 +1,11 @@
 ﻿using AccuStock.Data;
+using AccuStock.Interface;
 using AccuStock.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AccuStock.Services
 {
-    public class PurchaseReturnService
+    public class PurchaseReturnService : IpurchaseReturnService
     {
         private readonly AppDbContext _context;
         private readonly BaseService _baseService;
@@ -22,7 +23,7 @@ namespace AccuStock.Services
 
             return await _context.Purchases
                 .Include(p => p.Vendor)
-                .Where(p => p.SubscriptionId == subscriptionId && p.PurchaseStatus == 1 && p.BranchId == branchId) // Completed purchases
+                .Where(p => p.SubscriptionId == subscriptionId && p.PurchaseStatus == 1) // Completed purchases
                 .Select(p => new Purchase
                 {
                     Id = p.Id,

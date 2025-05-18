@@ -1,0 +1,242 @@
+﻿@model AccuStock.Models.ViewModels.PurchaseReturn.PurchaseReturnVM
+@{
+    ViewData["Title"] = "Add Purchase Return";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">@ViewData["Title"]</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="AddPurchaseReturn" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td><strong>Return Date:</strong></td>
+                                <td>
+                                    <input type="date" asp-for="ReturnDate" class="form-control" />
+                                    <span asp-validation-for="ReturnDate" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Purchase:</strong></td>
+                                <td>
+                                    <select asp-for="PurchaseId" asp-items="@Model.PurchaseList" class="form-select select2" id="purchaseId">
+                                        <option value="">Select Purchase</option>
+                                    </select>
+                                    <span asp-validation-for="PurchaseId" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Branch:</strong></td>
+                                <td>
+                                    <select asp-for="BranchId" asp-items="@Model.BranchList" class="form-select select2">
+                                        <option value="">Select Branch</option>
+                                    </select>
+                                    <span asp-validation-for="BranchId" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Notes:</strong></td>
+                                <td>
+                                    <input type="text" asp-for="Notes" class="form-control" placeholder="Enter Notes" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-bordered" id="returnTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">Product</th>
+                                <th style="width: 10%;">Purchased Qty</th>
+                                <th style="width: 10%;">Returned Qty</th>
+                                <th style="width: 10%;">Return Qty</th>
+                                <th style="width: 15%;">Unit Price</th>
+                                <th style="width: 10%;">VAT (%)</th>
+                                <th style="width: 20%;">Reason</th>
+                                <th style="width: 10%;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated via AJAX -->
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="8">
+                                    <button type="button" class="btn btn-success btn-sm" id="addNewRow">Add New Row</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="6" class="text-end"><strong>Subtotal:</strong></td>
+                                <td colspan="2"><span id="subTotal">0.00</span></td>
+                            </tr>
+                            <tr>
+                                <td colspan="6" class="text-end"><strong>VAT Amount:</strong></td>
+                                <td colspan="2"><span id="vatAmount">0.00</span></td>
+                            </tr>
+                            <tr>
+                                <td colspan="6" class="text-end"><strong>Total Amount:</strong></td>
+                                <td colspan="2"><span id="totalAmount">0.00</span></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                        <a href="@Url.Action("PurchaseReturn", "PurchaseReturns")" class="btn btn-secondary btn-sm">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table > :not(:first-child) {
+        border-top: none !important;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        function recalculateTotals() {
+            let subTotal = 0;
+            let totalVat = 0;
+
+            $('#returnTable tbody tr').each(function () {
+                let qty = parseFloat($(this).find('.qty').val()) || 0;
+                let price = parseFloat($(this).find('input[name$=".UnitPrice"]').val()) || 0;
+                let vatPercent = parseFloat($(this).find('input[name$=".VatRate"]').val()) || 0;
+
+                let amount = qty * price;
+                let vatAmount = amount * (vatPercent / 100);
+
+                subTotal += amount;
+                totalVat += vatAmount;
+            });
+
+            let total = subTotal + totalVat;
+
+            $('#subTotal').text(subTotal.toFixed(2));
+            $('#vatAmount').text(totalVat.toFixed(2));
+            $('#totalAmount').text(total.toFixed(2));
+        }
+
+        function updateRowNames() {
+            $('#returnTable tbody tr').each(function (index) {
+                $(this).find('input[name$=".PurchaseDetailId"]').attr('name', `Details[${index}].PurchaseDetailId`);
+                $(this).find('input[name$=".ProductId"]').attr('name', `Details[${index}].ProductId`);
+                $(this).find('input[name$=".Quantity"]').attr('name', `Details[${index}].Quantity`);
+                $(this).find('input[name$=".UnitPrice"]').attr('name', `Details[${index}].UnitPrice`);
+                $(this).find('input[name$=".VatRate"]').attr('name', `Details[${index}].VatRate`);
+                $(this).find('input[name$=".Reason"]').attr('name', `Details[${index}].Reason`);
+            });
+        }
+
+        $(document).ready(function () {
+            $('.select2').select2({
+                placeholder: 'Choose...',
+                allowClear: true,
+                width: '100%'
+            });
+
+            $('#purchaseId').on('change', function () {
+                let purchaseId = $(this).val();
+                $('#returnTable tbody').empty();
+                if (!purchaseId) {
+                    recalculateTotals();
+                    return;
+                }
+
+                $.getJSON(`/PurchaseReturns/GetPurchaseDetails/${purchaseId}`, function (data) {
+                    $.each(data.details, function (index, detail) {
+                        if (detail.availableToReturn > 0) {
+                            let row = `
+                                <tr>
+                                    <td>
+                                        ${detail.productName}
+                                        <input type="hidden" name="Details[${index}].PurchaseDetailId" value="${detail.id}" />
+                                        <input type="hidden" name="Details[${index}].ProductId" value="${detail.productId}" />
+                                    </td>
+                                    <td>${detail.quantity}</td>
+                                    <td>${detail.returnedQuantity}</td>
+                                    <td><input type="number" class="form-control qty text-end" name="Details[${index}].Quantity" value="0" min="0" max="${detail.availableToReturn}" /></td>
+                                    <td>
+                                        <input type="hidden" name="Details[${index}].UnitPrice" value="${detail.unitPrice}" />
+                                        ${detail.unitPrice.toFixed(2)}
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="Details[${index}].VatRate" value="${detail.vatRate}" />
+                                        ${detail.vatRate.toFixed(2)}
+                                    </td>
+                                    <td><input type="text" class="form-control reason" name="Details[${index}].Reason" placeholder="Enter reason" /></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm removeRow">Remove</button></td>
+                                </tr>`;
+                            $('#returnTable tbody').append(row);
+                        }
+                    });
+                    recalculateTotals();
+                }).fail(function () {
+                    alert("Failed to load purchase details.");
+                    $('#returnTable tbody').empty();
+                    recalculateTotals();
+                });
+            });
+
+            $(document).on('click', '#addNewRow', function () {
+                let purchaseId = $('#purchaseId').val();
+                if (!purchaseId) {
+                    alert("Please select a purchase first.");
+                    return;
+                }
+                let rowCount = $('#returnTable tbody tr').length;
+                let newRow = `
+                    <tr>
+                        <td>
+                            Select a product
+                            <input type="hidden" name="Details[${rowCount}].PurchaseDetailId" value="0" />
+                            <input type="hidden" name="Details[${rowCount}].ProductId" value="0" />
+                        </td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td><input type="number" class="form-control qty text-end" name="Details[${rowCount}].Quantity" value="0" min="0" /></td>
+                        <td><input type="hidden" name="Details[${rowCount}].UnitPrice" value="0" />0.00</td>
+                        <td><input type="hidden" name="Details[${rowCount}].VatRate" value="0" />0.00</td>
+                        <td><input type="text" class="form-control reason" name="Details[${rowCount}].Reason" placeholder="Enter reason" /></td>
+                        <td><button type="button" class="btn btn-danger btn-sm removeRow">Remove</button></td>
+                    </tr>`;
+                $('#returnTable tbody').append(newRow);
+                recalculateTotals();
+            });
+
+            $(document).on('click', '.removeRow', function () {
+                let rowCount = $('#returnTable tbody tr').length;
+                if (rowCount <= 1) {
+                    alert("At least one row must remain.");
+                    return;
+                }
+                $(this).closest('tr').remove();
+                updateRowNames();
+                recalculateTotals();
+            });
+
+            $(document).on('input', '.qty', function () {
+                let max = parseInt($(this).attr('max')) || Infinity;
+                let value = parseInt($(this).val()) || 0;
+                if (value > max) {
+                    $(this).val(max);
+                    alert("Cannot return more than available quantity.");
+                } else if (value < 0) {
+                    $(this).val(0);
+                }
+                recalculateTotals();
+            });
+
+            recalculateTotals();
+        });
+    </script>
+}
