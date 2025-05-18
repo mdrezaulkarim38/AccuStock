@@ -9,6 +9,8 @@ public class JournalPost
     public BusinessYear? BusinessYear { get; set; }
     public int BranchId { get; set; }
     public Branch? Branch { get; set; }
+    public int? PurchaseReturnId { get; set; }
+    public PurchaseReturn? PurchaseReturn { get; set; }
     [StringLength(60)]
     public string? VchNo { get; set; }
     public DateTime? VchDate { get; set; }
