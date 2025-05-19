@@ -62,14 +62,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Populated via AJAX -->
                         </tbody>
                         <tfoot>
-                            <tr>
-                                <td colspan="8">
-                                    <button type="button" class="btn btn-success btn-sm" id="addNewRow">Add New Row</button>
-                                </td>
-                            </tr>
                             <tr>
                                 <td colspan="6" class="text-end"><strong>Subtotal:</strong></td>
                                 <td colspan="2"><span id="subTotal">0.00</span></td>
@@ -155,6 +149,8 @@
                 $.getJSON(`/PurchaseReturns/GetPurchaseDetails/${purchaseId}`, function (data) {
                     $.each(data.details, function (index, detail) {
                         if (detail.availableToReturn > 0) {
+                            console.log(detail);
+                            console.log("BranchId:", detail.branchId);
                             let row = `
                                 <tr>
                                     <td>
@@ -174,7 +170,6 @@
                                         ${detail.vatRate.toFixed(2)}
                                     </td>
                                     <td><input type="text" class="form-control reason" name="Details[${index}].Reason" placeholder="Enter reason" /></td>
-                                    <td><button type="button" class="btn btn-danger btn-sm removeRow">Remove</button></td>
                                 </tr>`;
                             $('#returnTable tbody').append(row);
                         }
@@ -185,43 +180,6 @@
                     $('#returnTable tbody').empty();
                     recalculateTotals();
                 });
-            });
-
-            $(document).on('click', '#addNewRow', function () {
-                let purchaseId = $('#purchaseId').val();
-                if (!purchaseId) {
-                    alert("Please select a purchase first.");
-                    return;
-                }
-                let rowCount = $('#returnTable tbody tr').length;
-                let newRow = `
-                    <tr>
-                        <td>
-                            Select a product
-                            <input type="hidden" name="Details[${rowCount}].PurchaseDetailId" value="0" />
-                            <input type="hidden" name="Details[${rowCount}].ProductId" value="0" />
-                        </td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td><input type="number" class="form-control qty text-end" name="Details[${rowCount}].Quantity" value="0" min="0" /></td>
-                        <td><input type="hidden" name="Details[${rowCount}].UnitPrice" value="0" />0.00</td>
-                        <td><input type="hidden" name="Details[${rowCount}].VatRate" value="0" />0.00</td>
-                        <td><input type="text" class="form-control reason" name="Details[${rowCount}].Reason" placeholder="Enter reason" /></td>
-                        <td><button type="button" class="btn btn-danger btn-sm removeRow">Remove</button></td>
-                    </tr>`;
-                $('#returnTable tbody').append(newRow);
-                recalculateTotals();
-            });
-
-            $(document).on('click', '.removeRow', function () {
-                let rowCount = $('#returnTable tbody tr').length;
-                if (rowCount <= 1) {
-                    alert("At least one row must remain.");
-                    return;
-                }
-                $(this).closest('tr').remove();
-                updateRowNames();
-                recalculateTotals();
             });
 
             $(document).on('input', '.qty', function () {
