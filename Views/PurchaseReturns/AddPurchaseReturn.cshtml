@@ -24,7 +24,8 @@
                             <tr>
                                 <td><strong>Purchase:</strong></td>
                                 <td>
-                                    <select asp-for="PurchaseId" asp-items="@Model.PurchaseList" class="form-select select2" id="purchaseId">
+                                    <select asp-for="PurchaseId" asp-items="@Model.PurchaseList"
+                                        class="form-select select2" id="purchaseId">
                                         <option value="">Select Purchase</option>
                                     </select>
                                     <span asp-validation-for="PurchaseId" class="text-danger"></span>
@@ -33,7 +34,8 @@
                             <tr>
                                 <td><strong>Branch:</strong></td>
                                 <td>
-                                    <select asp-for="BranchId" asp-items="@Model.BranchList" class="form-select select2">
+                                    <select asp-for="BranchId" asp-items="@Model.BranchList"
+                                        class="form-select select2">
                                         <option value="">Select Branch</option>
                                     </select>
                                     <span asp-validation-for="BranchId" class="text-danger"></span>
@@ -81,7 +83,8 @@
 
                     <div class="mt-4">
                         <button type="submit" class="btn btn-primary btn-sm">Submit</button>
-                        <a href="@Url.Action("PurchaseReturn", "PurchaseReturns")" class="btn btn-secondary btn-sm">Cancel</a>
+                        <a href="@Url.Action("PurchaseReturn", "PurchaseReturns")"
+                            class="btn btn-secondary btn-sm">Cancel</a>
                     </div>
                 </form>
             </div>
@@ -90,7 +93,7 @@
 </div>
 
 <style>
-    .table > :not(:first-child) {
+    .table> :not(:first-child) {
         border-top: none !important;
     }
 </style>
@@ -151,25 +154,25 @@
                         if (detail.availableToReturn > 0) {
                             $('select[name="BranchId"]').val(detail.branchId).trigger('change');
                             let row = `
-                                <tr>
-                                    <td>
-                                        ${detail.productName}
-                                        <input type="hidden" name="Details[${index}].PurchaseDetailId" value="${detail.id}" />
-                                        <input type="hidden" name="Details[${index}].ProductId" value="${detail.productId}" />
-                                    </td>
-                                    <td>${detail.quantity}</td>
-                                    <td>${detail.returnedQuantity}</td>
-                                    <td><input type="number" class="form-control qty text-end" name="Details[${index}].Quantity" value="0" min="0" max="${detail.availableToReturn}" /></td>
-                                    <td>
-                                        <input type="hidden" name="Details[${index}].UnitPrice" value="${detail.unitPrice}" />
-                                        ${detail.unitPrice.toFixed(2)}
-                                    </td>
-                                    <td>
-                                        <input type="hidden" name="Details[${index}].VatRate" value="${detail.vatRate}" />
-                                        ${detail.vatRate.toFixed(2)}
-                                    </td>
-                                    <td><input type="text" class="form-control reason" name="Details[${index}].Reason" placeholder="Enter reason" /></td>
-                                </tr>`;
+                                    <tr>
+                                        <td>
+                                            ${detail.productName}
+                                            <input type="hidden" name="Details[${index}].PurchaseDetailId" value="${detail.id}" />
+                                            <input type="hidden" name="Details[${index}].ProductId" value="${detail.productId}" />
+                                        </td>
+                                        <td>${detail.quantity}</td>
+                                        <td>${detail.returnedQuantity}</td>
+                                        <td><input type="number" class="form-control qty text-end" name="Details[${index}].Quantity" value="0" min="0" max="${detail.availableToReturn}" /></td>
+                                        <td>
+                                            <input type="hidden" name="Details[${index}].UnitPrice" value="${detail.unitPrice}" />
+                                            ${detail.unitPrice.toFixed(2)}
+                                        </td>
+                                        <td>
+                                            <input type="hidden" name="Details[${index}].VatRate" value="${detail.vatRate}" />
+                                            ${detail.vatRate.toFixed(2)}
+                                        </td>
+                                        <td><input type="text" class="form-control reason" name="Details[${index}].Reason" placeholder="Enter reason" /></td>
+                                    </tr>`;
                             $('#returnTable tbody').append(row);
                         }
                     });
