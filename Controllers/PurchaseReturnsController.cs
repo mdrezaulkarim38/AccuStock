@@ -175,7 +175,9 @@ namespace AccuStock.Controllers
                 .FirstOrDefaultAsync(p => p.Id == id && p.SubscriptionId == subscriptionId);
 
             if (purchase == null)
+            {
                 return NotFound();
+            }
 
             var details = purchase.Details!.Select(d => new
             {
