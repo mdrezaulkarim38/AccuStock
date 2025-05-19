@@ -154,6 +154,7 @@ namespace AccuStock.Services
                 }
                 else if (purchase.PaymentMethod == 1) // Cash (Immediate Payment) Purchase
                 {
+                    purchase.PurchaseStatus = 1; // Set purchase status to completed
                     journalDetails.Add(new JournalPostDetail
                     {
                         BusinessYearId = await _baseService.GetBusinessYearId(subscriptionId),
@@ -178,10 +179,10 @@ namespace AccuStock.Services
                     BusinessYearId = await _baseService.GetBusinessYearId(subscriptionId),
                     BranchId = branchId,
                     JournalPostId = journal.Id,
-                    ChartOfAccountId = 22, // TODO: Set InventoryStock ChartOfAccountId
+                    ChartOfAccountId = 22, //InventoryStock
                     Debit = purchase.TotalAmount,
                     VchNo = journal.VchNo,
-                    VchDate = journal.VchDate,
+                    VchDate = journal.VchDate,  
                     VchType = journal.VchType,
                     Description = "Purchase expense",
                     Remarks = "Inventory booked for purchase",
@@ -189,6 +190,8 @@ namespace AccuStock.Services
                     SubscriptionId = subscriptionId,
                     CreatedAt = DateTime.Now
                 });
+
+                _context.Purchases.Update(purchase);
 
                 await _context.JournalPostDetails.AddRangeAsync(journalDetails);
                 await _context.SaveChangesAsync();
