@@ -149,8 +149,7 @@
                 $.getJSON(`/PurchaseReturns/GetPurchaseDetails/${purchaseId}`, function (data) {
                     $.each(data.details, function (index, detail) {
                         if (detail.availableToReturn > 0) {
-                            console.log(detail);
-                            console.log("BranchId:", detail.branchId);
+                            $('select[name="BranchId"]').val(detail.branchId).trigger('change');
                             let row = `
                                 <tr>
                                     <td>
