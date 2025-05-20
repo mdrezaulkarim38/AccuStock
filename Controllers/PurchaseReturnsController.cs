@@ -188,6 +188,7 @@ namespace AccuStock.Controllers
                 d.UnitPrice,
                 d.VatRate,
                 branchId = purchase.BranchId,
+                Notes = purchase.Notes,
                 ReturnedQuantity = _context.PurchaseReturnDetails
                     .Where(prd => prd.PurchaseDetailId == d.Id)
                     .Sum(prd => prd.Quantity),
