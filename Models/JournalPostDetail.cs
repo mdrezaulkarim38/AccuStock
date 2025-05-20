@@ -15,6 +15,8 @@ public class JournalPostDetail
     public ChartOfAccount? ChartOfAccount { get; set; }
     public int? PurchaseReturnId { get; set; }
     public PurchaseReturn? PurchaseReturn { get; set; }
+    public int? SaleReturnId { get; set; }
+    public SaleReturn? SaleReturn { get; set; }
     [StringLength(60)]
     public string? VchNo { get; set; }
     public DateTime? VchDate { get; set; }

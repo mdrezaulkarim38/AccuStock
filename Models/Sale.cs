@@ -17,6 +17,7 @@ public class Sale
     public decimal SubTotal { get; set; }
     public decimal TotalVat { get; set; }
     public decimal TotalAmount { get; set; }
+    public int? ReturnStatus { get; set; } = 0;
     public string Notes { get; set; } = string.Empty;
     public List<SaleDetails> SaleDetails { get; set; } = new List<SaleDetails>();
     public bool Status { get; set; } = true;

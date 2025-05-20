@@ -27,8 +27,7 @@ namespace AccuStock.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Sale> Sales { get; set; }
-        public DbSet<SaleDetails> SaleDetails { get; set; }
-        public DbSet<SaleReturn> SaleReturns { get; set; }
+        public DbSet<SaleDetails> SaleDetails { get; set; }       
         public DbSet<Vendor> Vendors { get; set; }
         public DbSet<Purchase> Purchases { get; set; }
         public DbSet<PurchaseDetail> PurchaseDetails { get; set; }
@@ -37,6 +36,8 @@ namespace AccuStock.Data
         public DbSet<CustomerPayment> CustomerPayments { get; set; }
         public DbSet<PurchaseReturn> PurchaseReturns { get; set; }
         public DbSet<PurchaseReturnDetail> PurchaseReturnDetails { get; set; }
+        public DbSet<SaleReturn> SaleReturns { get; set; }
+        public DbSet<SaleReturnDetail> SaleReturnDetails { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -191,10 +192,10 @@ namespace AccuStock.Data
                 entity.Property(e => e.Total).HasPrecision(18, 2);
             });
 
-            modelBuilder.Entity<SaleReturn>(entity =>
-            {
-                entity.Property(e => e.RefundAmount).HasPrecision(18, 2);
-            });
+            //modelBuilder.Entity<SaleReturn>(entity =>
+            //{
+            //    entity.Property(e => e.RefundAmount).HasPrecision(18, 2);
+            //});
 
         }
 
