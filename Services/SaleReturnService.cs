@@ -1,10 +1,11 @@
 ﻿using AccuStock.Data;
+using AccuStock.Interface;
 using AccuStock.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AccuStock.Services
 {
-    public class SaleReturnService
+    public class SaleReturnService : ISaleReturnService
     {
         private readonly AppDbContext _context;
         private readonly BaseService _baseService;
