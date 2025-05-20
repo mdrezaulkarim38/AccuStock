@@ -159,6 +159,7 @@ namespace AccuStock.Services
                 }
                 else if (sale.PaymentMethod == 1) // On Cash
                 {
+                    sale.PaymentStatus = 1; // Set PaymentStatus to completed
                     journalDetails.Add(new JournalPostDetail
                     {
                         ChartOfAccountId = 20, // Cash in Hand
@@ -206,6 +207,7 @@ namespace AccuStock.Services
                     jd.CreatedAt = DateTime.Now;
                 }
 
+                 _context.Sales.Update(sale);
                 await _context.JournalPostDetails.AddRangeAsync(journalDetails);
                 await _context.SaveChangesAsync();
 
@@ -489,8 +491,7 @@ namespace AccuStock.Services
                     nextNumber = lastNumber + 1;
                 }
             }
-            return $"SINV{nextNumber.ToString("D2")}";
+            return $"S-INV-{nextNumber.ToString("D2")}";
         }
-
     }
 }
