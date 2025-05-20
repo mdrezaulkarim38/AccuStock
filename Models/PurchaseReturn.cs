@@ -14,8 +14,6 @@ namespace AccuStock.Models
         public int BranchId { get; set; }
         public Branch? Branch { get; set; }
         public DateTime ReturnDate { get; set; }
-        [StringLength(100)]
-        public string? Reason { get; set; } // e.g., "Defective", "Wrong Item"
         public decimal SubTotal { get; set; }
         public decimal TotalVat { get; set; }
         public decimal TotalAmount { get; set; }

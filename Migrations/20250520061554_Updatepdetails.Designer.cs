@@ -4,6 +4,7 @@ using AccuStock.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AccuStock.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250520061554_Updatepdetails")]
+    partial class Updatepdetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1074,9 +1077,6 @@ namespace AccuStock.Migrations
                     b.Property<int>("PurchaseStatus")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ReturnStatus")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("SubTotal")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
@@ -1186,6 +1186,10 @@ namespace AccuStock.Migrations
 
                     b.Property<int>("PurchaseId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("ReturnDate")
                         .HasColumnType("datetime2");

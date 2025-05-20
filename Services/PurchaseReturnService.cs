@@ -23,7 +23,7 @@ namespace AccuStock.Services
 
             return await _context.Purchases
                 .Include(p => p.Vendor)
-                .Where(p => p.SubscriptionId == subscriptionId && p.PurchaseStatus == 1) // Completed purchases
+                .Where(p => p.SubscriptionId == subscriptionId && p.PurchaseStatus == 1 && p.ReturnStatus == 0)
                 .Select(p => new Purchase
                 {
                     Id = p.Id,
@@ -108,8 +108,10 @@ namespace AccuStock.Services
                 purchaseReturn.TotalVat = purchaseReturn.PurchaseReturnDetails.Sum(d => d.VatAmount);
                 purchaseReturn.TotalAmount = purchaseReturn.SubTotal + purchaseReturn.TotalVat;
 
-                // Save purchase return
-                await _context.PurchaseReturns.AddAsync(purchaseReturn);
+                // Save purchase return and update return status in purchase
+                originalPurchase.ReturnStatus = 1; // Mark as returned
+                 _context.Purchases.Update(originalPurchase);
+                await _context.PurchaseReturns.AddAsync(purchaseReturn);                
                 await _context.SaveChangesAsync();
 
                 // Update inventory (ProductStock)

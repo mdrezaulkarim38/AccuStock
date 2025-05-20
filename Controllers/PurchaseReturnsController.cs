@@ -75,7 +75,8 @@ namespace AccuStock.Controllers
                         VatRate = d.VatRate,
                         SubTotal = d.Quantity * d.UnitPrice,
                         VatAmount = (d.Quantity * d.UnitPrice) * (d.VatRate / 100),
-                        Total = (d.Quantity * d.UnitPrice) * (1 + d.VatRate / 100)
+                        Total = (d.Quantity * d.UnitPrice) * (1 + d.VatRate / 100),
+                        Reason = d.Reason
                     }).ToList()
             };
 

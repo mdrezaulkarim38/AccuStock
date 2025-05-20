@@ -16,6 +16,7 @@ namespace AccuStock.Models
         public decimal SubTotal { get; set; }
         public decimal TotalVat { get; set; }
         public decimal TotalAmount { get; set; }
+        public int? ReturnStatus { get; set; } = 0;
         public int? PaymentMethod { get; set; } // 0: Cash (Immediate Payment), 1: Credit (Payable)
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;

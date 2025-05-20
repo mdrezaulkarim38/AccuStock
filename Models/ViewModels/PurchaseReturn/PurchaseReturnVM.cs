@@ -20,7 +20,6 @@ namespace AccuStock.Models.ViewModels.PurchaseReturn
 
         [StringLength(100)]
         public string? Notes { get; set; }
-
         public SelectList? PurchaseList { get; set; }
         public SelectList? BranchList { get; set; }
 
