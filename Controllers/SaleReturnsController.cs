@@ -33,7 +33,7 @@ namespace AccuStock.Controllers
 
             var viewModel = new SaleReturnVM
             {
-                SaleList = new SelectList(sales, "Id", "SaleNo"),
+                SaleList = new SelectList(sales, "Id", "InvoiceNumber"),
                 BranchList = new SelectList(branches, "Id", "Name"),
                 ReturnDate = DateTime.Now,
                 Details = new List<SaleReturnDetailVM> { new SaleReturnDetailVM() }

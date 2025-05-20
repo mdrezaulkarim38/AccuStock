@@ -42,7 +42,7 @@ namespace AccuStock.Controllers
                 ReturnDate = DateTime.Now,
                 Details = new List<PurchaseReturnDetailVM> { new PurchaseReturnDetailVM() }
             };
-
+            Console.WriteLine(viewModel);
             return View(viewModel);
         }
 

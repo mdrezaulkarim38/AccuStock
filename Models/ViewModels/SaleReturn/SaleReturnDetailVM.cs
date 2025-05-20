@@ -34,6 +34,6 @@ namespace AccuStock.Models.ViewModels.SaleReturn
         public string? Notes { get; set; }
         public SelectList? SaleList { get; set; }
         public SelectList? BranchList { get; set; }
-        public List<SaleReturnDetailVM> Details { get; set; } = new List<SaleReturnDetailVM>();
+        public List<SaleReturnDetailVM>? Details { get; set; } = new List<SaleReturnDetailVM>();
     }
 }
