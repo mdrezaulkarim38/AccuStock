@@ -45,7 +45,6 @@
                                 <td><strong>Notes:</strong></td>
                                 <td>
                                     <input type="text" asp-for="Notes" id="Notes" class="form-control" placeholder="Enter Notes" />
-
                                 </td>
                             </tr>
                         </tbody>
@@ -152,11 +151,11 @@
                 $.getJSON(`/PurchaseReturns/GetPurchaseDetails/${purchaseId}`, function (data) {
                     console.log(data);
                     $.each(data.details, function (index, detail) {
-                         $('#Notes').val(data.details[0].Notes);
                         if (detail.availableToReturn > 0) {                           
                             $('select[name="BranchId"]').val(detail.branchId).trigger('change');                         
-                            let row = `
-                                    <tr>
+                            $('#Notes').val(detail.notes);
+                            console.log("Note : "+detail.notes)
+                            let row = `<tr>
                                         <td>
                                             ${detail.productName}
                                             <input type="hidden" name="Details[${index}].PurchaseDetailId" value="${detail.id}" />
