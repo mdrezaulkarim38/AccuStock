@@ -65,6 +65,19 @@ namespace AccuStock.Services
                 var userId = _baseService.GetUserId();
                 var branchId = purchaseReturn.BranchId;
 
+                var totalPurchasedQuantity = await _context.PurchaseDetails
+                    .Where(x => x.PurchaseId == purchaseReturn.PurchaseId && x.SubscriptionId == subscriptionId)
+                    .SumAsync(x => x.Quantity);
+
+                var previouslyReturnedQuantity = await _context.PurchaseReturnDetails
+                    .Where(x => x.SubscriptionId == subscriptionId && x.PurchaseDetail!.PurchaseId == purchaseReturn.PurchaseId)
+                    .SumAsync(x => x.Quantity);
+
+                var currentReturnQuantity = purchaseReturn.PurchaseReturnDetails.Sum(x => x.Quantity);
+
+                var totalReturnedCount = previouslyReturnedQuantity + currentReturnQuantity;
+
+
                 // Validate original purchase
                 var originalPurchase = await _context.Purchases
                     .Include(p => p.Details)
@@ -109,9 +122,9 @@ namespace AccuStock.Services
                 purchaseReturn.TotalAmount = purchaseReturn.SubTotal + purchaseReturn.TotalVat;
 
                 // Save purchase return and update return status in purchase
-                originalPurchase.ReturnStatus = 1; // Mark as returned
-                 _context.Purchases.Update(originalPurchase);
-                await _context.PurchaseReturns.AddAsync(purchaseReturn);                
+                originalPurchase.ReturnStatus = totalReturnedCount >= totalPurchasedQuantity ? 1 : 0; // Mark as returned
+                _context.Purchases.Update(originalPurchase);
+                await _context.PurchaseReturns.AddAsync(purchaseReturn);
                 await _context.SaveChangesAsync();
 
                 // Update inventory (ProductStock)
