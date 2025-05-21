@@ -51,11 +51,11 @@ namespace AccuStock.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddPurchaseReturn(PurchaseReturnVM viewModel)
         {
-            if (!ModelState.IsValid)
-            {
-                await PopulateDropdowns(viewModel);
-                return View(viewModel);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    await PopulateDropdowns(viewModel);
+            //    return View(viewModel);
+            //}
 
             var purchaseReturn = new PurchaseReturn
             {
