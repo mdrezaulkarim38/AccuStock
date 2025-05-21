@@ -67,6 +67,18 @@ namespace AccuStock.Services
                 var userId = _baseService.GetUserId();
                 var branchId = saleReturn.BranchId;
 
+                var totalSaleQuantity = await _context.SaleDetails
+                    .Where(x => x.SaleId == saleReturn.SaleId && x.SubscriptionId == subscriptionId)
+                    .SumAsync(x => x.Quantity);
+
+                var previouslyReturnedQuantity = await _context.SaleReturnDetails
+                    .Where(x => x.SubscriptionId == subscriptionId && x.SaleDetail!.SaleId == saleReturn.SaleId)
+                    .SumAsync(x => x.Quantity);
+
+                var currentReturnQuantity = saleReturn.SaleReturnDetails.Sum(x => x.Quantity);
+
+                var totalReturnedCount = previouslyReturnedQuantity + currentReturnQuantity;
+
                 // Validate original sale
                 var originalSale = await _context.Sales
                     .Include(s => s.SaleDetails)
@@ -112,7 +124,7 @@ namespace AccuStock.Services
                 saleReturn.TotalAmount = saleReturn.SubTotal + saleReturn.TotalVat;
 
                 // Save sale return and update return status in sale
-                originalSale.ReturnStatus = 1; // Mark as returned
+                originalSale.ReturnStatus = totalReturnedCount >= totalSaleQuantity ? 1 : 0;
                 _context.Sales.Update(originalSale);
                 await _context.SaleReturns.AddAsync(saleReturn);
                 await _context.SaveChangesAsync();

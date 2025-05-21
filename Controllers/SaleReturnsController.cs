@@ -60,7 +60,7 @@ namespace AccuStock.Controllers
                 ReturnDate = viewModel.ReturnDate,
                 Notes = viewModel.Notes,
                 ReturnStatus = 0,
-                SaleReturnDetails = viewModel.Details
+                SaleReturnDetails = viewModel.Details!
                     .Where(d => d.Quantity > 0)
                     .Select(d => new SaleReturnDetail
                     {

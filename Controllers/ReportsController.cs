@@ -237,7 +237,7 @@ namespace AccuStock.Controllers
                 }
 
                 await _emailSender.SendEmailAsync(
-                    request.UserEmail,
+                    request.UserEmail!,
                     $"{request.ReportType} Report",
                     "Please find the attached report.",
                     filePath);
