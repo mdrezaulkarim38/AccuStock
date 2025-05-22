@@ -74,11 +74,11 @@ namespace AccuStock.Controllers
             var glEntries = await _gLedgerService.GetGLedger(startDate, endDate, branchId, chartOfAccountId);
             if (reportType == "PDF")
             {
-                
+
             }
             else if (reportType == "Excel")
             {
-                
+
             }
             var branches = await _BranchService.GetAllBranches();
             ViewBag.Branches = branches;
@@ -342,6 +342,15 @@ namespace AccuStock.Controllers
                 _logger.LogError(ex, $"Failed to generate CSV file at {filePath}");
                 throw;
             }
+        }
+        public IActionResult Aging()
+        {
+            return View();
+        }
+
+        public IActionResult BalanceSheet()
+        {
+            return View();
         }
     }
 }
