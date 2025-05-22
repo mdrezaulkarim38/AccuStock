@@ -168,7 +168,7 @@ namespace AccuStock.Controllers
                 return View(model);
             }
 
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            var userEmail = _httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.Email)?.Value;
             var subscriptionIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("SubscriptionId")?.Value;
             if (string.IsNullOrEmpty(userEmail))
             {
@@ -215,7 +215,7 @@ namespace AccuStock.Controllers
                     FromDate = model.FromDate,
                     ToDate = model.ToDate,
                     SubscriptionId = int.Parse(subscriptionIdClaim!)
-                }, null), delay);
+                }, null!), delay);
 
             TempData["Message"] = $"Report scheduled to be sent at {model.TimeToSend} for date range {model.FromDate:yyyy-MM-dd} to {model.ToDate:yyyy-MM-dd}.";
             return RedirectToAction("SentReport");
@@ -225,7 +225,7 @@ namespace AccuStock.Controllers
         public async Task GenerateAndSendReportAsync(ReportRequest request, JobCancellationToken token)
         {
             _logger.LogInformation($"Generating report {request.ReportType} for {request.UserEmail}");
-            string filePath = null;
+            string filePath = null!;
 
             try
             {
