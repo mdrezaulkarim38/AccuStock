@@ -32,11 +32,13 @@ namespace AccuStock.Services
                 .ToListAsync();
         }
 
-        public async Task<Product?> GetProductbyId(int Id)
+        public async Task<Product> GetProductbyId(int Id)
         {
             var subscriptionIdClaim = _baseService.GetSubscriptionId();
-            return await _context.Products
+            var product = await _context.Products
                 .FirstOrDefaultAsync(c => c.Id == Id && c.SubscriptionId == subscriptionIdClaim);
+
+            return product!;
         }
 
         public async Task<bool> CreateProduct(Product product)
