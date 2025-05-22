@@ -105,7 +105,7 @@ namespace AccuStock.Services
                     .Select(group => new GLedger
                     {
                         ChartOfAccountName = group.FirstOrDefault()!.ChartOfAccount != null
-                            ? group.FirstOrDefault()!.ChartOfAccount.Name
+                            ? group.FirstOrDefault()!.ChartOfAccount!.Name
                             : "Unknown",
                         TotalDebit = group.Sum(jpd => jpd.Debit ?? 0),
                         TotalCredit = group.Sum(jpd => jpd.Credit ?? 0)

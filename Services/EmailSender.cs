@@ -14,13 +14,13 @@ namespace AccuStock.Services
             _configuration = configuration;
         }
 
-        public async Task SendEmailAsync(string email, string subject, string message, string attachmentPath = null)
+        public async Task SendEmailAsync(string email, string subject, string message, string attachmentPath = null!)
         {
             try
             {
                 // Retrieve SMTP settings from configuration
                 var smtpHost = _configuration["Smtp:Host"];
-                var smtpPort = int.Parse(_configuration["Smtp:Port"]);
+                var smtpPort = int.Parse(_configuration["Smtp:Port"]!);
                 var smtpUsername = _configuration["Smtp:Username"];
                 var smtpPassword = _configuration["Smtp:Password"];
                 var fromEmail = _configuration["Smtp:FromEmail"];
@@ -33,7 +33,7 @@ namespace AccuStock.Services
 
                 using var mailMessage = new MailMessage
                 {
-                    From = new MailAddress(fromEmail),
+                    From = new MailAddress(fromEmail!),
                     Subject = subject,
                     Body = message,
                     IsBodyHtml = true
