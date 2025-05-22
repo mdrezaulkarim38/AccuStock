@@ -18,20 +18,22 @@ public class ProfitAndLossService : IProfitAndLossService
         var incomeTypeIds = new[] { 21, 22 };
         var expenseTypeIds = new[] { 23, 24, 25 };
 
-        var incomeAccounts = await _context.JournalPostDetails
-            .Where(j => incomeTypeIds.Contains(j.ChartOfAccount!.ChartOfAccountTypeId) &&
-                        j.VchDate >= fromDate && j.VchDate <= toDate)
-            .GroupBy(j => j.ChartOfAccount!.Name)
+        var incomeQuery = _context.JournalPostDetails.Where(j => incomeTypeIds.Contains(j.ChartOfAccount!.ChartOfAccountTypeId) && j.VchDate >= fromDate && j.VchDate <= toDate);
+        var expenseQuery = _context.JournalPostDetails.Where(j => expenseTypeIds.Contains(j.ChartOfAccount!.ChartOfAccountTypeId));
+        if (branchId != 0)
+        {
+            incomeQuery = incomeQuery.Where(j => j.BranchId == branchId);
+            expenseQuery = expenseQuery.Where(j => j.BranchId == branchId);
+        }
+
+        var incomeAccounts = await incomeQuery.GroupBy(j => j.ChartOfAccount!.Name)
             .Select(g => new AccountAmountViewModel
             {
                 AccountName = g.Key!,
                 Amount = g.Sum(j => j.Credit ?? 0)
             }).ToListAsync();
 
-        var expenseAccounts = await _context.JournalPostDetails
-            .Where(j => expenseTypeIds.Contains(j.ChartOfAccount!.ChartOfAccountTypeId) &&
-                        j.VchDate >= fromDate && j.VchDate <= toDate)
-            .GroupBy(j => j.ChartOfAccount!.Name)
+        var expenseAccounts = await expenseQuery.GroupBy(j => j.ChartOfAccount!.Name)
             .Select(g => new AccountAmountViewModel
             {
                 AccountName = g.Key!,
