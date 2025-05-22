@@ -74,11 +74,11 @@ namespace AccuStock.Controllers
             var glEntries = await _gLedgerService.GetGLedger(startDate, endDate, branchId, chartOfAccountId);
             if (reportType == "PDF")
             {
-                // TODO: Implement PDF generation
+                
             }
             else if (reportType == "Excel")
             {
-                // TODO: Implement Excel generation
+                
             }
             var branches = await _BranchService.GetAllBranches();
             ViewBag.Branches = branches;
@@ -149,6 +149,7 @@ namespace AccuStock.Controllers
             var model = await _profitAndLossService.GetProfitLossAsync(fromDate, toDate, branchId);
             var branches = await _BranchService.GetAllBranches();
             ViewBag.Branches = branches;
+            Console.WriteLine(model);
             return View(model);
         }
 
