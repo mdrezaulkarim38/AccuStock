@@ -15,10 +15,57 @@
     <link rel="stylesheet" href="~/assets/css/dataTables.bootstrap4.min.css"/>
     <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css" />
     <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css" />
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="~/assets/css/style.css" />
     <link rel="stylesheet" href="~/dist/themes/default/style.min.css" />
     <link href="~/css/toastr.min.css" rel="stylesheet" />
+
+
+    <style>
+        /* Shrink entire popup */
+        .flatpickr-calendar {
+            font-size: 12px !important;
+            max-width: 220px !important;
+        }
+
+        /* Shrink day cells */
+        .flatpickr-day,
+        .flatpickr-weekday {
+            padding: 4px !important;
+            width: 28px !important;
+            height: 28px !important;
+            line-height: 28px !important;
+        }
+
+        /* Fix month and year container */
+        .flatpickr-months {
+            font-size: 13px !important;
+        }
+
+        /* Month navigation: arrows + text */
+        .flatpickr-month {
+            height: 28px !important;
+            line-height: 28px !important;
+        }
+
+        /* Year input */
+        .flatpickr-current-month input.cur-year {
+            font-size: 12px !important;
+            height: 24px !important;
+            width: 50px !important;
+        }
+
+        /* Month name dropdown */
+        .flatpickr-current-month .flatpickr-monthDropdown-months {
+            font-size: 12px !important;
+            height: 24px !important;
+        }
+
+        /* Optional: Time picker if enabled */
+        .flatpickr-time {
+            font-size: 12px !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -314,6 +361,7 @@
     <script src="~/assets/plugins/apexchart/apexcharts.min.js"></script>
     <script src="~/assets/plugins/sweetalert/sweetalert2.all.min.js"></script>
     <script src="~/assets/plugins/sweetalert/sweetalerts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="~/assets/js/script.js"></script>
     <script src="~/js/toastr.min.js"></script>
     <script src="~/dist/jstree.min.js"></script>
@@ -328,6 +376,10 @@
                     width: '100%'
                 });
             });
+                   flatpickr("#datePicker", {
+                dateFormat: "Y-m-d", 
+                allowInput: true
+        });
     $(document).ready(function () {
         // SweetAlert Success
         @if (TempData["SuccessMessageSweet"] != null)
