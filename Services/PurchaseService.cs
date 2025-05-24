@@ -224,178 +224,180 @@ namespace AccuStock.Services
             return $"P-BILL-{nextNumber.ToString("D2")}";
         }      
 
-        public async Task<bool> UpdatePurchase(Purchase purchase)
-        {
-            var subscriptionId = _baseService.GetSubscriptionId();
-            var userId = _baseService.GetUserId();
-
-            using var transaction = await _context.Database.BeginTransactionAsync();
-            try
+            public async Task<bool> UpdatePurchase(Purchase purchase)
             {
-                var existingPurchase = await _context.Purchases.FindAsync(purchase.Id);
-                if (existingPurchase == null)
-                    return false;
+                var subscriptionId = _baseService.GetSubscriptionId();
+                var userId = _baseService.GetUserId();
 
-                // Update purchase fields
-                existingPurchase.PurchaseNo = await GeneratePurchaseNo();
-                existingPurchase.VendorId = purchase.VendorId;
-                existingPurchase.BranchId = purchase.BranchId;
-                existingPurchase.PurchaseStatus = purchase.PurchaseStatus;
-                existingPurchase.PurchaseDate = purchase.PurchaseDate;
-                existingPurchase.PaymentMethod = purchase.PaymentMethod;
-                existingPurchase.Notes = purchase.Notes;
-
-                foreach (var detail in purchase.Details!)
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                try
                 {
-                    detail.SubTotal = detail.Quantity * detail.UnitPrice;
-                    detail.VatAmount = detail.SubTotal * (detail.VatRate / 100);
-                    detail.Total = detail.SubTotal + detail.VatAmount;
-                }
+                    var existingPurchase = await _context.Purchases.FindAsync(purchase.Id);
+                    if (existingPurchase == null)
+                        return false;
 
-                existingPurchase.SubTotal = purchase.Details.Sum(d => d.SubTotal);
-                existingPurchase.TotalVat = purchase.Details.Sum(d => d.VatAmount);
-                existingPurchase.TotalAmount = existingPurchase.SubTotal + existingPurchase.TotalVat;
+                    // Update purchase fields
+                    existingPurchase.PurchaseNo = await GeneratePurchaseNo();
+                    existingPurchase.VendorId = purchase.VendorId;
+                    existingPurchase.BranchId = purchase.BranchId;
+                    existingPurchase.PurchaseStatus = purchase.PurchaseStatus;
+                    existingPurchase.PurchaseDate = purchase.PurchaseDate;
+                    existingPurchase.PaymentMethod = purchase.PaymentMethod;
+                    existingPurchase.Notes = purchase.Notes;
 
-                // Delete old purchase details and stocks
-                var existingDetails = await _context.PurchaseDetails
-                    .Where(d => d.PurchaseId == purchase.Id)
-                    .ToListAsync();
-                var existingProductStocks = await _context.ProductStocks
-                    .Where(s => s.SourceId == purchase.Id && s.SourceType == "Purchase")
-                    .ToListAsync();
-
-                _context.PurchaseDetails.RemoveRange(existingDetails);
-                _context.ProductStocks.RemoveRange(existingProductStocks);
-
-                // Add new details and stocks
-                foreach (var detail in purchase.Details!)
-                {
-                    detail.PurchaseId = purchase.Id;
-                    _context.PurchaseDetails.Add(detail);
-
-                    _context.ProductStocks.Add(new ProductStock
+                    foreach (var detail in purchase.Details!)
                     {
-                        ProductId = detail.ProductId,
-                        Date = purchase.PurchaseDate,
-                        QuantityIn = detail.Quantity,
-                        QuantityOut = 0,
-                        SourceType = "Purchase",
-                        ReferenceNo = purchase.PurchaseNo ?? "",
-                        SourceId = purchase.Id,
-                        Remarks = "Stock added from purchase"
-                    });
-                }
+                        detail.SubTotal = detail.Quantity * detail.UnitPrice;
+                        detail.VatAmount = detail.SubTotal * (detail.VatRate / 100);
+                        detail.Total = detail.SubTotal + detail.VatAmount;
+                    }
 
-                // Remove existing journal post & details
-                var oldJournal = await _context.JournalPosts
-                    .FirstOrDefaultAsync(j => j.PurchaseId == purchase.Id);
+                    existingPurchase.SubTotal = purchase.Details.Sum(d => d.SubTotal);
+                    existingPurchase.TotalVat = purchase.Details.Sum(d => d.VatAmount);
+                    existingPurchase.TotalAmount = existingPurchase.SubTotal + existingPurchase.TotalVat;
 
-                if (oldJournal != null)
-                {
-                    var oldDetails = await _context.JournalPostDetails
-                        .Where(jd => jd.JournalPostId == oldJournal.Id)
+                    // Delete old purchase details and stocks
+                    var existingDetails = await _context.PurchaseDetails
+                        .Where(d => d.PurchaseId == purchase.Id)
+                        .ToListAsync();
+                    var existingProductStocks = await _context.ProductStocks
+                        .Where(s => s.SourceId == purchase.Id && s.SourceType == "Purchase")
                         .ToListAsync();
 
-                    _context.JournalPostDetails.RemoveRange(oldDetails);
-                    _context.JournalPosts.Remove(oldJournal);
-                }
+                    _context.PurchaseDetails.RemoveRange(existingDetails);
+                    _context.ProductStocks.RemoveRange(existingProductStocks);
+                    await _context.SaveChangesAsync();
+                    // Add new details and stocks
+                    foreach (var detail in purchase.Details!)
+                    {
+                        detail.PurchaseId = purchase.Id;
+                    detail.SubscriptionId = subscriptionId;
+                        _context.PurchaseDetails.Add(detail);
 
-                await _context.SaveChangesAsync();
+                        _context.ProductStocks.Add(new ProductStock
+                        {
+                            ProductId = detail.ProductId,
+                            Date = purchase.PurchaseDate,
+                            QuantityIn = detail.Quantity,
+                            QuantityOut = 0,
+                            SourceType = "Purchase",
+                            ReferenceNo = purchase.PurchaseNo ?? "",
+                            SourceId = purchase.Id,
+                            Remarks = "Stock added from purchase",
+                            SubscriptionId = subscriptionId
+                        });
+                    }
+                    await _context.SaveChangesAsync();
+                    // Remove existing journal post & details
+                    var oldJournal = await _context.JournalPosts
+                        .FirstOrDefaultAsync(j => j.PurchaseId == purchase.Id);
 
-                // Create new journal post and details
-                var journal = new JournalPost
-                {
-                    BusinessYearId = await _baseService.GetBusinessYearId(subscriptionId),
-                    BranchId = purchase.BranchId,
-                    VchNo = await _baseService.GenerateVchNoAsync(subscriptionId),
-                    VchDate = purchase.PurchaseDate,
-                    VchType = 3, // Purchase
-                    Debit = existingPurchase.TotalAmount,
-                    Credit = existingPurchase.TotalAmount,
-                    PurchaseId = purchase.Id,
-                    UserId = userId,
-                    RefNo = purchase.PurchaseNo,
-                    Notes = "Purchase Update Entry",
-                    Created = DateTime.Now,
-                    SubscriptionId = subscriptionId
-                };
+                    if (oldJournal != null)
+                    {
+                        var oldDetails = await _context.JournalPostDetails
+                            .Where(jd => jd.JournalPostId == oldJournal.Id)
+                            .ToListAsync();
 
-                await _context.JournalPosts.AddAsync(journal);
-                await _context.SaveChangesAsync();
+                        _context.JournalPostDetails.RemoveRange(oldDetails);
+                        _context.JournalPosts.Remove(oldJournal);
+                    }
 
-                var journalDetails = new List<JournalPostDetail>();
+                    await _context.SaveChangesAsync();
 
-                // Credit entry
-                if (purchase.PaymentMethod == 0) // Credit
-                {
+                    // Create new journal post and details
+                    var journal = new JournalPost
+                    {
+                        BusinessYearId = await _baseService.GetBusinessYearId(subscriptionId),
+                        BranchId = purchase.BranchId,
+                        VchNo = await _baseService.GenerateVchNoAsync(subscriptionId),
+                        VchDate = purchase.PurchaseDate,
+                        VchType = 3, // Purchase
+                        Debit = existingPurchase.TotalAmount,
+                        Credit = existingPurchase.TotalAmount,
+                        PurchaseId = purchase.Id,
+                        UserId = userId,
+                        RefNo = purchase.PurchaseNo,
+                        Notes = "Purchase Update Entry",
+                        Created = DateTime.Now,
+                        SubscriptionId = subscriptionId
+                    };
+
+                    await _context.JournalPosts.AddAsync(journal);
+                    await _context.SaveChangesAsync();
+
+                    var journalDetails = new List<JournalPostDetail>();
+
+                    // Credit entry
+                    if (purchase.PaymentMethod == 0) // Credit
+                    {
+                        journalDetails.Add(new JournalPostDetail
+                        {
+                            BusinessYearId = journal.BusinessYearId,
+                            BranchId = journal.BranchId,
+                            JournalPostId = journal.Id,
+                            ChartOfAccountId = 21, // Accounts Payable
+                            VchNo = journal.VchNo,
+                            VchDate = journal.VchDate,
+                            VchType = journal.VchType,
+                            Credit = existingPurchase.TotalAmount,
+                            Description = "Due(AP) Payment",
+                            Remarks = "Accounts Payable for purchase",
+                            PurchaseId = purchase.Id,
+                            SubscriptionId = subscriptionId,
+                            CreatedAt = DateTime.Now
+                        });
+                    }
+                    else if (purchase.PaymentMethod == 1) // Cash
+                    {
+                        journalDetails.Add(new JournalPostDetail
+                        {
+                            BusinessYearId = journal.BusinessYearId,
+                            BranchId = journal.BranchId,
+                            JournalPostId = journal.Id,
+                            ChartOfAccountId = 20, // Cash in Hand
+                            VchNo = journal.VchNo,
+                            VchDate = journal.VchDate,
+                            VchType = journal.VchType,
+                            Credit = existingPurchase.TotalAmount,
+                            Description = "Cash(Immediate Payment) Purchase",
+                            Remarks = "Cash Credit for Purchase",
+                            PurchaseId = purchase.Id,
+                            SubscriptionId = subscriptionId,
+                            CreatedAt = DateTime.Now
+                        });
+                    }
+
+                    // Debit entry
                     journalDetails.Add(new JournalPostDetail
                     {
                         BusinessYearId = journal.BusinessYearId,
                         BranchId = journal.BranchId,
                         JournalPostId = journal.Id,
-                        ChartOfAccountId = 21, // Accounts Payable
+                        ChartOfAccountId = 22, // Inventory Stock
                         VchNo = journal.VchNo,
                         VchDate = journal.VchDate,
                         VchType = journal.VchType,
-                        Credit = existingPurchase.TotalAmount,
-                        Description = "Due(AP) Payment",
-                        Remarks = "Accounts Payable for purchase",
+                        Debit = existingPurchase.TotalAmount,
+                        Description = "Purchase expense",
+                        Remarks = "Inventory booked for purchase",
                         PurchaseId = purchase.Id,
                         SubscriptionId = subscriptionId,
                         CreatedAt = DateTime.Now
                     });
+
+                    await _context.JournalPostDetails.AddRangeAsync(journalDetails);
+                    await _context.SaveChangesAsync();
+
+                    await transaction.CommitAsync();
+                    return true;
                 }
-                else if (purchase.PaymentMethod == 1) // Cash
+                catch (Exception ex)
                 {
-                    journalDetails.Add(new JournalPostDetail
-                    {
-                        BusinessYearId = journal.BusinessYearId,
-                        BranchId = journal.BranchId,
-                        JournalPostId = journal.Id,
-                        ChartOfAccountId = 20, // Cash in Hand
-                        VchNo = journal.VchNo,
-                        VchDate = journal.VchDate,
-                        VchType = journal.VchType,
-                        Credit = existingPurchase.TotalAmount,
-                        Description = "Cash(Immediate Payment) Purchase",
-                        Remarks = "Cash Credit for Purchase",
-                        PurchaseId = purchase.Id,
-                        SubscriptionId = subscriptionId,
-                        CreatedAt = DateTime.Now
-                    });
+                    await transaction.RollbackAsync();
+                    Console.WriteLine($"Error updating purchase: {ex.Message}");
+                    return false;
                 }
-
-                // Debit entry
-                journalDetails.Add(new JournalPostDetail
-                {
-                    BusinessYearId = journal.BusinessYearId,
-                    BranchId = journal.BranchId,
-                    JournalPostId = journal.Id,
-                    ChartOfAccountId = 22, // Inventory Stock
-                    VchNo = journal.VchNo,
-                    VchDate = journal.VchDate,
-                    VchType = journal.VchType,
-                    Debit = existingPurchase.TotalAmount,
-                    Description = "Purchase expense",
-                    Remarks = "Inventory booked for purchase",
-                    PurchaseId = purchase.Id,
-                    SubscriptionId = subscriptionId,
-                    CreatedAt = DateTime.Now
-                });
-
-                await _context.JournalPostDetails.AddRangeAsync(journalDetails);
-                await _context.SaveChangesAsync();
-
-                await transaction.CommitAsync();
-                return true;
             }
-            catch (Exception ex)
-            {
-                await transaction.RollbackAsync();
-                Console.WriteLine($"Error updating purchase: {ex.Message}");
-                return false;
-            }
-        }
 
         public async Task<string> DeletePurchase(int id)
         {
