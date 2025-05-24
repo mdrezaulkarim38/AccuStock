@@ -228,13 +228,13 @@ namespace AccuStock.Services
             {
                 var subscriptionId = _baseService.GetSubscriptionId();
                 var userId = _baseService.GetUserId();
-
+                
                 using var transaction = await _context.Database.BeginTransactionAsync();
                 try
                 {
                     var existingPurchase = await _context.Purchases.FindAsync(purchase.Id);
                     if (existingPurchase == null)
-                        return false;
+                        return false;   
 
                     // Update purchase fields
                     existingPurchase.PurchaseNo = await GeneratePurchaseNo();

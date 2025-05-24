@@ -28,7 +28,7 @@ namespace AccuStock.Services
                 {
                     Id = p.Id,
                     PurchaseNo = p.PurchaseNo,
-                    Vendor = new Vendor { Name = p.Vendor!.Name } // For display
+                    Vendor = new Vendor { Name = p.Vendor!.Name }
                 })
                 .ToListAsync();
         }

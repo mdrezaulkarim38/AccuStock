@@ -48,6 +48,7 @@ namespace AccuStock.Controllers
                         PaymentMethod = purchase.PaymentMethod,
                         PurchaseDate = purchase.PurchaseDate,
                         Notes = purchase.Notes,
+                        PurchaseStatus = purchase.PurchaseStatus,
                         VendorList = new SelectList(vendors, "Id", "Name", purchase.VendorId),
                         BranchList = new SelectList(branches, "Id", "Name", purchase.BranchId),
                         ProductList = new SelectList(products, "Id", "Name", purchase.Id),
@@ -104,7 +105,7 @@ namespace AccuStock.Controllers
                 PaymentMethod = viewModel.PaymentMethod,
                 PurchaseDate = viewModel.PurchaseDate,
                 Notes = viewModel.Notes,
-                PurchaseStatus = 0,
+                PurchaseStatus = viewModel.PurchaseStatus,
                 Details = viewModel.Details.Select(d => new PurchaseDetail
                 {
                     ProductId = d.ProductId,

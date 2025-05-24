@@ -9,7 +9,7 @@ namespace AccuStock.Models
         public string? PurchaseNo { get; set; }
         public int VendorId { get; set; }
         public int BranchId { get; set; }
-        public int PurchaseStatus { get; set; } // 0: Pending, 1: Completed, 2: Partial
+        public int PurchaseStatus { get; set; } = 0; // 0: Pending, 1: Completed, 2: Partial
         public DateTime PurchaseDate { get; set; }
         [StringLength(100)]
         public string? Notes { get; set; }

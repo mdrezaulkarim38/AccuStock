@@ -14,6 +14,7 @@ namespace AccuStock.Models.ViewModels.Purchase;
         [DataType(DataType.Date)]
         public DateTime PurchaseDate { get; set; }
         public string? Notes { get; set; }
+        public int PurchaseStatus { get; set; }
         public int ? PaymentMethod { get; set; } // 0: Cash (Immediate Payment), 1: Credit (Payable)
         public IEnumerable<SelectListItem>? VendorList { get; set; }
         public IEnumerable<SelectListItem>? BranchList { get; set; }
