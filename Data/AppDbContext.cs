@@ -191,13 +191,6 @@ namespace AccuStock.Data
                 entity.Property(e => e.UnitPrice).HasPrecision(18, 2);
                 entity.Property(e => e.Total).HasPrecision(18, 2);
             });
-
-            //modelBuilder.Entity<SaleReturn>(entity =>
-            //{
-            //    entity.Property(e => e.RefundAmount).HasPrecision(18, 2);
-            //});
-
         }
-
     }
 }

@@ -69,7 +69,7 @@
                                 <td class="fw-bold">Income:</td>
                                 <td></td> <!-- Add empty td to match column count -->
                             </tr>
-                            @foreach (var income in Model.IncomeAccounts)
+                            @foreach (var income in Model.IncomeAccounts!)
                             {
                                 <tr>
                                     <td class="text-start">@income.AccountName</td>
@@ -85,7 +85,7 @@
                                 <td class="fw-bold">Expense:</td>
                                 <td></td> <!-- Add empty td to match column count -->
                             </tr>
-                            @foreach (var expense in Model.ExpenseAccounts)
+                            @foreach (var expense in Model.ExpenseAccounts!)
                             {
                                 <tr>
                                     <td class="text-start">@expense.AccountName</td>

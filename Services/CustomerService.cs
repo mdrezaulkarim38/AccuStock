@@ -41,7 +41,7 @@ namespace AccuStock.Services
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
