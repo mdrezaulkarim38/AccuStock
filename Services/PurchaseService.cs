@@ -271,7 +271,7 @@ namespace AccuStock.Services
                     foreach (var detail in purchase.Details!)
                     {
                         detail.PurchaseId = purchase.Id;
-                    detail.SubscriptionId = subscriptionId;
+                        detail.SubscriptionId = subscriptionId;
                         _context.PurchaseDetails.Add(detail);
 
                         _context.ProductStocks.Add(new ProductStock
@@ -281,7 +281,7 @@ namespace AccuStock.Services
                             QuantityIn = detail.Quantity,
                             QuantityOut = 0,
                             SourceType = "Purchase",
-                            ReferenceNo = purchase.PurchaseNo ?? "",
+                            ReferenceNo = existingPurchase.PurchaseNo ?? "",
                             SourceId = purchase.Id,
                             Remarks = "Stock added from purchase",
                             SubscriptionId = subscriptionId
